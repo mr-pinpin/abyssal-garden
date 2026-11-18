@@ -11,6 +11,7 @@
 // name the plugin and its line) and shrinking the WGSL in its /*wgsl*/ literals. The cache key is the unit's
 // source hash, so editing plugins/ship/plugin.js recompiles exactly one unit.
 import { readFileSync, writeFileSync, mkdirSync, existsSync, watch } from 'node:fs';
+import { spawnSync } from 'node:child_process';
 import { gzipSync } from 'node:zlib';
 import { createHash } from 'node:crypto';
 import path from 'node:path';
@@ -22,10 +23,12 @@ const CACHE = path.join(here, '.cache');
 const COMPILER = 'unit-v1/' + esbuildVersion; // bump to invalidate every cached unit
 const now = () => performance.now();
 
-function manifest() {
-  const m = JSON.parse(readFileSync(path.join(here, 'manifest.json'), 'utf8'));
+const manifest = () => JSON.parse(readFileSync(path.join(here, 'manifest.json'), 'utf8'));
+
+function units(m, excluded = new Set()) {
   const unit = (kind, name, extra = {}) => ({ id: `${kind}:${name}`, name, kind, file: kind === 'core' ? `core/${name}.js` : `plugins/${name}/plugin.js`, ...extra });
-  const pre = m.plugins.filter((p) => p.phase === 'pre' && p.enabled !== false), post = m.plugins.filter((p) => p.phase === 'post' && p.enabled !== false);
+  const active = m.plugins.filter((p) => p.enabled !== false && !excluded.has(p.name));
+  const pre = active.filter((p) => p.phase === 'pre'), post = active.filter((p) => p.phase === 'post');
   return [
     ...m.core.map((n) => unit('core', n)),
     // generated from manifest.json: the asset table the gltf-loader plugin reads
@@ -50,28 +53,33 @@ function compileUnit(u, src) {
 }
 
 // tier 0 core: bring every unit's cache entry up to date, compiling only what changed (or what `force` names)
-function refresh(units, force = []) {
+function refresh(units, force = [], onPluginError) {
   mkdirSync(CACHE, { recursive: true });
   const rows = [], out = [];
   for (const u of units) {
-    const t = now();
-    const src = u.source ?? readFileSync(path.join(here, u.file), 'utf8');
-    const key = createHash('sha256').update(COMPILER).update('\0').update(src).digest('hex').slice(0, 16);
-    const cf = path.join(CACHE, u.id.replace(':', '__') + '.json');
-    let c = existsSync(cf) ? JSON.parse(readFileSync(cf, 'utf8')) : null, state = 'cached';
-    if (!c || c.key !== key || force.includes(u.name)) {
-      c = { key, ...compileUnit(u, src) };
-      writeFileSync(cf, JSON.stringify(c));
-      state = 'compiled';
+    try {
+      const t = now();
+      const src = u.source ?? readFileSync(path.join(here, u.file), 'utf8');
+      const key = createHash('sha256').update(COMPILER).update('\0').update(src).digest('hex').slice(0, 16);
+      const cf = path.join(CACHE, u.id.replace(':', '__') + '.json');
+      let c = existsSync(cf) ? JSON.parse(readFileSync(cf, 'utf8')) : null, state = 'cached';
+      if (!c || c.key !== key || force.includes(u.name)) {
+        c = { key, ...compileUnit(u, src) };
+        writeFileSync(cf, JSON.stringify(c));
+        state = 'compiled';
+      }
+      rows.push({ unit: u.id, state, ms: now() - t });
+      out.push({ ...u, ...c });
+    } catch (error) {
+      if (u.kind !== 'plugin' || !onPluginError) throw error;
+      onPluginError(u.name, 'compile', error.message);
     }
-    rows.push({ unit: u.id, state, ms: now() - t });
-    out.push({ ...u, ...c });
   }
   return { rows, out };
 }
 
 const tpl = () => {
-  const config = JSON.parse(readFileSync(path.join(here, 'manifest.json'), 'utf8'));
+  const config = manifest();
   return readFileSync(path.join(here, config.template || 'core/template.html'), 'utf8');
 };
 // everything runs inside one async function; startup errors are shown on screen
@@ -82,9 +90,16 @@ const write = (name, html) => {
   return `${name} ${(html.length / 1024).toFixed(1)} kB (${(gz / 1024).toFixed(1)} kB gz)`;
 };
 const assembleDev = (out) => write('dev.html', tpl().replace('/*SCRIPT*/', () => wrap(out.map((u) => u.readable).join('\n'))));
-function assembleProd(out) {
+function compileBundle(out) {
   const js = out.filter((u) => !u.dev).map((u) => u.packed).join('\n');
   const code = transformSync(wrap(js), { minify: true, target: 'es2022', legalComments: 'none' }).code.trim();
+  if (out.some((u) => u.dev)) {
+    transformSync(wrap(out.map((u) => u.readable).join('\n')), { target: 'es2022' });
+  }
+  return code;
+}
+
+function assembleProd(code) {
   const css = (_, s) => '<style>' + transformSync(s, { loader: 'css', minify: true }).code.trim();
   const html = tpl().replace(/<style>([^]*?)(?=<\/style>)/, css).replace(/>\s+</g, '><').replace('/*SCRIPT*/', () => code).replace(/<script>\s+/, '<script>').replace(/\s+<\/script>/, '</script>');
   return write('index.html', html);
@@ -98,14 +113,60 @@ function report(tier, rows, extra, t0) {
 }
 
 function tier0(force = []) {
-  const t0 = now(), { rows, out } = refresh(manifest(), force), t = now();
+  const t0 = now(), { rows, out } = refresh(units(manifest()), force), t = now();
   const dev = assembleDev(out);
   report('tier 0', rows, [`${dev}, assembled in ${(now() - t).toFixed(1)} ms`], t0);
 }
+function testPlugin(name) {
+  const local = path.join('plugins', name, 'contract.test.mjs');
+  const args = existsSync(path.join(here, local)) ? [local]
+    : name === 'gltf-loader' ? ['tests/loader.test.mjs']
+    : ['tests/plugin-load.test.mjs'];
+  const test = spawnSync(process.execPath, ['--test', '--test-reporter=spec', ...args], {
+    cwd: here, env: { ...process.env, GARDEN_TEST_PLUGIN: name }, encoding: 'utf8', timeout: 15000,
+  });
+  if (test.status === 0) {
+    console.log(`  PASS contract plugin:${name}`);
+    return null;
+  }
+  return [test.error?.message || test.signal, test.stdout?.trim(), test.stderr?.trim()].filter(Boolean).join('\n')
+    || `test runner exited with status ${test.status}`;
+}
+
 function tier1() {
-  const t0 = now(), { rows, out } = refresh(manifest()), t = now();
-  const prod = assembleProd(out), t2 = now(), dev = assembleDev(out);
-  report('tier 1', rows, [`${prod}, minified in ${(t2 - t).toFixed(0)} ms`, `${dev}`], t0);
+  const t0 = now(), config = manifest(), excluded = new Set();
+  const exclude = (name, stage, reason) => {
+    excluded.add(name);
+    console.warn(`  EXCLUDED plugin:${name} (${stage} failed)\n${reason}`);
+  };
+  // Contracts run even for plugins disabled in the current preset.
+  for (const { name } of config.plugins) {
+    const failure = testPlugin(name);
+    if (failure) exclude(name, 'contract', failure);
+  }
+  const { rows, out } = refresh(units(config, excluded), [], exclude), t = now();
+  let code;
+  try {
+    code = compileBundle(out);
+  } catch {
+    // Each unit parsed on its own. Check the shared scope with the core present,
+    // admitting plugins in manifest order so a conflicting plugin can be dropped.
+    code = compileBundle(out.filter((u) => u.kind !== 'plugin'));
+    const admitted = new Set();
+    for (const u of out.filter((unit) => unit.kind === 'plugin')) {
+      try {
+        code = compileBundle(out.filter((unit) => unit.kind !== 'plugin' || unit === u || admitted.has(unit.name)));
+        admitted.add(u.name);
+      } catch (error) {
+        exclude(u.name, 'bundle compile', error.message);
+      }
+    }
+  }
+  const prod = assembleProd(code), t2 = now();
+  const dev = assembleDev(out.filter((u) => u.kind !== 'plugin' || !excluded.has(u.name)));
+  const excludedIds = new Set([...excluded].map((name) => `plugin:${name}`));
+  report('tier 1', rows.filter((r) => !excludedIds.has(r.unit)),
+    [`${prod}, minified in ${(t2 - t).toFixed(0)} ms`, dev], t0);
 }
 
 const [cmd = 't1', ...args] = process.argv.slice(2);

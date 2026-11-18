@@ -1,4 +1,4 @@
-// Proof that a plugin change rebuilds only that plugin: warm the cache with tier 1, append a comment to
+// Proof that a plugin change rebuilds only that plugin: warm the cache with tier 0, append a comment to
 // plugins/<name>/plugin.js (default timber-clearing), run tier 0, check that exactly that unit compiled, restore the file.
 //   node prove-tier0.mjs [plugin]
 import { readFileSync, writeFileSync } from 'node:fs';
@@ -20,7 +20,7 @@ const run = async (...args) => {
   finally { process.argv = argv; console.log = log; }
   return lines.join('\n') + '\n';
 };
-console.log('$ build t1   (warm the cache)\n' + (await run('t1')).split('\n').slice(-2).join('\n'));
+console.log('$ build t0   (warm the cache)\n' + (await run('t0')).split('\n').slice(-2).join('\n'));
 writeFileSync(file, orig + `// touched by prove-tier0 at ${new Date().toISOString()}\n`);
 let out;
 try { out = await run('t0'); } finally { writeFileSync(file, orig); }

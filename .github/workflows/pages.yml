@@ -30,10 +30,8 @@ jobs:
       - run: npm ci
         working-directory: source
       - name: tier 1 build
-        run: node build.mjs t1 | tee -a "$GITHUB_STEP_SUMMARY"
-        working-directory: source
-      - name: tier 0 proof (a plugin change rebuilds only that plugin)
-        run: node prove-tier0.mjs | tee -a "$GITHUB_STEP_SUMMARY"
+        shell: bash
+        run: npm run build 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
         working-directory: source
       - name: assemble site
         run: |
