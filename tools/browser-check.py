@@ -22,7 +22,8 @@ class CDP:
         response = b''
         while b'\r\n\r\n' not in response:
             response += self.s.recv(1)
-        assert b'101 Switching Protocols' in response, response
+        # HTTP reason phrases are free text: Chrome 157 says '101 WebSocket Protocol Handshake'
+        assert response.split(b'\r\n', 1)[0].split()[1:2] == [b'101'], response
         expected = base64.b64encode(hashlib.sha1((key + '258EAFA5-E914-47DA-95CA-C5AB0DC85B11').encode()).digest())
         assert expected.lower() in response.lower()
         self.id = 0
@@ -90,7 +91,10 @@ def main():
     c.js("forestView('pinpin')")
     before=c.js('forestState().eye')
     c.call('Input.dispatchKeyEvent', {'type':'keyDown','key':'w','code':'KeyW'})
-    time.sleep(.5)
+    # Movement happens per animation frame. Software GL (SwiftShader) can run only a few frames a
+    # second and stall after screenshots, so hold until 3 frames have run (at most 3 s), not 0.5 s.
+    held=c.js('forestState().frames'); deadline=time.time()+3
+    while c.js('forestState().frames')<held+3 and time.time()<deadline: time.sleep(.05)
     c.call('Input.dispatchKeyEvent', {'type':'keyUp','key':'w','code':'KeyW'})
     after=c.js('forestState().eye')
     assert sum((a-b)**2 for a,b in zip(before,after))>.01,(before,after)

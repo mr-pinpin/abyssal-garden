@@ -1,0 +1,161 @@
+{
+  "browser": {
+    "protocolVersion": "1.3",
+    "product": "Chrome/157.0.8103.50",
+    "revision": "@049750111b1e5c11565c792b2aeed5541f332bad",
+    "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+    "jsVersion": "15.7.112.23"
+  },
+  "initial": {
+    "ready": true,
+    "frames": 6,
+    "eye": [
+      27,
+      25,
+      32
+    ],
+    "view": "overview",
+    "groups": [
+      {
+        "id": "landscape",
+        "enabled": true,
+        "pieces": 3,
+        "triangles": 6478
+      },
+      {
+        "id": "home",
+        "enabled": true,
+        "pieces": 84,
+        "triangles": 15509
+      },
+      {
+        "id": "elder",
+        "enabled": true,
+        "pieces": 56,
+        "triangles": 10647
+      },
+      {
+        "id": "pinpin",
+        "enabled": true,
+        "pieces": 5,
+        "triangles": 45884
+      }
+    ],
+    "assets": [
+      {
+        "id": "pinpin",
+        "materialColors": true,
+        "vertices": 38964
+      },
+      {
+        "id": "beaver",
+        "materialColors": true,
+        "vertices": 29076
+      },
+      {
+        "id": "timber-tractor",
+        "materialColors": true,
+        "vertices": 45840
+      },
+      {
+        "id": "footbridge",
+        "materialColors": true,
+        "vertices": 10644
+      },
+      {
+        "id": "windfallen-tree",
+        "materialColors": true,
+        "vertices": 13128
+      }
+    ],
+    "errors": [],
+    "glError": 0,
+    "renderer": "WebKit WebGL"
+  },
+  "final": {
+    "ready": true,
+    "frames": 47,
+    "eye": [
+      27,
+      25,
+      32
+    ],
+    "view": "overview",
+    "groups": [
+      {
+        "id": "landscape",
+        "enabled": true,
+        "pieces": 3,
+        "triangles": 6478
+      },
+      {
+        "id": "home",
+        "enabled": true,
+        "pieces": 84,
+        "triangles": 15509
+      },
+      {
+        "id": "elder",
+        "enabled": true,
+        "pieces": 56,
+        "triangles": 10647
+      },
+      {
+        "id": "pinpin",
+        "enabled": true,
+        "pieces": 5,
+        "triangles": 45884
+      }
+    ],
+    "assets": [
+      {
+        "id": "pinpin",
+        "materialColors": true,
+        "vertices": 38964
+      },
+      {
+        "id": "beaver",
+        "materialColors": true,
+        "vertices": 29076
+      },
+      {
+        "id": "timber-tractor",
+        "materialColors": true,
+        "vertices": 45840
+      },
+      {
+        "id": "footbridge",
+        "materialColors": true,
+        "vertices": 10644
+      },
+      {
+        "id": "windfallen-tree",
+        "materialColors": true,
+        "vertices": 13128
+      }
+    ],
+    "errors": [],
+    "glError": 0,
+    "renderer": "WebKit WebGL"
+  },
+  "movement": {
+    "before": [
+      3.8,
+      2.7,
+      7
+    ],
+    "after": [
+      3.1720937875732593,
+      2.7,
+      6.504284569136782
+    ]
+  },
+  "runtime_layer_toggles": "all passed",
+  "console_errors": [],
+  "screenshots": [
+    "forest-overview.png",
+    "forest-home.png",
+    "forest-pinpin.png",
+    "forest-elder.png"
+  ]
+}

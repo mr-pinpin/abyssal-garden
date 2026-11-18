@@ -96,7 +96,7 @@ function matrix(){
   return out;
 }
 const vpLoc=gl.getUniformLocation(program,'viewProjection'), eyeLoc=gl.getUniformLocation(program,'eye');
-const views={overview:[[27,25,32],[0,0,-5]],home:[[-17,7,10],[-12,1,-2]],pinpin:[[3.8,2.7,7],[0,.75,4]],elder:[[19,7,-4],[14,2,-16]]};
+const views={overview:[[27,25,32],[0,0,-5]],home:[[-26,7,-2],[-12,1,-2]],pinpin:[[3.8,2.7,7],[0,.75,4]],elder:[[19,7,-4],[14,2,-16]]};
 let eye=[...views.overview[0]],yaw=0,pitch=0,activeView='overview',frames=0;
 function go(name){
   const [from,to]=views[name];eye=[...from];const d=to.map((x,i)=>x-from[i]);yaw=Math.atan2(d[0],-d[2]);pitch=Math.atan2(d[1],Math.hypot(d[0],d[2]));activeView=name;
