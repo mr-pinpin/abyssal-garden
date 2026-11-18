@@ -1,0 +1,14 @@
+{
+  "status": "unreviewed showcase study; not approved canon",
+  "source_repository": "mr-pinpin/mr-pinpin-source",
+  "references": [
+    {
+      "path": "docs/storyboard/stories/elder-elder-house.json",
+      "sha256": "b6fbaf4311a41491a570e009caacfa20ae2775a958fa2e374bb136b2466e6dda"
+    },
+    {
+      "path": "docs/storyboard/stories/elder-beneath-roots.json",
+      "sha256": "1038aed71d77803ebf004a33d1393105db9d7a9e2574b54510ba66e9a170e239"
+    }
+  ]
+}

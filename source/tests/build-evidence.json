@@ -1,0 +1,50 @@
+{
+  "compiler": "esbuild 0.28.1",
+  "checks": [
+    {
+      "plugin": "pinpin-home",
+      "compiled_alone": [
+        "plugin:pinpin-home"
+      ],
+      "disabled_build_ready": true,
+      "models_loaded": 5,
+      "disabled_chapters": [
+        "home"
+      ]
+    },
+    {
+      "plugin": "elder-sanctuary",
+      "compiled_alone": [
+        "plugin:elder-sanctuary"
+      ],
+      "disabled_build_ready": true,
+      "models_loaded": 5,
+      "disabled_chapters": [
+        "elder"
+      ]
+    },
+    {
+      "plugin": "timber-clearing",
+      "compiled_alone": [
+        "plugin:timber-clearing"
+      ],
+      "disabled_build_ready": true,
+      "models_loaded": 0,
+      "disabled_chapters": [
+        "clearing"
+      ]
+    },
+    {
+      "plugin": "forest-ambience",
+      "compiled_alone": [
+        "plugin:forest-ambience"
+      ],
+      "disabled_build_ready": true,
+      "models_loaded": 5,
+      "disabled_chapters": []
+    }
+  ],
+  "manifest_restored": true,
+  "index_sha256": "1acbc5f02698c3a9cb09ca213ce1c7a6a225d544d3d351d06e2dee74bedaf87a",
+  "runtime_method": "Actual built artifact with explicit DOM/Canvas test adapter and filesystem-backed fetch; not browser/WebGPU QA"
+}

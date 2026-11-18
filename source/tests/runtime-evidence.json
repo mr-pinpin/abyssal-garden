@@ -1,0 +1,230 @@
+{
+  "method": "Actual built HTML script executed with explicit DOM/Canvas adapter and filesystem-backed fetch; NOT browser/WebGPU QA",
+  "normal": {
+    "state": {
+      "ready": true,
+      "mode": "canvas2d",
+      "models": [
+        {
+          "name": "pinpin",
+          "url": "assets/pinpin/pinpin.glb",
+          "loaded": true
+        },
+        {
+          "name": "beaver",
+          "url": "assets/pinpin/beaver.glb",
+          "loaded": true
+        },
+        {
+          "name": "timber-tractor",
+          "url": "assets/pinpin/timber-tractor.glb",
+          "loaded": true
+        },
+        {
+          "name": "footbridge",
+          "url": "assets/pinpin/footbridge.glb",
+          "loaded": true
+        },
+        {
+          "name": "windfallen-tree",
+          "url": "assets/pinpin/windfallen-tree.glb",
+          "loaded": true
+        }
+      ],
+      "frames": 4,
+      "errors": [],
+      "chapter": "clearing",
+      "pieces": 158,
+      "drawnTriangles": 63935
+    },
+    "requests": [
+      {
+        "url": "assets/pinpin/pinpin.glb",
+        "status": 200,
+        "bytes": 1190780,
+        "sha256": "ab9d45c5307a797d5563a489ff488736d2d2967b772071de7b9f7bbaa214ce46"
+      },
+      {
+        "url": "assets/pinpin/beaver.glb",
+        "status": 200,
+        "bytes": 838828,
+        "sha256": "ef7c886f6fedd50a6f43f2d2fddd2f07815dc4de7242e32077097d4cfd0b5925"
+      },
+      {
+        "url": "assets/pinpin/timber-tractor.glb",
+        "status": 200,
+        "bytes": 1389564,
+        "sha256": "a1a70b59fdf235fe22309f89e510af57f3c13c48f4fdfccb5a4873e310e95efc"
+      },
+      {
+        "url": "assets/pinpin/footbridge.glb",
+        "status": 200,
+        "bytes": 322076,
+        "sha256": "c44c919ea7bca21a97f16ed6f314ef537c09bdd3f14927852b149dd561401267"
+      },
+      {
+        "url": "assets/pinpin/windfallen-tree.glb",
+        "status": 200,
+        "bytes": 387528,
+        "sha256": "e55c9ba21c54948830d7f432c34006d3625f6521248171d2a2407a6a9a254cce"
+      }
+    ],
+    "warnings": [],
+    "status": "5 / 5 story studies ready",
+    "frameCount": 4,
+    "trianglesDrawn": 63935,
+    "disabled": []
+  },
+  "missing": {
+    "state": {
+      "ready": true,
+      "mode": "canvas2d",
+      "models": [
+        {
+          "name": "pinpin",
+          "url": "assets/pinpin/pinpin.glb",
+          "loaded": false
+        },
+        {
+          "name": "beaver",
+          "url": "assets/pinpin/beaver.glb",
+          "loaded": true
+        },
+        {
+          "name": "timber-tractor",
+          "url": "assets/pinpin/timber-tractor.glb",
+          "loaded": true
+        },
+        {
+          "name": "footbridge",
+          "url": "assets/pinpin/footbridge.glb",
+          "loaded": true
+        },
+        {
+          "name": "windfallen-tree",
+          "url": "assets/pinpin/windfallen-tree.glb",
+          "loaded": true
+        }
+      ],
+      "frames": 4,
+      "errors": [],
+      "chapter": "clearing",
+      "pieces": 158,
+      "drawnTriangles": 51027
+    },
+    "requests": [
+      {
+        "url": "assets/pinpin/pinpin.glb",
+        "status": 404,
+        "bytes": 0,
+        "sha256": null
+      },
+      {
+        "url": "assets/pinpin/beaver.glb",
+        "status": 200,
+        "bytes": 838828,
+        "sha256": "ef7c886f6fedd50a6f43f2d2fddd2f07815dc4de7242e32077097d4cfd0b5925"
+      },
+      {
+        "url": "assets/pinpin/timber-tractor.glb",
+        "status": 200,
+        "bytes": 1389564,
+        "sha256": "a1a70b59fdf235fe22309f89e510af57f3c13c48f4fdfccb5a4873e310e95efc"
+      },
+      {
+        "url": "assets/pinpin/footbridge.glb",
+        "status": 200,
+        "bytes": 322076,
+        "sha256": "c44c919ea7bca21a97f16ed6f314ef537c09bdd3f14927852b149dd561401267"
+      },
+      {
+        "url": "assets/pinpin/windfallen-tree.glb",
+        "status": 200,
+        "bytes": 387528,
+        "sha256": "e55c9ba21c54948830d7f432c34006d3625f6521248171d2a2407a6a9a254cce"
+      }
+    ],
+    "warnings": [
+      "[gltf-loader] pinpin: 404 assets/pinpin/pinpin.glb; using the procedural mesh"
+    ],
+    "status": "4 / 5 story studies ready · fallback shapes in use",
+    "frameCount": 4,
+    "trianglesDrawn": 51027,
+    "disabled": []
+  },
+  "mobile": {
+    "state": {
+      "ready": true,
+      "mode": "canvas2d",
+      "models": [
+        {
+          "name": "pinpin",
+          "url": "assets/pinpin/pinpin.glb",
+          "loaded": true
+        },
+        {
+          "name": "beaver",
+          "url": "assets/pinpin/beaver.glb",
+          "loaded": true
+        },
+        {
+          "name": "timber-tractor",
+          "url": "assets/pinpin/timber-tractor.glb",
+          "loaded": true
+        },
+        {
+          "name": "footbridge",
+          "url": "assets/pinpin/footbridge.glb",
+          "loaded": true
+        },
+        {
+          "name": "windfallen-tree",
+          "url": "assets/pinpin/windfallen-tree.glb",
+          "loaded": true
+        }
+      ],
+      "frames": 4,
+      "errors": [],
+      "chapter": "clearing",
+      "pieces": 158,
+      "drawnTriangles": 16668
+    },
+    "requests": [
+      {
+        "url": "assets/pinpin/pinpin.glb",
+        "status": 200,
+        "bytes": 1190780,
+        "sha256": "ab9d45c5307a797d5563a489ff488736d2d2967b772071de7b9f7bbaa214ce46"
+      },
+      {
+        "url": "assets/pinpin/beaver.glb",
+        "status": 200,
+        "bytes": 838828,
+        "sha256": "ef7c886f6fedd50a6f43f2d2fddd2f07815dc4de7242e32077097d4cfd0b5925"
+      },
+      {
+        "url": "assets/pinpin/timber-tractor.glb",
+        "status": 200,
+        "bytes": 1389564,
+        "sha256": "a1a70b59fdf235fe22309f89e510af57f3c13c48f4fdfccb5a4873e310e95efc"
+      },
+      {
+        "url": "assets/pinpin/footbridge.glb",
+        "status": 200,
+        "bytes": 322076,
+        "sha256": "c44c919ea7bca21a97f16ed6f314ef537c09bdd3f14927852b149dd561401267"
+      },
+      {
+        "url": "assets/pinpin/windfallen-tree.glb",
+        "status": 200,
+        "bytes": 387528,
+        "sha256": "e55c9ba21c54948830d7f432c34006d3625f6521248171d2a2407a6a9a254cce"
+      }
+    ],
+    "warnings": [],
+    "status": "5 / 5 story studies ready",
+    "frameCount": 4,
+    "trianglesDrawn": 16668,
+    "disabled": []
+  }
+}

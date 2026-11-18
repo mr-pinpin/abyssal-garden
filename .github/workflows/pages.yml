@@ -33,7 +33,7 @@ jobs:
         run: node build.mjs t1 | tee -a "$GITHUB_STEP_SUMMARY"
         working-directory: source
       - name: tier 0 proof (a plugin change rebuilds only that plugin)
-        run: node prove-tier0.mjs ship | tee -a "$GITHUB_STEP_SUMMARY"
+        run: node prove-tier0.mjs | tee -a "$GITHUB_STEP_SUMMARY"
         working-directory: source
       - name: assemble site
         run: |

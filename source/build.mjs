@@ -70,9 +70,12 @@ function refresh(units, force = []) {
   return { rows, out };
 }
 
-const tpl = () => readFileSync(path.join(here, 'core', 'template.html'), 'utf8');
+const tpl = () => {
+  const config = JSON.parse(readFileSync(path.join(here, 'manifest.json'), 'utf8'));
+  return readFileSync(path.join(here, config.template || 'core/template.html'), 'utf8');
+};
 // everything runs inside one async function; startup errors are shown on screen
-const wrap = (body) => `(async()=>{${body}\n})().catch(e=>{console.error(e);document.body.className='l e';document.getElementById('s').textContent=(e.cause?'':'Failed to start: ')+e.message});`;
+const wrap = (body) => `(async()=>{${body}\n})().catch(e=>{console.error(e);document.body.className='l e';const status=document.getElementById('error')||document.getElementById('s');if(status){status.hidden=false;status.textContent=(e.cause?'':'Failed to start: ')+e.message;}if(window.__pinpin)window.__pinpin.errors.push(String(e))});`;
 const write = (name, html) => {
   writeFileSync(path.join(here, '..', name), html);
   const gz = gzipSync(Buffer.from(html), { level: 9 }).length;

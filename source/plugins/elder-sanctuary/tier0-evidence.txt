@@ -1,0 +1,18 @@
+Local compiler esbuild 0.28.1
+
+> t0
+> node build.mjs t0 elder-sanctuary
+
+  cached   core:math                2.3 ms
+  cached   core:forest-shaders      0.2 ms
+  cached   gen:assets               0.1 ms
+  cached   plugin:gltf-loader       0.5 ms
+  cached   plugin:pinpin-home       0.3 ms
+  cached   plugin:timber-clearing     0.1 ms
+  cached   plugin:forest-ambience     0.1 ms
+  COMPILED plugin:elder-sanctuary   106.4 ms
+  cached   core:forest-main         0.8 ms
+  -> dev.html 75.5 kB (26.4 kB gz), assembled in 7.2 ms
+tier 0: 1/9 units compiled (plugin:elder-sanctuary), total 122 ms
+PASS: only this plugin compiled; next run compiled zero units; enabled:false omitted definition.
+PASS: manifest restored byte-for-byte. Compilation only, not browser integration.

@@ -42,7 +42,7 @@ function parseGLB(ab, opt = {}) {
     for (let k = 0; k < a.count; k++) for (let c = 0; c < n; c++) out[k * n + c] = raw[k * stride + c];
     return out;
   };
-  const P = [], Nn = [], I = [], sc = opt.scale || 1, off = opt.offset || [0, 0, 0];
+  const P = [], Nn = [], I = [], primitiveGroups = [], sc = opt.scale || 1, off = opt.offset || [0, 0, 0];
   const walk = (ni, parent) => {
     const node = json.nodes[ni], M = glbMul(parent, glbNodeMatrix(node));
     if (node.mesh !== undefined) for (const pr of json.meshes[node.mesh].primitives) {
@@ -55,7 +55,10 @@ function parseGLB(ab, opt = {}) {
         else Nn.push(0, 0, 0);
       }
       const idx = pr.indices !== undefined ? acc(pr.indices) : Uint32Array.from({ length: pos.length / 3 }, (_, i) => i);
+      const firstIndex = I.length;
       for (const i of idx) I.push(base + i);
+      primitiveGroups.push({ firstIndex, indexCount: idx.length,
+        color: json.materials?.[pr.material]?.pbrMetallicRoughness?.baseColorFactor?.slice(0, 3) || [0.65, 0.55, 0.40] });
     }
     for (const c of node.children || []) walk(c, M);
   };
@@ -77,7 +80,22 @@ function parseGLB(ab, opt = {}) {
     s[k * 16 + 12] = Math.round(nx / l * 127); s[k * 16 + 13] = Math.round(ny / l * 127); s[k * 16 + 14] = Math.round(nz / l * 127);
     s[k * 16 + 15] = opt.aux ?? 0;
   }
-  return { vb, ib: Uint32Array.from(I), nv };
+  // Group the original triangles by material color for a small number of draws.
+  // Original consumers still receive the same packed layout; groups are optional.
+  const buckets = new Map();
+  for (const group of primitiveGroups) {
+    const key = JSON.stringify(group.color);
+    if (!buckets.has(key)) buckets.set(key, { color: group.color, indices: [] });
+    const bucket = buckets.get(key);
+    for (let i = group.firstIndex; i < group.firstIndex + group.indexCount; i++) bucket.indices.push(I[i]);
+  }
+  const indices = [], groups = [];
+  for (const bucket of buckets.values()) {
+    const firstIndex = indices.length;
+    for (const index of bucket.indices) indices.push(index);
+    groups.push({ firstIndex, indexCount: bucket.indices.length, color: bucket.color });
+  }
+  return { vb, ib: Uint32Array.from(indices), nv, groups };
 }
 // the renderer calls this for every set piece; `procedural` builds the original mesh
 async function setPiece(name, procedural) {
@@ -87,7 +105,10 @@ async function setPiece(name, procedural) {
     if (!r.ok) throw new Error(r.status + ' ' + a.url);
     const m = parseGLB(await r.arrayBuffer(), a);
     console.info(`[gltf-loader] ${name}: ${a.url}, ${m.nv} vertices, ${m.ib.length / 3} triangles`);
+    m.source = { name, url: a.url, loaded: true };
     return m;
   } catch (e) { console.warn(`[gltf-loader] ${name}: ${e.message}; using the procedural mesh`); }
-  return procedural();
+  const fallback = procedural();
+  fallback.source = { name, url: a?.url || null, loaded: false };
+  return fallback;
 }

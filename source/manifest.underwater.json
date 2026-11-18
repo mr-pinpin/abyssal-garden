@@ -1,0 +1,15 @@
+{
+  "comment": "Load order of the garden. Every unit is one file that shares the scene's scope. core units and main are the engine; plugins with phase 'pre' run before main (they define meshes and hooks main calls), 'post' after it. dev: true plugins only go into dev.html. assets: set piece name -> Blender .glb (see plugins/gltf-loader).",
+  "core": ["quality", "math", "shaders", "world"],
+  "main": "main",
+  "plugins": [
+    { "name": "gltf-loader", "phase": "pre" },
+    { "name": "fluke", "phase": "pre" },
+    { "name": "ship", "phase": "pre" },
+    { "name": "manta", "phase": "pre" },
+    { "name": "fish", "phase": "pre" },
+    { "name": "audio", "phase": "post" },
+    { "name": "dev-tools", "phase": "post", "dev": true }
+  ],
+  "assets": {}
+}

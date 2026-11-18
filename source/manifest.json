@@ -1,15 +1,88 @@
 {
-  "comment": "Load order of the garden. Every unit is one file that shares the scene's scope. core units and main are the engine; plugins with phase 'pre' run before main (they define meshes and hooks main calls), 'post' after it. dev: true plugins only go into dev.html. assets: set piece name -> Blender .glb (see plugins/gltf-loader).",
-  "core": ["quality", "math", "shaders", "world"],
-  "main": "main",
-  "plugins": [
-    { "name": "gltf-loader", "phase": "pre" },
-    { "name": "fluke", "phase": "pre" },
-    { "name": "ship", "phase": "pre" },
-    { "name": "manta", "phase": "pre" },
-    { "name": "fish", "phase": "pre" },
-    { "name": "audio", "phase": "post" },
-    { "name": "dev-tools", "phase": "post", "dev": true }
+  "comment": "Default forest showcase. Enable/disable each plugin independently. Original underwater preset is retained in manifest.underwater.json.",
+  "core": [
+    "math",
+    "forest-shaders"
   ],
-  "assets": {}
+  "main": "forest-main",
+  "plugins": [
+    {
+      "name": "gltf-loader",
+      "phase": "pre"
+    },
+    {
+      "name": "fluke",
+      "phase": "pre",
+      "enabled": false
+    },
+    {
+      "name": "ship",
+      "phase": "pre",
+      "enabled": false
+    },
+    {
+      "name": "manta",
+      "phase": "pre",
+      "enabled": false
+    },
+    {
+      "name": "fish",
+      "phase": "pre",
+      "enabled": false
+    },
+    {
+      "name": "audio",
+      "phase": "post",
+      "enabled": false
+    },
+    {
+      "name": "dev-tools",
+      "phase": "post",
+      "dev": true,
+      "enabled": false
+    },
+    {
+      "name": "pinpin-home",
+      "phase": "pre",
+      "enabled": true
+    },
+    {
+      "name": "elder-sanctuary",
+      "phase": "pre",
+      "enabled": true
+    },
+    {
+      "name": "timber-clearing",
+      "phase": "pre",
+      "enabled": true
+    },
+    {
+      "name": "forest-ambience",
+      "phase": "pre",
+      "enabled": true
+    }
+  ],
+  "assets": {
+    "pinpin": {
+      "url": "assets/pinpin/pinpin.glb",
+      "scale": 1
+    },
+    "beaver": {
+      "url": "assets/pinpin/beaver.glb",
+      "scale": 1
+    },
+    "timber-tractor": {
+      "url": "assets/pinpin/timber-tractor.glb",
+      "scale": 1
+    },
+    "footbridge": {
+      "url": "assets/pinpin/footbridge.glb",
+      "scale": 1
+    },
+    "windfallen-tree": {
+      "url": "assets/pinpin/windfallen-tree.glb",
+      "scale": 1
+    }
+  },
+  "template": "core/forest-template.html"
 }
