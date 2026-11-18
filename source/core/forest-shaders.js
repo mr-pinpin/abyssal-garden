@@ -8,6 +8,7 @@ struct Out { @builtin(position) cp:vec4f, @location(0) wp:vec3f, @location(1) n:
  o.n=normalize((g.model*vec4f(n.xyz,0.)).xyz);return o;
 }
 @fragment fn fs(i:Out)->@location(0) vec4f {
+ if(g.color.a<1.){let v=52.9829189*fract(dot(floor(i.cp.xy),vec2f(.06711056,.00583715)));if(fract(v)>=g.color.a){discard;}}
  let n=normalize(i.n);let diffuse=max(dot(n,normalize(g.sun.xyz)),0.);
  let hemisphere=.34+.16*max(n.y,0.);var c=g.color.rgb*(hemisphere+diffuse*.78);
  // Warm sanctuary lamplight is bounded, independent of the optional ambience.
