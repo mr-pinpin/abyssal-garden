@@ -1,0 +1,69 @@
+{
+  "source_repository": "/code/v2-first/pinpin-garden-assets",
+  "source_commit": "8978b223db3b5bd1ae07c0fd16aec54b14056cb8",
+  "original_manifest_sha256": "0055faecb9fa8f0fc9330dad5a3e491b4cbe5a5121c269d059b0b6d2a86dc4da",
+  "files": [
+    {
+      "source": "out/pinpin.glb",
+      "target": "pinpin.glb",
+      "bytes": 1190780,
+      "sha256": "ab9d45c5307a797d5563a489ff488736d2d2967b772071de7b9f7bbaa214ce46"
+    },
+    {
+      "source": "out/pinpin-turntable.png",
+      "target": "pinpin-turntable.png",
+      "bytes": 359887,
+      "sha256": "335a4ec2095426c0756d996b24a25009d5168cbe4f88e9c60c57cdd207411da3"
+    },
+    {
+      "source": "out/beaver.glb",
+      "target": "beaver.glb",
+      "bytes": 838828,
+      "sha256": "ef7c886f6fedd50a6f43f2d2fddd2f07815dc4de7242e32077097d4cfd0b5925"
+    },
+    {
+      "source": "out/beaver-turntable.png",
+      "target": "beaver-turntable.png",
+      "bytes": 363698,
+      "sha256": "71b222356a55a9850c1ac61dd3bc98a92273dca57e5a1a32ba553393d38d80b1"
+    },
+    {
+      "source": "out/timber-tractor.glb",
+      "target": "timber-tractor.glb",
+      "bytes": 1389564,
+      "sha256": "a1a70b59fdf235fe22309f89e510af57f3c13c48f4fdfccb5a4873e310e95efc"
+    },
+    {
+      "source": "out/timber-tractor-turntable.png",
+      "target": "timber-tractor-turntable.png",
+      "bytes": 304937,
+      "sha256": "326958de71a74c88ab653b8b999a04229730b951d083720cfdbeb52888640ad4"
+    },
+    {
+      "source": "out/footbridge.glb",
+      "target": "footbridge.glb",
+      "bytes": 322076,
+      "sha256": "c44c919ea7bca21a97f16ed6f314ef537c09bdd3f14927852b149dd561401267"
+    },
+    {
+      "source": "out/footbridge-turntable.png",
+      "target": "footbridge-turntable.png",
+      "bytes": 336399,
+      "sha256": "5bb1396978cc59ca99172483d512ef0c7572fab89858442570e20dc5d720ac75"
+    },
+    {
+      "source": "out/windfallen-tree.glb",
+      "target": "windfallen-tree.glb",
+      "bytes": 387528,
+      "sha256": "e55c9ba21c54948830d7f432c34006d3625f6521248171d2a2407a6a9a254cce"
+    },
+    {
+      "source": "out/windfallen-tree-turntable.png",
+      "target": "windfallen-tree-turntable.png",
+      "bytes": 371850,
+      "sha256": "2b40957add28c81e579c6abad1b2ee624c70ec6c67f4a76427bdfb897c567162"
+    }
+  ],
+  "review_status": "Unreviewed procedural showcase studies, not approved book art",
+  "source_worktree_status_unchanged": true
+}

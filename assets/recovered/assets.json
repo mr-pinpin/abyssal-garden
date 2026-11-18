@@ -1,0 +1,121 @@
+{
+  "schema_version": 1,
+  "blender_version": "5.0.1",
+  "canon_repository": "mr-pinpin/mr-pinpin-source",
+  "canon_revision": "f79e64f1584ffbadf09dac12ab90475722fef745",
+  "render": {
+    "engine": "CYCLES",
+    "device": "CPU",
+    "threads": 2,
+    "samples": 32,
+    "view_pixels": [
+      320,
+      320
+    ],
+    "turntable_pixels": [
+      640,
+      640
+    ],
+    "azimuth_degrees": [
+      -40,
+      50,
+      140,
+      230
+    ],
+    "layout": "2x2: top-left, top-right, bottom-left, bottom-right",
+    "elevation_degrees": 28.81
+  },
+  "units": "meters; showcase scale is authored, not canonical measurement",
+  "assets": [
+    {
+      "id": "pinpin",
+      "name": "Mr. PinPin",
+      "script": "scripts/pinpin.py",
+      "size": 1190780,
+      "glb": "out/pinpin.glb",
+      "turntable": "out/pinpin-turntable.png",
+      "sha256": "ab9d45c5307a797d5563a489ff488736d2d2967b772071de7b9f7bbaa214ce46",
+      "turntable_sha256": "335a4ec2095426c0756d996b24a25009d5168cbe4f88e9c60c57cdd207411da3",
+      "canon_file": "docs/storyboard/models/pinpin-v1/reference.md",
+      "canon_sha256": "5d2e6b66928a0932231856ed10fc9fce0871c0007fa56c6b0b8b448e2015a600",
+      "follows": "Neutral young hedgehog: four short separated paws, cream muzzle, rounded ears, brown spines, white sclera and brown irises.",
+      "script_sha256": "c1335bb87b479b255160f38d4af4063eea726d26ef0825d8389a36e67b1d72d4",
+      "generator_sha256": "2dd07c358841bd1e9464b3d5cdaf273ba66b91c0e74b636ab5124477b4d34df1",
+      "exporter_sha256": "ec2a388b0d57e2ed934fffaa8278df888664b0521b41ee67de155431736321d4",
+      "review_status": "procedural showcase study; not an approved book illustration",
+      "authored_choices": "Stylized proportions, palette, small details and staging; not surveyed geometry."
+    },
+    {
+      "id": "beaver",
+      "name": "Beaver in his blue work vest",
+      "script": "scripts/beaver.py",
+      "size": 838828,
+      "glb": "out/beaver.glb",
+      "turntable": "out/beaver-turntable.png",
+      "sha256": "ef7c886f6fedd50a6f43f2d2fddd2f07815dc4de7242e32077097d4cfd0b5925",
+      "turntable_sha256": "71b222356a55a9850c1ac61dd3bc98a92273dca57e5a1a32ba553393d38d80b1",
+      "canon_file": "docs/storyboard/stories/timber-tractor.json",
+      "canon_sha256": "e8a6f35d74dce7202751b35978cac1270befe2be8fe5aaadec3fc296c7d5067b",
+      "follows": "scene-03: chestnut beaver wearing a blue work vest.",
+      "script_sha256": "83fcaab11ebc58530cb955adee7c5863aca50c3c6c48688d625b23a9c7262ff2",
+      "generator_sha256": "2dd07c358841bd1e9464b3d5cdaf273ba66b91c0e74b636ab5124477b4d34df1",
+      "exporter_sha256": "ec2a388b0d57e2ed934fffaa8278df888664b0521b41ee67de155431736321d4",
+      "review_status": "procedural showcase study; not an approved book illustration",
+      "authored_choices": "Stylized proportions, palette, small details and staging; not surveyed geometry."
+    },
+    {
+      "id": "timber-tractor",
+      "name": "Red timber tractor and empty trailer",
+      "script": "scripts/timber_tractor.py",
+      "size": 1389564,
+      "glb": "out/timber-tractor.glb",
+      "turntable": "out/timber-tractor-turntable.png",
+      "sha256": "a1a70b59fdf235fe22309f89e510af57f3c13c48f4fdfccb5a4873e310e95efc",
+      "turntable_sha256": "326958de71a74c88ab653b8b999a04229730b951d083720cfdbeb52888640ad4",
+      "canon_file": "docs/storyboard/stories/timber-tractor.json",
+      "canon_sha256": "e8a6f35d74dce7202751b35978cac1270befe2be8fe5aaadec3fc296c7d5067b",
+      "follows": "scenes 03, 05\u201308: red tractor, empty trailer, two seats, yellow crane and dark grapple.",
+      "script_sha256": "f79b71d142e114d51954c38e6e4a37831da1b58ae879b1ebe4954ba24f735518",
+      "generator_sha256": "2dd07c358841bd1e9464b3d5cdaf273ba66b91c0e74b636ab5124477b4d34df1",
+      "exporter_sha256": "ec2a388b0d57e2ed934fffaa8278df888664b0521b41ee67de155431736321d4",
+      "review_status": "procedural showcase study; not an approved book illustration",
+      "authored_choices": "Stylized proportions, palette, small details and staging; not surveyed geometry."
+    },
+    {
+      "id": "footbridge",
+      "name": "Small-paw footbridge",
+      "script": "scripts/footbridge.py",
+      "size": 322076,
+      "glb": "out/footbridge.glb",
+      "turntable": "out/footbridge-turntable.png",
+      "sha256": "c44c919ea7bca21a97f16ed6f314ef537c09bdd3f14927852b149dd561401267",
+      "turntable_sha256": "5bb1396978cc59ca99172483d512ef0c7572fab89858442570e20dc5d720ac75",
+      "canon_file": "docs/storyboard/stories/timber-tractor.json",
+      "canon_sha256": "e8a6f35d74dce7202751b35978cac1270befe2be8fe5aaadec3fc296c7d5067b",
+      "follows": "scenes 12\u201314: repaired wooden footbridge over a stream, including the last short approach plank.",
+      "script_sha256": "cfec2e262a010d9db039fa93a46d93ed4a3c394b8efd01218b055947ce032a94",
+      "generator_sha256": "2dd07c358841bd1e9464b3d5cdaf273ba66b91c0e74b636ab5124477b4d34df1",
+      "exporter_sha256": "ec2a388b0d57e2ed934fffaa8278df888664b0521b41ee67de155431736321d4",
+      "review_status": "procedural showcase study; not an approved book illustration",
+      "authored_choices": "Stylized proportions, palette, small details and staging; not surveyed geometry."
+    },
+    {
+      "id": "windfallen-tree",
+      "name": "Windfallen tree beside the stream",
+      "script": "scripts/windfallen_tree.py",
+      "size": 387528,
+      "glb": "out/windfallen-tree.glb",
+      "turntable": "out/windfallen-tree-turntable.png",
+      "sha256": "e55c9ba21c54948830d7f432c34006d3625f6521248171d2a2407a6a9a254cce",
+      "turntable_sha256": "2b40957add28c81e579c6abad1b2ee624c70ec6c67f4a76427bdfb897c567162",
+      "canon_file": "docs/storyboard/stories/timber-tractor.json",
+      "canon_sha256": "e8a6f35d74dce7202751b35978cac1270befe2be8fe5aaadec3fc296c7d5067b",
+      "follows": "scene-04: windfallen tree beside a stream, with standing woodland trees.",
+      "script_sha256": "751f15305206a6c10d7f31c9d199cc75f127d4fdb27cb49641d45eebc96981fc",
+      "generator_sha256": "2dd07c358841bd1e9464b3d5cdaf273ba66b91c0e74b636ab5124477b4d34df1",
+      "exporter_sha256": "ec2a388b0d57e2ed934fffaa8278df888664b0521b41ee67de155431736321d4",
+      "review_status": "procedural showcase study; not an approved book illustration",
+      "authored_choices": "Stylized proportions, palette, small details and staging; not surveyed geometry."
+    }
+  ]
+}

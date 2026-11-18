@@ -1,0 +1,6 @@
+/code/v2-first/forest-character-assets/assets/recovered/pinpin.glb: 38964 vertices, 12988 triangles, bounds [-1.07,0.00,-0.64] .. [1.11,1.50,0.64] m
+/code/v2-first/forest-character-assets/assets/recovered/beaver.glb: 29076 vertices, 9692 triangles, bounds [-0.97,0.01,-0.58] .. [0.69,1.85,0.58] m
+/code/v2-first/forest-character-assets/assets/recovered/timber-tractor.glb: 45840 vertices, 15280 triangles, bounds [-3.22,-0.02,-0.75] .. [1.54,2.07,0.75] m
+/code/v2-first/forest-character-assets/assets/recovered/footbridge.glb: 10644 vertices, 3548 triangles, bounds [-1.90,0.00,-1.37] .. [1.90,1.00,1.56] m
+/code/v2-first/forest-character-assets/assets/recovered/windfallen-tree.glb: 13128 vertices, 4376 triangles, bounds [-1.90,0.00,-1.42] .. [1.90,2.46,1.35] m
+PASS: five GLBs, five PNGs, exact manifest/notices, hashes, containers, existing loader; source unchanged

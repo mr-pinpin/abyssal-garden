@@ -1,0 +1,41 @@
+
+> t0
+> node build.mjs t0
+
+  cached   core:quality             2.3 ms
+  cached   core:math                0.4 ms
+  cached   core:shaders             0.5 ms
+  cached   core:world               0.7 ms
+  cached   gen:assets               0.1 ms
+  cached   plugin:gltf-loader       0.1 ms
+  cached   plugin:fluke             0.1 ms
+  cached   plugin:ship              0.1 ms
+  cached   plugin:manta             0.4 ms
+  cached   plugin:fish              0.1 ms
+  COMPILED plugin:pinpin-character   177.5 ms
+  cached   core:main                1.6 ms
+  cached   plugin:audio             4.0 ms
+  cached   plugin:dev-tools         0.3 ms
+  -> dev.html 172.5 kB (56.8 kB gz), assembled in 24.6 ms
+tier 0: 1/14 units compiled (plugin:pinpin-character), total 218 ms
+
+PASS: only plugin:pinpin-character rebuilt; enabled:false omits it; shared sources restored
+
+> t0
+> node build.mjs t0
+
+  cached   core:quality             1.5 ms
+  cached   core:math                0.4 ms
+  cached   core:shaders             0.5 ms
+  cached   core:world               0.7 ms
+  cached   gen:assets               0.1 ms
+  cached   plugin:gltf-loader       0.2 ms
+  cached   plugin:fluke             0.2 ms
+  cached   plugin:ship              0.2 ms
+  cached   plugin:manta             0.5 ms
+  cached   plugin:fish              0.2 ms
+  cached   core:main                3.0 ms
+  cached   plugin:audio             1.1 ms
+  cached   plugin:dev-tools         2.9 ms
+  -> dev.html 164.3 kB (54.1 kB gz), assembled in 24.5 ms
+tier 0: 0/13 units compiled (none), total 41 ms
