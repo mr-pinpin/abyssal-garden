@@ -119,18 +119,19 @@ function tier0(force = []) {
 }
 function testPlugin(name) {
   const local = path.join('plugins', name, 'contract.test.mjs');
-  const args = existsSync(path.join(here, local)) ? [local]
-    : name === 'gltf-loader' ? ['tests/loader.test.mjs']
-    : ['tests/plugin-load.test.mjs'];
-  const test = spawnSync(process.execPath, ['--test', '--test-reporter=spec', ...args], {
-    cwd: here, env: { ...process.env, GARDEN_TEST_PLUGIN: name }, encoding: 'utf8', timeout: 15000,
+  const file = existsSync(path.join(here, local)) ? local
+    : name === 'gltf-loader' ? 'tests/loader.test.mjs'
+    : 'tests/plugin-load.test.mjs';
+  // Each node:test file already has its own process and contributes its exit status.
+  console.log(`  RUN contract plugin:${name}`);
+  const test = spawnSync(process.execPath, ['--test-reporter=dot', file], {
+    cwd: here, env: { ...process.env, GARDEN_TEST_PLUGIN: name }, stdio: 'inherit', timeout: 15000,
   });
   if (test.status === 0) {
     console.log(`  PASS contract plugin:${name}`);
     return null;
   }
-  return [test.error?.message || test.signal, test.stdout?.trim(), test.stderr?.trim()].filter(Boolean).join('\n')
-    || `test runner exited with status ${test.status}`;
+  return test.error?.message || test.signal || `test runner exited with status ${test.status}; see diagnostics above`;
 }
 
 function tier1() {
