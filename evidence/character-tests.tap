@@ -1,0 +1,93 @@
+pinpin {"fallback":{"vertices":2176,"triangles":3964,"lo":[-0.9200000166893005,0,-0.7115719318389893],"hi":[1.2450000047683716,1.5595868825912476,0.7174835801124573]},"imported":{"vertices":38964,"triangles":12988,"lo":[-1.070000410079956,0,-0.6388254165649414],"hi":[1.1100000143051147,1.5042645931243896,0.6388254165649414]}}
+beaver {"fallback":{"vertices":2262,"triangles":4356,"lo":[-1.090000033378601,0,-0.5523999929428101],"hi":[0.6299999952316284,1.7699999809265137,0.5523999929428101]},"imported":{"vertices":29076,"triangles":9692,"lo":[-0.9700002670288086,0.009999997913837433,-0.5799999833106995],"hi":[0.6899999976158142,1.850000023841858,0.5800000429153442]}}
+timber-tractor {"fallback":{"vertices":1044,"triangles":1464,"lo":[-3,0,-0.7699999809265137],"hi":[1.2599999904632568,1.9500000476837158,0.7699999809265137]},"imported":{"vertices":45840,"triangles":15280,"lo":[-3.2249999046325684,-0.017500005662441254,-0.75],"hi":[1.5449999570846558,2.065000057220459,0.75]}}
+footbridge {"fallback":{"vertices":696,"triangles":348,"lo":[-1.7999999523162842,0,-0.7699999809265137],"hi":[2.069999933242798,1.0199999809265137,0.7699999809265137]},"imported":{"vertices":10644,"triangles":3548,"lo":[-1.899999976158142,0,-1.3700000047683716],"hi":[1.899999976158142,1,1.5600000619888306]}}
+windfallen-tree {"fallback":{"vertices":339,"triangles":606,"lo":[-1.9376953840255737,0,-1.4800000190734863],"hi":[1.850000023841858,2.4585065841674805,1.4800000190734863]},"imported":{"vertices":13128,"triangles":4376,"lo":[-1.899999976158142,0,-1.4200000762939453],"hi":[1.899999976158142,2.4609999656677246,1.350000023841858]}}
+TAP version 13
+# Subtest: pure descriptors cover all five asset keys with explicit separated placement
+ok 1 - pure descriptors cover all five asset keys with explicit separated placement
+  ---
+  duration_ms: 71.125369
+  type: 'test'
+  ...
+# Subtest: pinpin: finite, indexed, bounded and deterministic fallback; real GLB parses
+ok 2 - pinpin: finite, indexed, bounded and deterministic fallback; real GLB parses
+  ---
+  duration_ms: 262.658141
+  type: 'test'
+  ...
+# Subtest: beaver: finite, indexed, bounded and deterministic fallback; real GLB parses
+ok 3 - beaver: finite, indexed, bounded and deterministic fallback; real GLB parses
+  ---
+  duration_ms: 95.617588
+  type: 'test'
+  ...
+# Subtest: timber-tractor: finite, indexed, bounded and deterministic fallback; real GLB parses
+ok 4 - timber-tractor: finite, indexed, bounded and deterministic fallback; real GLB parses
+  ---
+  duration_ms: 98.850381
+  type: 'test'
+  ...
+# Subtest: footbridge: finite, indexed, bounded and deterministic fallback; real GLB parses
+ok 5 - footbridge: finite, indexed, bounded and deterministic fallback; real GLB parses
+  ---
+  duration_ms: 20.99845
+  type: 'test'
+  ...
+# Subtest: windfallen-tree: finite, indexed, bounded and deterministic fallback; real GLB parses
+ok 6 - windfallen-tree: finite, indexed, bounded and deterministic fallback; real GLB parses
+  ---
+  duration_ms: 22.488909
+  type: 'test'
+  ...
+# Subtest: PinPin fallback has four separated ground-contact paws, face and layered quills
+ok 7 - PinPin fallback has four separated ground-contact paws, face and layered quills
+  ---
+  duration_ms: 3.56517
+  type: 'test'
+  ...
+# Subtest: pinpin: existing setPiece loads GLB or falls back for missing/404/corrupt assets
+ok 8 - pinpin: existing setPiece loads GLB or falls back for missing/404/corrupt assets
+  ---
+  duration_ms: 126.871059
+  type: 'test'
+  ...
+# Subtest: beaver: existing setPiece loads GLB or falls back for missing/404/corrupt assets
+ok 9 - beaver: existing setPiece loads GLB or falls back for missing/404/corrupt assets
+  ---
+  duration_ms: 106.914189
+  type: 'test'
+  ...
+# Subtest: timber-tractor: existing setPiece loads GLB or falls back for missing/404/corrupt assets
+ok 10 - timber-tractor: existing setPiece loads GLB or falls back for missing/404/corrupt assets
+  ---
+  duration_ms: 142.526584
+  type: 'test'
+  ...
+# Subtest: footbridge: existing setPiece loads GLB or falls back for missing/404/corrupt assets
+ok 11 - footbridge: existing setPiece loads GLB or falls back for missing/404/corrupt assets
+  ---
+  duration_ms: 40.333277
+  type: 'test'
+  ...
+# Subtest: windfallen-tree: existing setPiece loads GLB or falls back for missing/404/corrupt assets
+ok 12 - windfallen-tree: existing setPiece loads GLB or falls back for missing/404/corrupt assets
+  ---
+  duration_ms: 42.704865
+  type: 'test'
+  ...
+# Subtest: turntables and GLBs retain the manifest identity and material limitations are detectable
+ok 13 - turntables and GLBs retain the manifest identity and material limitations are detectable
+  ---
+  duration_ms: 149.164044
+  type: 'test'
+  ...
+1..13
+# tests 13
+# suites 0
+# pass 13
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1230.730395

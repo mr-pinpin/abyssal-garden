@@ -42,7 +42,7 @@ function parseGLB(ab, opt = {}) {
     for (let k = 0; k < a.count; k++) for (let c = 0; c < n; c++) out[k * n + c] = raw[k * stride + c];
     return out;
   };
-  const P = [], Nn = [], I = [], sc = opt.scale || 1, off = opt.offset || [0, 0, 0];
+  const P = [], Nn = [], I = [], colors = [], sc = opt.scale || 1, off = opt.offset || [0, 0, 0];
   const walk = (ni, parent) => {
     const node = json.nodes[ni], M = glbMul(parent, glbNodeMatrix(node));
     if (node.mesh !== undefined) for (const pr of json.meshes[node.mesh].primitives) {
@@ -50,6 +50,7 @@ function parseGLB(ab, opt = {}) {
       const pos = acc(pr.attributes.POSITION), nrm = pr.attributes.NORMAL !== undefined ? acc(pr.attributes.NORMAL) : null, base = P.length / 3;
       for (let k = 0; k < pos.length; k += 3) {
         const x = pos[k], y = pos[k + 1], z = pos[k + 2];
+        if (opt.colors) colors.push(...(json.materials?.[pr.material]?.pbrMetallicRoughness?.baseColorFactor || [1, 1, 1]).slice(0, 3));
         P.push((M[0] * x + M[4] * y + M[8] * z + M[12]) * sc + off[0], (M[1] * x + M[5] * y + M[9] * z + M[13]) * sc + off[1], (M[2] * x + M[6] * y + M[10] * z + M[14]) * sc + off[2]);
         if (nrm) { const a = nrm[k], b = nrm[k + 1], c = nrm[k + 2]; Nn.push(M[0] * a + M[4] * b + M[8] * c, M[1] * a + M[5] * b + M[9] * c, M[2] * a + M[6] * b + M[10] * c); }
         else Nn.push(0, 0, 0);
@@ -77,7 +78,7 @@ function parseGLB(ab, opt = {}) {
     s[k * 16 + 12] = Math.round(nx / l * 127); s[k * 16 + 13] = Math.round(ny / l * 127); s[k * 16 + 14] = Math.round(nz / l * 127);
     s[k * 16 + 15] = opt.aux ?? 0;
   }
-  return { vb, ib: Uint32Array.from(I), nv };
+  return { vb, ib: Uint32Array.from(I), nv, ...(opt.colors ? {colors: Float32Array.from(colors)} : {}) };
 }
 // the renderer calls this for every set piece; `procedural` builds the original mesh
 async function setPiece(name, procedural) {

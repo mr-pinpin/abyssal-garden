@@ -1,0 +1,207 @@
+
+> t0
+> node build.mjs t0
+
+  cached   core:math                2.9 ms
+  cached   gen:assets               0.1 ms
+  cached   plugin:gltf-loader       0.1 ms
+  cached   plugin:pinpin-home       0.6 ms
+  cached   plugin:elder-sanctuary     0.5 ms
+  cached   plugin:pinpin-character     0.3 ms
+  cached   core:forest              0.4 ms
+  -> dev.html 67.0 kB (23.6 kB gz), assembled in 12.2 ms
+tier 0: 0/7 units compiled (none), total 24 ms
+
+
+> t0
+> node build.mjs t0
+
+  cached   core:math                2.2 ms
+  cached   gen:assets               0.1 ms
+  cached   plugin:gltf-loader       0.4 ms
+  COMPILED plugin:pinpin-home     246.9 ms
+  cached   plugin:elder-sanctuary     0.3 ms
+  cached   plugin:pinpin-character     0.2 ms
+  cached   core:forest              0.3 ms
+  -> dev.html 67.1 kB (23.6 kB gz), assembled in 5.7 ms
+tier 0: 1/7 units compiled (plugin:pinpin-home), total 260 ms
+
+
+> t0
+> node build.mjs t0
+
+  cached   core:math                1.6 ms
+  cached   gen:assets               0.1 ms
+  cached   plugin:gltf-loader       0.2 ms
+  COMPILED plugin:pinpin-home     111.6 ms
+  cached   plugin:elder-sanctuary     0.5 ms
+  cached   plugin:pinpin-character     0.3 ms
+  cached   core:forest              0.3 ms
+  -> dev.html 67.0 kB (23.6 kB gz), assembled in 11.5 ms
+tier 0: 1/7 units compiled (plugin:pinpin-home), total 130 ms
+
+
+> t0
+> node build.mjs t0
+
+  cached   core:math                1.4 ms
+  cached   gen:assets               0.1 ms
+  cached   plugin:gltf-loader       0.2 ms
+  cached   plugin:elder-sanctuary     0.5 ms
+  cached   plugin:pinpin-character     0.3 ms
+  cached   core:forest              0.2 ms
+  -> dev.html 49.3 kB (17.7 kB gz), assembled in 6.5 ms
+tier 0: 0/6 units compiled (none), total 16 ms
+
+
+> t0
+> node build.mjs t0
+
+  cached   core:math                2.2 ms
+  cached   gen:assets               0.2 ms
+  cached   plugin:gltf-loader       0.2 ms
+  cached   plugin:pinpin-home       0.4 ms
+  cached   plugin:elder-sanctuary     0.4 ms
+  cached   plugin:pinpin-character     0.2 ms
+  cached   core:forest              0.2 ms
+  -> dev.html 67.0 kB (23.6 kB gz), assembled in 6.7 ms
+tier 0: 0/7 units compiled (none), total 16 ms
+
+
+> t0
+> node build.mjs t0
+
+  cached   core:math                1.1 ms
+  cached   gen:assets               0.1 ms
+  cached   plugin:gltf-loader       0.1 ms
+  cached   plugin:pinpin-home       0.7 ms
+  COMPILED plugin:elder-sanctuary   113.0 ms
+  cached   plugin:pinpin-character     0.6 ms
+  cached   core:forest              0.2 ms
+  -> dev.html 67.1 kB (23.6 kB gz), assembled in 8.2 ms
+tier 0: 1/7 units compiled (plugin:elder-sanctuary), total 126 ms
+
+
+> t0
+> node build.mjs t0
+
+  cached   core:math                1.6 ms
+  cached   gen:assets               0.1 ms
+  cached   plugin:gltf-loader       0.2 ms
+  cached   plugin:pinpin-home       0.5 ms
+  COMPILED plugin:elder-sanctuary    96.7 ms
+  cached   plugin:pinpin-character     0.4 ms
+  cached   core:forest              0.2 ms
+  -> dev.html 67.0 kB (23.6 kB gz), assembled in 6.9 ms
+tier 0: 1/7 units compiled (plugin:elder-sanctuary), total 109 ms
+
+
+> t0
+> node build.mjs t0
+
+  cached   core:math                1.2 ms
+  cached   gen:assets               0.1 ms
+  cached   plugin:gltf-loader       0.2 ms
+  cached   plugin:pinpin-home       0.4 ms
+  cached   plugin:pinpin-character     0.2 ms
+  cached   core:forest              0.2 ms
+  -> dev.html 58.1 kB (21.1 kB gz), assembled in 4.9 ms
+tier 0: 0/6 units compiled (none), total 12 ms
+
+
+> t0
+> node build.mjs t0
+
+  cached   core:math                1.6 ms
+  cached   gen:assets               0.1 ms
+  cached   plugin:gltf-loader       0.2 ms
+  cached   plugin:pinpin-home       0.5 ms
+  cached   plugin:elder-sanctuary     0.2 ms
+  cached   plugin:pinpin-character     0.2 ms
+  cached   core:forest              0.2 ms
+  -> dev.html 67.0 kB (23.6 kB gz), assembled in 6.7 ms
+tier 0: 0/7 units compiled (none), total 15 ms
+
+
+> t0
+> node build.mjs t0
+
+  cached   core:math                1.6 ms
+  cached   gen:assets               0.2 ms
+  cached   plugin:gltf-loader       0.2 ms
+  cached   plugin:pinpin-home       0.5 ms
+  cached   plugin:elder-sanctuary     0.2 ms
+  COMPILED plugin:pinpin-character   119.6 ms
+  cached   core:forest              0.3 ms
+  -> dev.html 67.1 kB (23.6 kB gz), assembled in 8.4 ms
+tier 0: 1/7 units compiled (plugin:pinpin-character), total 134 ms
+
+
+> t0
+> node build.mjs t0
+
+  cached   core:math                4.9 ms
+  cached   gen:assets               0.2 ms
+  cached   plugin:gltf-loader       0.2 ms
+  cached   plugin:pinpin-home       0.7 ms
+  cached   plugin:elder-sanctuary     0.2 ms
+  COMPILED plugin:pinpin-character   163.7 ms
+  cached   core:forest              0.4 ms
+  -> dev.html 67.0 kB (23.6 kB gz), assembled in 9.8 ms
+tier 0: 1/7 units compiled (plugin:pinpin-character), total 185 ms
+
+
+> t0
+> node build.mjs t0
+
+  cached   core:math                1.4 ms
+  cached   gen:assets               3.9 ms
+  cached   plugin:gltf-loader       0.3 ms
+  cached   plugin:pinpin-home       0.8 ms
+  cached   plugin:elder-sanctuary     0.2 ms
+  cached   core:forest              0.2 ms
+  -> dev.html 58.9 kB (20.9 kB gz), assembled in 9.2 ms
+tier 0: 0/6 units compiled (none), total 20 ms
+
+
+> t0
+> node build.mjs t0
+
+  cached   core:math                2.4 ms
+  cached   gen:assets               0.1 ms
+  cached   plugin:gltf-loader       0.2 ms
+  cached   plugin:pinpin-home       0.4 ms
+  cached   plugin:elder-sanctuary     0.2 ms
+  cached   plugin:pinpin-character     0.2 ms
+  cached   core:forest              0.2 ms
+  -> dev.html 67.0 kB (23.6 kB gz), assembled in 14.8 ms
+tier 0: 0/7 units compiled (none), total 26 ms
+
+
+> t0
+> node build.mjs t0
+
+  cached   core:math                2.7 ms
+  cached   gen:assets               0.1 ms
+  cached   plugin:gltf-loader       0.2 ms
+  cached   plugin:pinpin-home       0.4 ms
+  cached   plugin:elder-sanctuary     0.2 ms
+  cached   plugin:pinpin-character     0.2 ms
+  cached   core:forest              0.3 ms
+  -> dev.html 67.0 kB (23.6 kB gz), assembled in 9.0 ms
+tier 0: 0/7 units compiled (none), total 19 ms
+
+
+> build
+> node build.mjs t1
+
+  cached   core:math                6.2 ms
+  cached   gen:assets               0.1 ms
+  cached   plugin:gltf-loader       0.2 ms
+  cached   plugin:pinpin-home       0.5 ms
+  cached   plugin:elder-sanctuary     0.2 ms
+  cached   plugin:pinpin-character     0.2 ms
+  cached   core:forest              0.2 ms
+  -> index.html 45.3 kB (19.5 kB gz), minified in 378 ms
+  -> dev.html 67.0 kB (23.6 kB gz)
+tier 1: 0/7 units compiled (none), total 396 ms

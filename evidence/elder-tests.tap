@@ -1,0 +1,34 @@
+TAP version 13
+# Subtest: definition has no browser effects; pieces meet the packed Mesh contract
+ok 1 - definition has no browser effects; pieces meet the packed Mesh contract
+  ---
+  duration_ms: 123.486611
+  type: 'test'
+  ...
+# Subtest: repeated builds are byte deterministic and do not advance shared RNG
+ok 2 - repeated builds are byte deterministic and do not advance shared RNG
+  ---
+  duration_ms: 354.477916
+  type: 'test'
+  ...
+# Subtest: sanctuary has four deliberate mural stations, lamps and story props
+ok 3 - sanctuary has four deliberate mural stations, lamps and story props
+  ---
+  duration_ms: 32.296342
+  type: 'test'
+  ...
+# Subtest: passage and sanctuary center remain traversable, not capped by a wall
+ok 4 - passage and sanctuary center remain traversable, not capped by a wall
+  ---
+  duration_ms: 156.980837
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 707.683695

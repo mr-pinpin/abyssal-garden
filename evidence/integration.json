@@ -1,0 +1,458 @@
+{
+  "kind": "Mock DOM/WebGL integration; real geometry/GLB parsing; no browser screenshot",
+  "cases": [
+    {
+      "productionBundle": false,
+      "disabled": [],
+      "missingAssets": false,
+      "groups": [
+        {
+          "id": "landscape",
+          "enabled": true,
+          "pieces": 3,
+          "triangles": 6478
+        },
+        {
+          "id": "home",
+          "enabled": true,
+          "pieces": 84,
+          "triangles": 15509
+        },
+        {
+          "id": "elder",
+          "enabled": true,
+          "pieces": 56,
+          "triangles": 10647
+        },
+        {
+          "id": "pinpin",
+          "enabled": true,
+          "pieces": 5,
+          "triangles": 45884
+        }
+      ],
+      "vertices": 164396,
+      "triangles": 78518,
+      "drawCalls": 85,
+      "materialAssets": [
+        {
+          "id": "pinpin",
+          "materialColors": true,
+          "vertices": 38964
+        },
+        {
+          "id": "beaver",
+          "materialColors": true,
+          "vertices": 29076
+        },
+        {
+          "id": "timber-tractor",
+          "materialColors": true,
+          "vertices": 45840
+        },
+        {
+          "id": "footbridge",
+          "materialColors": true,
+          "vertices": 10644
+        },
+        {
+          "id": "windfallen-tree",
+          "materialColors": true,
+          "vertices": 13128
+        }
+      ],
+      "warnings": [],
+      "movement": {
+        "before": [
+          19,
+          7,
+          -4
+        ],
+        "after": [
+          18.384615384615387,
+          7,
+          -5.4769230769230735
+        ]
+      },
+      "mockOnly": true
+    },
+    {
+      "productionBundle": true,
+      "disabled": [],
+      "missingAssets": false,
+      "groups": [
+        {
+          "id": "landscape",
+          "enabled": true,
+          "pieces": 3,
+          "triangles": 6478
+        },
+        {
+          "id": "home",
+          "enabled": true,
+          "pieces": 84,
+          "triangles": 15509
+        },
+        {
+          "id": "elder",
+          "enabled": true,
+          "pieces": 56,
+          "triangles": 10647
+        },
+        {
+          "id": "pinpin",
+          "enabled": true,
+          "pieces": 5,
+          "triangles": 45884
+        }
+      ],
+      "vertices": 164396,
+      "triangles": 78518,
+      "drawCalls": 85,
+      "materialAssets": [
+        {
+          "id": "pinpin",
+          "materialColors": true,
+          "vertices": 38964
+        },
+        {
+          "id": "beaver",
+          "materialColors": true,
+          "vertices": 29076
+        },
+        {
+          "id": "timber-tractor",
+          "materialColors": true,
+          "vertices": 45840
+        },
+        {
+          "id": "footbridge",
+          "materialColors": true,
+          "vertices": 10644
+        },
+        {
+          "id": "windfallen-tree",
+          "materialColors": true,
+          "vertices": 13128
+        }
+      ],
+      "warnings": [],
+      "movement": {
+        "before": [
+          19,
+          7,
+          -4
+        ],
+        "after": [
+          18.384615384615387,
+          7,
+          -5.4769230769230735
+        ]
+      },
+      "mockOnly": true
+    },
+    {
+      "productionBundle": false,
+      "disabled": [
+        "pinpin-home"
+      ],
+      "missingAssets": false,
+      "groups": [
+        {
+          "id": "landscape",
+          "enabled": true,
+          "pieces": 3,
+          "triangles": 6478
+        },
+        {
+          "id": "elder",
+          "enabled": true,
+          "pieces": 56,
+          "triangles": 10647
+        },
+        {
+          "id": "pinpin",
+          "enabled": true,
+          "pieces": 5,
+          "triangles": 45884
+        }
+      ],
+      "vertices": 147875,
+      "triangles": 63009,
+      "drawCalls": 58,
+      "materialAssets": [
+        {
+          "id": "pinpin",
+          "materialColors": true,
+          "vertices": 38964
+        },
+        {
+          "id": "beaver",
+          "materialColors": true,
+          "vertices": 29076
+        },
+        {
+          "id": "timber-tractor",
+          "materialColors": true,
+          "vertices": 45840
+        },
+        {
+          "id": "footbridge",
+          "materialColors": true,
+          "vertices": 10644
+        },
+        {
+          "id": "windfallen-tree",
+          "materialColors": true,
+          "vertices": 13128
+        }
+      ],
+      "warnings": [],
+      "movement": {
+        "before": [
+          19,
+          7,
+          -4
+        ],
+        "after": [
+          18.384615384615387,
+          7,
+          -5.4769230769230735
+        ]
+      },
+      "mockOnly": true
+    },
+    {
+      "productionBundle": false,
+      "disabled": [
+        "elder-sanctuary"
+      ],
+      "missingAssets": false,
+      "groups": [
+        {
+          "id": "landscape",
+          "enabled": true,
+          "pieces": 3,
+          "triangles": 6478
+        },
+        {
+          "id": "home",
+          "enabled": true,
+          "pieces": 84,
+          "triangles": 15509
+        },
+        {
+          "id": "pinpin",
+          "enabled": true,
+          "pieces": 5,
+          "triangles": 45884
+        }
+      ],
+      "vertices": 157839,
+      "triangles": 67871,
+      "drawCalls": 58,
+      "materialAssets": [
+        {
+          "id": "pinpin",
+          "materialColors": true,
+          "vertices": 38964
+        },
+        {
+          "id": "beaver",
+          "materialColors": true,
+          "vertices": 29076
+        },
+        {
+          "id": "timber-tractor",
+          "materialColors": true,
+          "vertices": 45840
+        },
+        {
+          "id": "footbridge",
+          "materialColors": true,
+          "vertices": 10644
+        },
+        {
+          "id": "windfallen-tree",
+          "materialColors": true,
+          "vertices": 13128
+        }
+      ],
+      "warnings": [],
+      "movement": {
+        "before": [
+          19,
+          7,
+          -4
+        ],
+        "after": [
+          18.384615384615387,
+          7,
+          -5.4769230769230735
+        ]
+      },
+      "mockOnly": true
+    },
+    {
+      "productionBundle": false,
+      "disabled": [
+        "pinpin-character"
+      ],
+      "missingAssets": false,
+      "groups": [
+        {
+          "id": "landscape",
+          "enabled": true,
+          "pieces": 3,
+          "triangles": 6478
+        },
+        {
+          "id": "home",
+          "enabled": true,
+          "pieces": 84,
+          "triangles": 15509
+        },
+        {
+          "id": "elder",
+          "enabled": true,
+          "pieces": 56,
+          "triangles": 10647
+        }
+      ],
+      "vertices": 26744,
+      "triangles": 32634,
+      "drawCalls": 58,
+      "materialAssets": [],
+      "warnings": [],
+      "movement": {
+        "before": [
+          19,
+          7,
+          -4
+        ],
+        "after": [
+          18.384615384615387,
+          7,
+          -5.4769230769230735
+        ]
+      },
+      "mockOnly": true
+    },
+    {
+      "productionBundle": false,
+      "disabled": [
+        "pinpin-home",
+        "elder-sanctuary",
+        "pinpin-character"
+      ],
+      "missingAssets": false,
+      "groups": [
+        {
+          "id": "landscape",
+          "enabled": true,
+          "pieces": 3,
+          "triangles": 6478
+        }
+      ],
+      "vertices": 3666,
+      "triangles": 6478,
+      "drawCalls": 16,
+      "materialAssets": [],
+      "warnings": [],
+      "movement": {
+        "before": [
+          19,
+          7,
+          -4
+        ],
+        "after": [
+          18.384615384615387,
+          7,
+          -5.4769230769230735
+        ]
+      },
+      "mockOnly": true
+    },
+    {
+      "productionBundle": false,
+      "disabled": [],
+      "missingAssets": true,
+      "groups": [
+        {
+          "id": "landscape",
+          "enabled": true,
+          "pieces": 3,
+          "triangles": 6478
+        },
+        {
+          "id": "home",
+          "enabled": true,
+          "pieces": 84,
+          "triangles": 15509
+        },
+        {
+          "id": "elder",
+          "enabled": true,
+          "pieces": 56,
+          "triangles": 10647
+        },
+        {
+          "id": "pinpin",
+          "enabled": true,
+          "pieces": 5,
+          "triangles": 10738
+        }
+      ],
+      "vertices": 33261,
+      "triangles": 43372,
+      "drawCalls": 85,
+      "materialAssets": [
+        {
+          "id": "pinpin",
+          "materialColors": false,
+          "vertices": 2176
+        },
+        {
+          "id": "beaver",
+          "materialColors": false,
+          "vertices": 2262
+        },
+        {
+          "id": "timber-tractor",
+          "materialColors": false,
+          "vertices": 1044
+        },
+        {
+          "id": "footbridge",
+          "materialColors": false,
+          "vertices": 696
+        },
+        {
+          "id": "windfallen-tree",
+          "materialColors": false,
+          "vertices": 339
+        }
+      ],
+      "warnings": [
+        "[gltf-loader] pinpin: 404 assets/recovered/pinpin.glb; using the procedural mesh",
+        "[gltf-loader] beaver: 404 assets/recovered/beaver.glb; using the procedural mesh",
+        "[gltf-loader] timber-tractor: 404 assets/recovered/timber-tractor.glb; using the procedural mesh",
+        "[gltf-loader] footbridge: 404 assets/recovered/footbridge.glb; using the procedural mesh",
+        "[gltf-loader] windfallen-tree: 404 assets/recovered/windfallen-tree.glb; using the procedural mesh"
+      ],
+      "movement": {
+        "before": [
+          19,
+          7,
+          -4
+        ],
+        "after": [
+          18.384615384615387,
+          7,
+          -5.4769230769230735
+        ]
+      },
+      "mockOnly": true
+    }
+  ]
+}

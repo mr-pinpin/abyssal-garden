@@ -1,0 +1,34 @@
+TAP version 13
+# Subtest: definition has no browser effects; pieces meet the packed Mesh contract
+ok 1 - definition has no browser effects; pieces meet the packed Mesh contract
+  ---
+  duration_ms: 216.029731
+  type: 'test'
+  ...
+# Subtest: repeated builds are byte deterministic and do not advance shared RNG
+ok 2 - repeated builds are byte deterministic and do not advance shared RNG
+  ---
+  duration_ms: 611.526717
+  type: 'test'
+  ...
+# Subtest: three traced floors preserve plan areas and the outdoor recess
+ok 3 - three traced floors preserve plan areas and the outdoor recess
+  ---
+  duration_ms: 45.683563
+  type: 'test'
+  ...
+# Subtest: home entrance and connecting forest path stay open at child eye/body heights
+ok 4 - home entrance and connecting forest path stay open at child eye/body heights
+  ---
+  duration_ms: 979.302422
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1892.592925

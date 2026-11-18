@@ -1,15 +1,50 @@
 {
-  "comment": "Load order of the garden. Every unit is one file that shares the scene's scope. core units and main are the engine; plugins with phase 'pre' run before main (they define meshes and hooks main calls), 'post' after it. dev: true plugins only go into dev.html. assets: set piece name -> Blender .glb (see plugins/gltf-loader).",
-  "core": ["quality", "math", "shaders", "world"],
-  "main": "main",
-  "plugins": [
-    { "name": "gltf-loader", "phase": "pre" },
-    { "name": "fluke", "phase": "pre" },
-    { "name": "ship", "phase": "pre" },
-    { "name": "manta", "phase": "pre" },
-    { "name": "fish", "phase": "pre" },
-    { "name": "audio", "phase": "post" },
-    { "name": "dev-tools", "phase": "post", "dev": true }
+  "comment": "Mr PinPin forest entry. Core math and pre-phase scene plugins share the original mesh/loader contract. enabled:false omits a scene safely. Original underwater core/plugins remain in source for reference.",
+  "core": [
+    "math"
   ],
-  "assets": {}
+  "main": "forest",
+  "plugins": [
+    {
+      "name": "gltf-loader",
+      "phase": "pre"
+    },
+    {
+      "name": "pinpin-home",
+      "phase": "pre",
+      "enabled": true
+    },
+    {
+      "name": "elder-sanctuary",
+      "phase": "pre",
+      "enabled": true
+    },
+    {
+      "name": "pinpin-character",
+      "phase": "pre",
+      "enabled": true
+    }
+  ],
+  "assets": {
+    "pinpin": {
+      "url": "assets/recovered/pinpin.glb",
+      "colors": true
+    },
+    "beaver": {
+      "url": "assets/recovered/beaver.glb",
+      "colors": true
+    },
+    "timber-tractor": {
+      "url": "assets/recovered/timber-tractor.glb",
+      "colors": true
+    },
+    "footbridge": {
+      "url": "assets/recovered/footbridge.glb",
+      "colors": true
+    },
+    "windfallen-tree": {
+      "url": "assets/recovered/windfallen-tree.glb",
+      "colors": true
+    }
+  }
 }

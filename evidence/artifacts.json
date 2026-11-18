@@ -1,0 +1,10 @@
+{
+  "index.html": {
+    "bytes": 46389,
+    "sha256": "459a5205552e58c603b61cc3850ae2ac89fa0125bcf86e4319c0b3a7dca9be42"
+  },
+  "dev.html": {
+    "bytes": 68656,
+    "sha256": "4542fb4706145e06e27262019dc22ecb9543346790722929db64b7130e71fc7b"
+  }
+}

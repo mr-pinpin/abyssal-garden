@@ -1,0 +1,30 @@
+{
+  "state": "blocked",
+  "classification": "environment-policy/socket-denied",
+  "real_browser_screenshot_verified": false,
+  "observations": [
+    {
+      "command": "python3 -m http.server 8174 --bind 127.0.0.1",
+      "exit_code": 1,
+      "error": "socket.socket: PermissionError [Errno 1] Operation not permitted"
+    },
+    {
+      "command": "google-chrome --headless=new --no-sandbox --disable-dev-shm-usage --use-angle=swiftshader --enable-unsafe-swiftshader --remote-debugging-port=9227 --remote-allow-origins=http://127.0.0.1:9227 --user-data-dir=/tmp/forest-chrome http://127.0.0.1:8174/",
+      "exit_code": 133,
+      "error": "crashpad/util/linux/socket.cc:45 setsockopt: Operation not permitted (1)"
+    },
+    {
+      "command": "python3 tools/browser-check.py",
+      "exit_code": 1,
+      "error": "urllib/socket creation: PermissionError [Errno 1] Operation not permitted"
+    },
+    {
+      "command": "room-cli preview 8174",
+      "exit_code": 1,
+      "error": "Preview service unavailable; install preview setup or use the local thread localhost server"
+    }
+  ],
+  "browser_version": "Google Chrome 157.0.8103.50",
+  "compiler": "preinstalled esbuild 0.28.1; lockfile remains 0.28.2; registry unavailable in this sandbox",
+  "required_next_action": "Run server, Chrome and tools/browser-check.py in an environment with loopback sockets and browser process support. Inspect four generated PNGs, navigation and console errors before publication."
+}

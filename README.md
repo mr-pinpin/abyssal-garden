@@ -1,6 +1,96 @@
+# Mr PinPin — a forest beneath the leaves
+
+This local recovery integrates the home/forest, Elder sanctuary and PinPin character
+plugins into a navigable above-ground scene. The original garden's manifest,
+per-unit build cache, packed Mesh format and glTF loader remain the foundation;
+`source/core/forest.js` is the new default **WebGL 2** renderer. The underwater
+core and plugins remain in source as reference, but are not loaded by this entry.
+
+The five Blender GLBs and their five previews were recovered from exact local asset
+commit `8978b223db3b5bd1ae07c0fd16aec54b14056cb8`. Their manifest, source notices,
+hashes and provenance are under `assets/recovered/`. These are unreviewed showcase
+studies; scene staging is not approved book art or surveyed canonical geography.
+
+```sh
+cd source
+npm ci
+npm run t0    # changed units only → ../dev.html
+npm run build # whole-page minify → ../index.html
+cd ..
+python3 -m http.server 8174 --bind 127.0.0.1
+```
+
+Open the local server in a browser supporting WebGL 2. Drag to look; WASD or
+arrows move horizontally; Q/E move down/up; Shift moves faster. The four buttons
+frame the whole forest, home, PinPin or root sanctuary (keys 1–4 also work).
+Scene layers toggle the three groups at runtime. Each plugin can also be omitted
+from a build with `enabled: false` in `source/manifest.json`; consumers guard
+missing definitions. This is free camera exploration, with world/height bounds,
+not a collision or walking-physics engine. Ground, stream and woodland edge
+remain visible when scene layers are disabled.
+
+The renderer invokes the existing `setPiece` loader. Missing/failed assets use
+procedural fallbacks. Asset options now include `colors: true`, preserving
+per-primitive glTF base color factors in an optional vertex-color stream. Default
+loader output stays compatible with existing callers. Texture, skinning and PBR
+lighting support are not claimed; these recovered assets are static and untextured.
+
+## Verification and handoff
+
+```sh
+python3 source/plugins/pinpin-character/recover.py
+node source/plugins/pinpin-home/contract.test.mjs
+node source/plugins/elder-sanctuary/contract.test.mjs
+node source/plugins/pinpin-character/test.mjs
+node tools/check-forest.mjs
+python3 tools/check-builds.py
+```
+
+`evidence/` contains exact asset validation, 21 plugin tests, seven integrated
+geometry/loader/camera/toggle cases, and real tier-0/tier-1 build logs. The
+integration harness uses a mocked DOM/WebGL, so its success is **not** a rendered
+browser screenshot or shader-driver validation. All three plugins were proven
+to rebuild individually with all other units cached; each was also disabled
+through the real manifest and omitted from the generated page.
+
+**Browser verification is blocked here:** the sandbox denies creation of even
+loopback sockets, and Chrome exits on a denied `setsockopt`. Cloud preview is
+unavailable. Exact attempted commands/errors are in `evidence/browser-blocker.json`.
+No browser screenshot or deployed/live version is claimed for this commit.
+The rendezvous publisher must run the following in a browser-capable environment,
+inspect all four resulting PNGs, and address any graphics or visual issue before
+publishing:
+
+```sh
+python3 -m http.server 8174 --bind 127.0.0.1
+# In another shell:
+google-chrome --headless=new --no-sandbox --disable-dev-shm-usage \
+  --use-angle=swiftshader --enable-unsafe-swiftshader \
+  --remote-debugging-port=9227 --user-data-dir=/tmp/forest-chrome \
+  http://127.0.0.1:8174/
+# In another shell:
+python3 tools/browser-check.py
+```
+
+That real-browser check captures `evidence/forest-{overview,home,pinpin,elder}.png`
+and `evidence/browser.json`, verifies all five colored GLB loads, simulates keyboard
+movement, toggles layers and checks console/runtime errors. This step has **not**
+succeeded in the current sandbox.
+
+Builds here used available esbuild **0.28.1**, through an ignored local dependency
+symlink to `/opt/cloudroom-gui/gui/node_modules/.pnpm/esbuild@0.28.1/node_modules/esbuild`.
+The pinned lockfile is unchanged at 0.28.2; npm downloads were unavailable. The
+publisher should rerun `npm ci`, all tests and both tiers with the pinned version.
+No push was made; publication and the live URL belong to the rendezvous owner.
+
+The original fork documentation below describes the previous underwater entry,
+not a deployment of this recovered forest commit.
+
+---
+
 # Abyssal Garden: Mr PinPin edition
 
-**Live: <https://mr-pinpin.github.io/abyssal-garden/>** (developer build with fly-through and benchmark keys:
+**Previous fork deployment: <https://mr-pinpin.github.io/abyssal-garden/>** (developer build with fly-through and benchmark keys:
 [`dev.html`](https://mr-pinpin.github.io/abyssal-garden/dev.html); deployed commit:
 [`version.json`](https://mr-pinpin.github.io/abyssal-garden/version.json))
 
