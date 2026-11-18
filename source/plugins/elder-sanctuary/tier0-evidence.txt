@@ -1,0 +1,23 @@
+Local compiler esbuild 0.28.1
+
+> t0
+> node build.mjs t0 elder-sanctuary
+
+  cached   core:quality             5.3 ms
+  cached   core:math                0.4 ms
+  cached   core:shaders             0.5 ms
+  cached   core:world               0.5 ms
+  cached   gen:assets               0.1 ms
+  cached   plugin:gltf-loader       0.1 ms
+  cached   plugin:fluke             0.1 ms
+  cached   plugin:ship              0.1 ms
+  cached   plugin:manta             0.3 ms
+  cached   plugin:fish              1.6 ms
+  COMPILED plugin:elder-sanctuary   138.2 ms
+  cached   core:main                2.7 ms
+  cached   plugin:audio             0.3 ms
+  cached   plugin:dev-tools         0.2 ms
+  -> dev.html 173.3 kB (57.5 kB gz), assembled in 36.8 ms
+tier 0: 1/14 units compiled (plugin:elder-sanctuary), total 193 ms
+PASS: only this plugin compiled; next run compiled zero units; enabled:false omitted definition.
+PASS: manifest restored byte-for-byte. Compilation only, not browser integration.

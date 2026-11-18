@@ -1,0 +1,18 @@
+{
+  "status": "unreviewed showcase study; not approved canon",
+  "source_repository": "mr-pinpin/mr-pinpin-source",
+  "references": [
+    {
+      "path": "docs/storyboard/locations/pinpin-house/scene/house-plan.json",
+      "sha256": "cab510b31c13e85beaa689edb54005223412a988f640724e56b9d95dba20c28c"
+    },
+    {
+      "path": "docs/storyboard/locations/pinpin-house/README.md",
+      "sha256": "a44ccaa6efb15ef9ffaa4e3f37d8e86cb5d070b4ccf1610c96bf1b724c3d69f2"
+    },
+    {
+      "path": "docs/storyboard/locations/pinpin-house/references.json",
+      "sha256": "0c64de351e805149eac9711348dd1740319cab8c06e7d7add0735acbb0935e03"
+    }
+  ]
+}
