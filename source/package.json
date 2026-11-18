@@ -1,12 +1,14 @@
 {
   "name": "abyssal-garden",
   "private": true,
-  "description": "A procedural underwater world rendered with WebGPU, bundled into one HTML file",
+  "description": "Abyssal Garden, Mr PinPin edition: a WebGPU underwater world as a core plus plugins, with a tiered build",
   "type": "module",
   "scripts": {
-    "build": "node build.mjs",
-    "build:readable": "node build.mjs --readable",
-    "build:dev": "node build.mjs --dev"
+    "t0": "node build.mjs t0",
+    "watch": "node build.mjs watch",
+    "t1": "node build.mjs t1",
+    "build": "node build.mjs t1",
+    "prove": "node prove-tier0.mjs"
   },
   "devDependencies": {
     "esbuild": "^0.28.2"

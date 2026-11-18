@@ -1,0 +1,56 @@
+# tier 2: on push to main, build the full bundle (tier 1) and deploy it to GitHub Pages.
+# The unit cache (source/.cache) is restored between runs, so a push that touches one plugin recompiles one unit.
+name: pages
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: source/package-lock.json
+      - uses: actions/cache@v4
+        with:
+          path: source/.cache
+          key: units-${{ github.sha }}
+          restore-keys: units-
+      - run: npm ci
+        working-directory: source
+      - name: tier 1 build
+        run: node build.mjs t1 | tee -a "$GITHUB_STEP_SUMMARY"
+        working-directory: source
+      - name: tier 0 proof (a plugin change rebuilds only that plugin)
+        run: node prove-tier0.mjs ship | tee -a "$GITHUB_STEP_SUMMARY"
+        working-directory: source
+      - name: assemble site
+        run: |
+          mkdir -p _site
+          cp index.html dev.html _site/
+          cp -r assets _site/assets
+          cp source/manifest.json _site/manifest.json
+          echo "{\"commit\":\"$GITHUB_SHA\",\"built\":\"$(date -u +%FT%TZ)\"}" > _site/version.json
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
