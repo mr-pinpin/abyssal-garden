@@ -12,7 +12,7 @@ export async function exercise(file='index.html',options={}){
  const html=fs.readFileSync(path.join(root,file),'utf8'),code=html.match(/<script>([\s\S]*?)<\/script>/)[1];
  const elements=new Map(),raf=[],requests=[],warnings=[],exceptions=[],listeners={};
  const ids=new Set(Array.from(html.matchAll(/\bid=["']([^"']+)["']/g),m=>m[1]));
- let image=null;
+ let image=null, time=0;
  const canvas={createImageData:(width,height)=>({width,height,data:new Uint8ClampedArray(width*height*4)}),
   putImageData(value){image=value;}};
  function element(id){if(!elements.has(id))elements.set(id,{id,hidden:id==='compat'||id==='error',textContent:'',innerHTML:'',disabled:false,attributes:{},listeners:{},
@@ -20,10 +20,17 @@ export async function exercise(file='index.html',options={}){
   getContext(kind){assert.equal(kind,'2d');return canvas;},setPointerCapture(){},async click(){if(!this.disabled)await this.listeners.click?.({});}});return elements.get(id);}
  const names=Array.from(html.matchAll(/data-chapter=["']([^"']+)["']/g),m=>m[1]);assert.deepEqual(names.slice().sort(),['clearing','elder','home']);
  const buttons=names.map(name=>{const e=element('button-'+name);e.dataset={chapter:name};return e;});
- const document={hidden:false,getElementById:id=>ids.has(id)?element(id):null,querySelectorAll(selector){return selector==='canvas'?[element('scene'),element('compat')]:buttons;},addEventListener(type,fn){listeners[type]=fn;},removeEventListener(type){delete listeners[type];}};
+ function withLayout(target,selector){
+  target.getBoundingClientRect=()=>options.rectangles?.[selector]??{};
+  target.getClientRects=()=>options.rectangles?.[selector]?[target.getBoundingClientRect()]:[];
+  return target;
+ }
+ const document={hidden:false,querySelector(selector){
+  return selector==='.intro .actions'&&/class=["']actions["']/.test(html)?withLayout(element('actions'),selector):null;
+ },getElementById:id=>ids.has(id)?withLayout(element(id),'#'+id):null,querySelectorAll(selector){return selector==='canvas'?[element('scene'),element('compat')]:buttons;},addEventListener(type,fn){listeners[type]=fn;},removeEventListener(type){delete listeners[type];}};
  const sandbox={document,navigator:{},ArrayBuffer,Uint32Array,Uint8Array,Uint8ClampedArray,Float32Array,Int8Array,DataView,TextDecoder,
   innerWidth:options.width||1440,innerHeight:options.height||900,devicePixelRatio:1,
-  requestAnimationFrame:fn=>raf.push(fn),setTimeout:()=>{throw new Error('unexpected idle timer');},setInterval:()=>{throw new Error('unexpected idle interval');},clearInterval(){},performance,
+  requestAnimationFrame:fn=>raf.push(fn),setTimeout:()=>{throw new Error('unexpected idle timer');},setInterval:()=>{throw new Error('unexpected idle interval');},clearInterval(){},performance:{now:()=>time},
   addEventListener(type,fn){listeners[type]=fn;},console:{info(){},warn(...args){warnings.push(args.join(' '));},error(...args){exceptions.push(args.join(' '));}},
   fetch:async url=>{
    assert.ok(url.startsWith('assets/pinpin/')&&!url.includes('..'),'only local model fetches');
@@ -33,8 +40,9 @@ export async function exercise(file='index.html',options={}){
    return {ok:!fail,status:fail?404:200,arrayBuffer:async()=>bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.length)};
   }};
  const context=vm.createContext(sandbox);vm.runInContext('window=globalThis',context);
- await vm.runInContext(code,context,{filename:file,timeout:10000});
- function draw(){let n=0;while(raf.length){assert.ok(n++<4,'unexpected continuous rendering');raf.shift()(performance.now());}}
+ if(options.inspectFrame)context.inspectFrame=options.inspectFrame;
+ await vm.runInContext(options.instrument?.(code)??code,context,{filename:file,timeout:10000});
+ function draw(){let n=0;while(raf.length){assert.ok(n++<4,'unexpected continuous rendering');time+=100;raf.shift()(time);}}
  draw();const state=context.__pinpin;
  assert.ok(state.ready,'built scene did not become ready');assert.equal(state.mode,'canvas2d');assert.ok(state.frames>0);
  assert.deepEqual(Array.from(state.errors),[]);assert.deepEqual(exceptions,[]);assert.ok(state.drawnTriangles>1000,'scene drew too little geometry');
