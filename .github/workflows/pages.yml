@@ -40,6 +40,7 @@ jobs:
           mkdir -p _site
           cp index.html dev.html _site/
           cp -r assets _site/assets
+          cp -r recovery _site/recovery
           cp source/manifest.json _site/manifest.json
           echo "{\"commit\":\"$GITHUB_SHA\",\"built\":\"$(date -u +%FT%TZ)\"}" > _site/version.json
       - uses: actions/upload-pages-artifact@v3

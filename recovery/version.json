@@ -1,0 +1,12 @@
+{
+  "source_commit": "a52b28cfdb801b867c5a1833302d9a81972b7012",
+  "source_branch": "recovery/verified-forest",
+  "asset_sha256": {
+    "pinpin": "ab9d45c5307a797d5563a489ff488736d2d2967b772071de7b9f7bbaa214ce46",
+    "beaver": "ef7c886f6fedd50a6f43f2d2fddd2f07815dc4de7242e32077097d4cfd0b5925",
+    "timber-tractor": "a1a70b59fdf235fe22309f89e510af57f3c13c48f4fdfccb5a4873e310e95efc",
+    "footbridge": "c44c919ea7bca21a97f16ed6f314ef537c09bdd3f14927852b149dd561401267",
+    "windfallen-tree": "e55c9ba21c54948830d7f432c34006d3625f6521248171d2a2407a6a9a254cce"
+  },
+  "change": "Only five asset URL prefixes change for this subdirectory export; main remains intact."
+}
