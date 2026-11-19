@@ -31,7 +31,10 @@ jobs:
         working-directory: source
       - name: tier 1 build
         shell: bash
-        run: npm run build 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+        run: |
+          set -o pipefail
+          npm run build 2>&1 | tee release-build.log | tee -a "$GITHUB_STEP_SUMMARY"
+          node tools/verify-release.mjs manifest.json release-build.log
         working-directory: source
       - name: assemble site
         run: |
