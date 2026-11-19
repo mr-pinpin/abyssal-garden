@@ -69,6 +69,7 @@ fn filmic(x:vec3f)->vec3f { return clamp((x*(2.51*x+.03))/(x*(2.43*x+.59)+.14),v
   albedo=mix(albedo,albedo*(1.15+.35*pc.y)*vec3f(1.,.98,.94),pebble);
   albedo*=mix(1.,.78,near*(1.-pebble)*smoothstep(.36,.5,pc.x)*.6);
  }
+ /*GROUND_TERM*/
  let dk=clamp((-.6535-i.aux)/.0158,0.,1.);let lt=clamp((i.aux+.6535)/.0236,0.,1.);
  let tone=.94-.22*dk+.18*lt;
  albedo*=mix(1.,tone,1.-smoothstep(.03,.05,abs(i.aux+.6535)));
@@ -117,7 +118,7 @@ fn filmic(x:vec3f)->vec3f { return clamp((x*(2.51*x+.03))/(x*(2.43*x+.59)+.14),v
  return vec4f(pow(c,vec3f(1./2.2)),1.);
 }`;
 // The unshadowed scene shader (used when forest-main has no shadow hook) and the shadowed variant.
-const W_FOREST=W_FOREST_SRC.replace('/*SHADOW_DECL*/','').replace('/*SHADOW_TERM*/1.','1.');
+const W_FOREST=W_FOREST_SRC.replace('/*SHADOW_DECL*/','').replace('/*SHADOW_TERM*/1.','1.').replace('/*GROUND_TERM*/','');
 // Sun shadows (Konev): one 2048^2 depth map from an orthographic sun camera fitted to the scene's
 // objects (ground-sized pieces excluded from the fit, so resolution goes to the forest). 3x3 PCF with
 // a normal offset; outside the map is lit. Group 1: light matrix, depth map, comparison sampler.
@@ -125,13 +126,33 @@ const W_FOREST_SHADOWED=W_FOREST_SRC.replace('/*SHADOW_DECL*/',`
 @group(1) @binding(0) var<uniform> light:mat4x4f;
 @group(1) @binding(1) var shadowMap:texture_depth_2d;
 @group(1) @binding(2) var shadowCmp:sampler_comparison;
+// Ground types (Konev, 19 Nov): an RGBA texture in the atlas frame, R path/dirt, G garden soil, B water edge/mud,
+// A rock; grass is what remains. ground.t0=(a,b,c,enabled), t1=(d,e,f,0): u=a*x+b*z+c, v=d*x+e*z+f.
+struct Ground { t0:vec4f, t1:vec4f };
+@group(1) @binding(3) var<uniform> ground:Ground;
+@group(1) @binding(4) var groundTypes:texture_2d<f32>;
+@group(1) @binding(5) var groundSampler:sampler;
 fn sunShadow(wp:vec3f,n:vec3f)->f32 {
  let lp=light*vec4f(wp+n*.05,1.);let uv=lp.xy*vec2f(.5,-.5)+.5;let z=lp.z-.0012;
  if(any(uv<vec2f(.001))||any(uv>vec2f(.999))||z>1.){return 1.;}
  let t=1.25/f32(textureDimensions(shadowMap).x);var s=0.;
  for(var y=-1;y<=1;y++){for(var x=-1;x<=1;x++){s+=textureSampleCompareLevel(shadowMap,shadowCmp,uv+vec2f(f32(x),f32(y))*t,z);}}
  return s/9.;
-}`).replace('/*SHADOW_TERM*/1.','sunShadow(i.wp,n)');
+}`).replace('/*SHADOW_TERM*/1.','sunShadow(i.wp,n)').replace('/*GROUND_TERM*/',`
+ if(ground.t0.w>.5&&flat>.5&&i.wp.y<.3){
+  let guv=vec2f(dot(ground.t0.xy,i.wp.xz)+ground.t0.z,dot(ground.t1.xy,i.wp.xz)+ground.t1.z);
+  if(all(guv>vec2f(0.))&&all(guv<vec2f(1.))){
+   let gt=textureSampleLevel(groundTypes,groundSampler,guv,0.);
+   let pc=leafCells(vec3f(i.wp.x*9.,0.,i.wp.z*9.));
+   let pathA=vec3f(.40,.31,.20)*(.85+.3*vnoise(i.wp.xz*2.3))*mix(1.,1.25+.3*pc.y,near*(1.-smoothstep(.28,.36,pc.x)));
+   let soilA=vec3f(.24,.17,.11)*(.8+.3*vnoise(vec2f(i.wp.x*6.,i.wp.z*.8)));
+   let mudA=vec3f(.17,.16,.11)*(.85+.2*vnoise(i.wp.xz*3.));
+   let rc=leafCells(vec3f(i.wp.x*1.6,0.,i.wp.z*1.6));
+   let rockA=vec3f(.46,.45,.42)*(.75+.35*rc.y)*mix(1.,.6,smoothstep(.35,.5,rc.x));
+   let grassW=clamp(1.-gt.r-gt.g-gt.b-gt.a,0.,1.);
+   albedo=albedo*grassW+pathA*gt.r+soilA*gt.g+mudA*gt.b+rockA*gt.a;
+  }
+ }`);
 const W_SHADOW=/*wgsl*/`
 struct Globals { vp:mat4x4f, model:mat4x4f, color:vec4f, sun:vec4f, camera:vec4f };
 @group(0) @binding(0) var<uniform> g:Globals;
@@ -152,6 +173,25 @@ const FOREST_SUN=[.62,.36,-.70];  // golden hour: low (about 21 deg) and warm; W
 // Hook contract for forest-main: scene pipeline uses W_FOREST_SHADOWED with bindGroupLayouts
 // [sceneLayout, shadow.layout]; each frame call shadow.encode(...) after writing the uniforms and
 // before the scene pass, and setBindGroup(1, shadow.group) after setting the scene pipeline.
+// forestGroundTexture(device): the ground-type texture named "ground-types" in manifest.json assets, with its
+// "worldToUV": [a,b,c,d,e,f]. Without one (or if it fails to load) a 1x1 texture is bound and the shader ignores it.
+async function forestGroundTexture(device){
+ const entry=typeof PLUGIN_ASSETS==='object'&&PLUGIN_ASSETS?PLUGIN_ASSETS['ground-types']:null;
+ const uniform=device.createBuffer({size:32,usage:GPUBufferUsage.UNIFORM|GPUBufferUsage.COPY_DST});
+ let texture=null,t=[0,0,0,0,0,0,0,0];
+ if(entry&&entry.url&&Array.isArray(entry.worldToUV)&&entry.worldToUV.length===6){
+  try{
+   const bitmap=await createImageBitmap(await (await fetch(entry.url)).blob(),{colorSpaceConversion:'none',premultiplyAlpha:'none'});
+   texture=device.createTexture({size:[bitmap.width,bitmap.height],format:'rgba8unorm',usage:GPUTextureUsage.TEXTURE_BINDING|GPUTextureUsage.COPY_DST|GPUTextureUsage.RENDER_ATTACHMENT});
+   device.queue.copyExternalImageToTexture({source:bitmap},{texture},[bitmap.width,bitmap.height]);
+   const [a,b,c,d,e,f]=entry.worldToUV;t=[a,b,c,1,d,e,f,0];
+  }catch(error){console.warn('ground-types texture not used:',error);texture=null;}
+ }
+ if(!texture){texture=device.createTexture({size:[1,1],format:'rgba8unorm',usage:GPUTextureUsage.TEXTURE_BINDING|GPUTextureUsage.COPY_DST});device.queue.writeTexture({texture},new Uint8Array(4),{bytesPerRow:4},[1,1]);}
+ device.queue.writeBuffer(uniform,0,new Float32Array(t));
+ if(typeof forestState==='object')forestState.groundTypes=t[3]===1;
+ return {uniform,texture};
+}
 async function forestShadow(device,sceneLayout,objects,size=2048){
  const n=Math.hypot(...FOREST_SUN),f=FOREST_SUN.map(v=>-v/n);
  let s=[f[2],0,-f[0]];const sl=Math.hypot(...s);s=s.map(v=>v/sl);
@@ -171,11 +211,12 @@ async function forestShadow(device,sceneLayout,objects,size=2048){
  const lightBuf=device.createBuffer({size:64,usage:GPUBufferUsage.UNIFORM|GPUBufferUsage.COPY_DST});device.queue.writeBuffer(lightBuf,0,L);
  const map=device.createTexture({size:[size,size],format:'depth32float',usage:GPUTextureUsage.RENDER_ATTACHMENT|GPUTextureUsage.TEXTURE_BINDING});
  const castLayout=device.createBindGroupLayout({entries:[{binding:0,visibility:GPUShaderStage.VERTEX,buffer:{type:'uniform'}}]});
- const layout=device.createBindGroupLayout({entries:[{binding:0,visibility:GPUShaderStage.FRAGMENT,buffer:{type:'uniform'}},{binding:1,visibility:GPUShaderStage.FRAGMENT,texture:{sampleType:'depth'}},{binding:2,visibility:GPUShaderStage.FRAGMENT,sampler:{type:'comparison'}}]});
+ const layout=device.createBindGroupLayout({entries:[{binding:0,visibility:GPUShaderStage.FRAGMENT,buffer:{type:'uniform'}},{binding:1,visibility:GPUShaderStage.FRAGMENT,texture:{sampleType:'depth'}},{binding:2,visibility:GPUShaderStage.FRAGMENT,sampler:{type:'comparison'}},{binding:3,visibility:GPUShaderStage.FRAGMENT,buffer:{type:'uniform'}},{binding:4,visibility:GPUShaderStage.FRAGMENT,texture:{sampleType:'float'}},{binding:5,visibility:GPUShaderStage.FRAGMENT,sampler:{type:'filtering'}}]});
+ const groundSet=await forestGroundTexture(device);
  const module=device.createShaderModule({code:W_SHADOW});
  const pipeline=await device.createRenderPipelineAsync({layout:device.createPipelineLayout({bindGroupLayouts:[sceneLayout,castLayout]}),vertex:{module,entryPoint:'vs',buffers:[{arrayStride:16,attributes:[{shaderLocation:0,offset:0,format:'float32x3'},{shaderLocation:1,offset:12,format:'snorm8x4'}]}]},fragment:{module,entryPoint:'fs',targets:[]},primitive:{topology:'triangle-list',cullMode:'none'},depthStencil:{format:'depth32float',depthWriteEnabled:true,depthCompare:'less',depthBias:2,depthBiasSlopeScale:2.5}});
  const castGroup=device.createBindGroup({layout:castLayout,entries:[{binding:0,resource:{buffer:lightBuf}}]});
- const group=device.createBindGroup({layout,entries:[{binding:0,resource:{buffer:lightBuf}},{binding:1,resource:map.createView()},{binding:2,resource:device.createSampler({compare:'less',magFilter:'linear',minFilter:'linear'})}]});
+ const group=device.createBindGroup({layout,entries:[{binding:0,resource:{buffer:lightBuf}},{binding:1,resource:map.createView()},{binding:2,resource:device.createSampler({compare:'less',magFilter:'linear',minFilter:'linear'})},{binding:3,resource:{buffer:groundSet.uniform}},{binding:4,resource:groundSet.texture.createView()},{binding:5,resource:device.createSampler({magFilter:'linear',minFilter:'linear'})}]});
  return {layout,group,light:L,encode(encoder,draws,binding,stride){
   const pass=encoder.beginRenderPass({colorAttachments:[],depthStencilAttachment:{view:map.createView(),depthClearValue:1,depthLoadOp:'clear',depthStoreOp:'store'}});
   pass.setPipeline(pipeline);pass.setBindGroup(1,castGroup);
