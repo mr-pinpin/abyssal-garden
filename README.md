@@ -137,3 +137,21 @@ Preserved canon notices are under the home/Elder plugins and
 `assets/pinpin/notices/`; no new third-party rights or approved-canon status is
 claimed. No external images, texture downloads, book artwork, or unlicensed GPU
 subtree was copied into the forest renderer.
+
+## GPU frame QA
+
+For compositor-independent GPU evidence, set `window.__capture = true` in the
+page and dispatch a `resize` event to request a frame. Wait until `__capture`
+and `__capturing` are both false, then read `window.__captured` (a PNG data URL)
+or `window.__captureError`. Waiting for those flags prevents an earlier capture
+being mistaken for the new one. Only one readback runs at a time. Each request
+consumes its flag, clears the previous result, handles padded RGBA/BGRA rows,
+and unmaps/destroys the buffer on success or failure. Readback is capped at
+64 MiB; ordinary rendering performs no capture copies or mappings.
+
+On the household VPS, headless compositor screenshots can be white even while
+WebGPU has rendered correctly. Direct Chrome with `--enable-unsafe-webgpu
+--enable-features=Vulkan --use-angle=swiftshader --use-webgpu-adapter=swiftshader`
+and the readback hook provides actual GPU pixels. This is software GPU evidence;
+Apple M4 Metal rendering was also checked separately. Neither substitutes for
+performance measurements on the reader's target hardware.

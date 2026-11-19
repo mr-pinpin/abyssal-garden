@@ -109,11 +109,19 @@ function forestFadeTrees(vp){
 }
 let forestFading=false;
 const forestDither=(x,y)=>{const v=52.9829189*((.06711056*x+.00583715*y)%1);return v-Math.floor(v);};
+// Canvas readback rows are padded to 256 bytes; preserve alpha and convert BGRA.
+function forestCapturePixels(source,destination,width,height,bytesPerRow,format){
+ const bgra=format.startsWith('bgra');
+ for(let y=0;y<height;y++)for(let x=0;x<width;x++){
+  const i=y*bytesPerRow+x*4,o=(y*width+x)*4;
+  destination[o]=source[i+(bgra?2:0)];destination[o+1]=source[i+1];destination[o+2]=source[i+(bgra?0:2)];destination[o+3]=source[i+3];
+ }
+}
 async function forestGPU(){
  if(!navigator.gpu)return null;
  const adapter=await navigator.gpu.requestAdapter();if(!adapter)return null;
  const device=await adapter.requestDevice(),canvas=document.getElementById('scene'),context=canvas.getContext('webgpu');
- const format=navigator.gpu.getPreferredCanvasFormat();context.configure({device,format,alphaMode:'opaque'});
+ const format=navigator.gpu.getPreferredCanvasFormat();context.configure({device,format,alphaMode:'opaque',usage:GPUTextureUsage.RENDER_ATTACHMENT|GPUTextureUsage.COPY_SRC});
  const shader=device.createShaderModule({code:W_FOREST}),messages=await shader.getCompilationInfo(),errors=messages.messages.filter(m=>m.type==='error');
  if(errors.length)throw new Error(errors.map(m=>m.message).join('; '));
  device.addEventListener('uncapturederror',e=>forestFail(e.error));
@@ -137,10 +145,30 @@ async function forestGPU(){
   const vp=forestVP(innerWidth,innerHeight);forestFading=forestFadeTrees(vp);
   for(let i=0;i<draws.length;i++){const d=draws[i],o=i*stride/4;data.set(vp,o);data.set(d.model,o+16);data.set([...d.group.color,d.tree?d.tree.fade:1],o+32);data.set([.45,.86,.25,0],o+36);data.set([...forestEye,0],o+40);}
   device.queue.writeBuffer(uniform,0,data);
-  const encoder=device.createCommandEncoder(),pass=encoder.beginRenderPass({colorAttachments:[{view:context.getCurrentTexture().createView(),clearValue:{r:.66,g:.73,b:.55,a:1},loadOp:'clear',storeOp:'store'}],depthStencilAttachment:{view:depth.createView(),depthClearValue:1,depthLoadOp:'clear',depthStoreOp:'store'}});
+  const texture=context.getCurrentTexture(),encoder=device.createCommandEncoder(),pass=encoder.beginRenderPass({colorAttachments:[{view:texture.createView(),clearValue:{r:.66,g:.73,b:.55,a:1},loadOp:'clear',storeOp:'store'}],depthStencilAttachment:{view:depth.createView(),depthClearValue:1,depthLoadOp:'clear',depthStoreOp:'store'}});
   pass.setPipeline(pipeline);
   for(let i=0;i<draws.length;i++){const d=draws[i];if(d.tree&&d.tree.fade<=0)continue;pass.setBindGroup(0,binding,[i*stride]);pass.setVertexBuffer(0,d.vertex);pass.setIndexBuffer(d.index,'uint32');pass.drawIndexed(d.group.indexCount,1,d.group.firstIndex);}
-  pass.end();device.queue.submit([encoder.finish()]);
+  pass.end();
+  // Explicit QA request only: no mapping, pixel copy or extra frame in ordinary use.
+  let capture=null;
+  if(window.__capture&&!window.__capturing){
+   window.__capture=false;window.__capturing=true;delete window.__captured;delete window.__captureError;
+   const bytesPerRow=Math.ceil(w*4/256)*256;
+   if(bytesPerRow*h>64*1024*1024){window.__captureError='Capture exceeds the 64 MiB readback limit.';window.__capturing=false;}
+   else try{
+    capture={bytesPerRow,buffer:device.createBuffer({size:bytesPerRow*h,usage:GPUBufferUsage.COPY_DST|GPUBufferUsage.MAP_READ})};
+    encoder.copyTextureToBuffer({texture},{buffer:capture.buffer,bytesPerRow},[w,h]);
+   }catch(error){capture?.buffer.destroy();capture=null;window.__captureError=String(error);window.__capturing=false;}
+  }
+  device.queue.submit([encoder.finish()]);
+  if(capture){const {buffer,bytesPerRow}=capture;
+   buffer.mapAsync(GPUMapMode.READ).then(()=>{
+    const output=document.createElement('canvas');output.width=w;output.height=h;
+    const ctx=output.getContext('2d'),image=ctx.createImageData(w,h);
+    forestCapturePixels(new Uint8Array(buffer.getMappedRange()),image.data,w,h,bytesPerRow,format);
+    ctx.putImageData(image,0,0);window.__captured=output.toDataURL('image/png');
+   }).catch(error=>{window.__captureError=String(error);}).finally(()=>{buffer.unmap();buffer.destroy();window.__capturing=false;});
+  }
  };
 }
 // Compatibility mode still draws the actual loaded model triangles, not a poster.
