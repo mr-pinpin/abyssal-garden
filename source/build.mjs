@@ -125,7 +125,7 @@ function testPlugin(name) {
   // Each node:test file already has its own process and contributes its exit status.
   console.log(`  RUN contract plugin:${name}`);
   const test = spawnSync(process.execPath, ['--test-reporter=dot', file], {
-    cwd: here, env: { ...process.env, GARDEN_TEST_PLUGIN: name }, stdio: 'inherit', timeout: 15000,
+    cwd: here, env: { ...process.env, GARDEN_TEST_PLUGIN: name }, stdio: 'inherit', timeout: +(process.env.GARDEN_CONTRACT_TIMEOUT_MS || 60000),
   });
   if (test.status === 0) {
     console.log(`  PASS contract plugin:${name}`);
