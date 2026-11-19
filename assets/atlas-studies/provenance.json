@@ -1,0 +1,38 @@
+{
+  "created_at": "2026-11-19T11:49:45.021745+00:00",
+  "order": "stavka:v2:msg_ef4f7c6c0bb84b16b275",
+  "reference": {
+    "repository": "mr-pinpin/mr-pinpin-source",
+    "path": "docs/storyboard/images/atlas/shire-v1.png",
+    "sha256": "80af7f9eb7188f0a1f64969a22632d0ef9732284d027042222c1543879f03780"
+  },
+  "registered_protection": {
+    "path": "canon-regions-v2.png",
+    "original": "docs/storyboard/images/atlas/shire-regions-v2.png",
+    "sha256": "89520ed7acf156bf925d62f79dc807892b3b828e1f19a499007634e303c9e810"
+  },
+  "generator": "built-in image_gen",
+  "prompts": "prompts.json",
+  "outputs": [
+    {
+      "file": "canopy-study-v1.png",
+      "sha256": "a0c544e881331bedafc2d4a067e7b5c43d4f17f810574a044cc602871750f42e"
+    },
+    {
+      "file": "height-guide-v1.png",
+      "sha256": "16d8b71353b469123a293dd5489c4ac96288168b1288de69428e03f6b0330120"
+    },
+    {
+      "file": "placement-mask-v1.png",
+      "sha256": "17ad6db64c1522b6199757f831051d61d94a7d9c6e79eaae83a941cb31d1d02e"
+    }
+  ],
+  "review": {
+    "canopy-study-v1.png": "Illustrative foliage reference only. Model did not achieve strictly vertical view; rejected as a registered terrain/height source.",
+    "height-guide-v1.png": "Bare-earth artistic estimate; grayscale values are not metric altitude. Semantic water forced flat by compiler.",
+    "placement-mask-v1.png": "Candidate class mask. Generated footprint holes/drift are not trusted; registered canon protection overrides; three disconnected water components remain flagged.",
+    "fields.json": "263 deterministic image-normalized candidate points; no world registration and no runtime terrain integration."
+  },
+  "compile": "node source/tools/atlas-fields.mjs assets/atlas-studies/height-guide-v1.png assets/atlas-studies/placement-mask-v1.png assets/atlas-studies/canon-regions-v2.png assets/atlas-studies/fields.json",
+  "content_notice": "CONTENT-LICENSE.md and THIRD-PARTY-NOTICES.md; creative assets are not under blanket software MIT."
+}
