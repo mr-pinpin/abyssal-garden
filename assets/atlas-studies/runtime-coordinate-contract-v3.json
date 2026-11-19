@@ -81,7 +81,18 @@
     "exactProjectionFrame": true,
     "oneToOneAtlasVisualMatch": false,
     "bookPhotorealism": false,
-    "hardwarePerformanceMeasured": false
+    "hardwarePerformanceMeasured": false,
+    "wholeWaterContinuity": false
   },
-  "compile": "node source/tools/atlas-runtime.mjs; CI executes this before tier1 and tests the bundled inputs. Texture changes regenerate only the data field, with renderer unit cache retained."
+  "compile": "node source/tools/atlas-runtime.mjs; CI executes this before tier1 and tests the bundled inputs. Texture changes regenerate only the data field, with renderer unit cache retained.",
+  "waterConnectivityAudit": {
+    "waterAndBridgeRasterComponents": [
+      1147,
+      95,
+      11,
+      2,
+      1
+    ],
+    "meaning": "Main lake/outlet connected; inlet/minor components require a generated layered-hydrology review. Surface rock/bridge/vegetation occlusion is not a physical survey."
+  }
 }

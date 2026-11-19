@@ -127,6 +127,14 @@
       "Home integrated moss roof and exterior footprint",
       "Garden/picnic/dock readability",
       "Shore/path aliasing and photoreal materials"
+    ],
+    "wholeWaterContinuity": false,
+    "waterRasterComponents": [
+      1147,
+      95,
+      11,
+      2,
+      1
     ]
   },
   "afterSourceFilesSHA256": {
