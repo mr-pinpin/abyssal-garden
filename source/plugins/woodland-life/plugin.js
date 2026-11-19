@@ -39,6 +39,38 @@ function pinpinLifePieces(){
   }
  }
  descriptor('meadow-stems',stems,[.25,.39,.13]);descriptor('meadow-petals',petals,[.94,.65,.22]);descriptor('meadow-pollen',centres,[1,.89,.53]);
+ // Atlas-led understory: irregular colonies, arching blades and folded leaves.
+ // These local habitat ellipses are authored world positions, NOT recovered atlas heights.
+ const habitat=[{x:9.1,z:11.5,rx:2.4,rz:1.0},{x:12.3,z:9.2,rx:1.5,rz:1.2},{x:12.4,z:13.8,rx:3.1,rz:1.25},{x:16.5,z:10.8,rx:1.3,rz:2.1}];
+ const foliage=[new Mesh(),new Mesh(),new Mesh()];
+ let seed=29173;const random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};
+ // A bent, folded ribbon keeps its silhouette from both top-down and eye-level views.
+ function leaf(mesh,x,y,z,angle,length,width,rise,segments=5){
+  const dx=Math.cos(angle),dz=Math.sin(angle),rows=[];
+  for(let k=0;k<=segments;k++){
+   const t=k/segments,w=width*Math.sin(Math.PI*t)*(.85+.15*t),cx=x+dx*length*t,cz=z+dz*length*t,cy=y+rise*Math.sin(t*Math.PI*.72);
+   rows.push([mesh.v(cx-dz*w,cy-w*.22,cz+dx*w),mesh.v(cx,cy+w*.16,cz),mesh.v(cx+dz*w,cy-w*.22,cz-dx*w)]);
+   if(k){const a=rows[k-1],b=rows[k];mesh.quad(a[0],b[0],b[1],a[1]);mesh.quad(a[1],b[1],b[2],a[2]);}
+  }
+ }
+ for(let i=0;i<260;i++){
+  const h=habitat[i%habitat.length],a=random()*Math.PI*2,r=Math.sqrt(random()),x=h.x+Math.cos(a)*r*h.rx,z=h.z+Math.sin(a)*r*h.rz;
+  // Keep the stream and bridge corridor clear even if an ellipse is later widened.
+  if(z<8.15||Math.abs(x-7)<1.2&&z<11)continue;
+  const mesh=foliage[i%3],height=.13+random()*.29;
+  for(let j=0;j<4;j++)leaf(mesh,x,.018,z,random()*Math.PI*2,.12+random()*.20,.012+random()*.014,height*(.6+random()*.4));
+ }
+ for(let i=0;i<12;i++){
+  const h=habitat[i%habitat.length],a=random()*Math.PI*2,r=Math.sqrt(random()),x=h.x+Math.cos(a)*r*h.rx,z=h.z+Math.sin(a)*r*h.rz,mesh=foliage[i%3];
+  for(let f=0;f<7;f++){
+   const angle=f*Math.PI*2/7+random()*.22,dx=Math.cos(angle),dz=Math.sin(angle),size=.4+random()*.45;
+   for(let k=1;k<=7;k++){
+    const t=k/8,cx=x+dx*t*size,cz=z+dz*t*size,cy=.03+Math.sin(t*Math.PI*.8)*size*.65;
+    for(const side of [-1,1])leaf(mesh,cx,cy,cz,angle+side*1.05,(1-t)*size*.34,.018+(1-t)*.025,.035,2);
+   }
+  }
+ }
+ [[.12,.23,.065],[.22,.34,.09],[.34,.42,.14]].forEach((color,i)=>descriptor('understory-'+i,foliage[i],color));
  const wing=(side)=>{
   const m=new Mesh(),v=(x,z)=>m.v(x*side,0,z);
   const root=v(0,0),a=v(.12,-.21),b=v(.32,-.18),c=v(.29,.04),d=v(.20,.18),e=v(.06,.15);
