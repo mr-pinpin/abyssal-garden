@@ -305,21 +305,21 @@ function pinpinHomePieces() {
   const saplings=[[-22.3,-8.5,8.5],[-20,-9.1,7.8],[-16.8,-9,8.7],[-13.7,-8.8,7.7],[-10.4,-8.7,8.5],[-7,-8,7.5],
     [-22.3,-4,7.6],[-22.3,.2,8.3],[-22.3,5,7.5],[-20.9,9.5,7.7],[-17.6,11,7.4],
     [-5.1,-6.8,7.7],[-3.6,-4.9,7.3],[-3.4,-.6,6.5],[-1.8,11.3,7.5],[3.4,11.3,7.8],[13,10.5,7.4],[17.6,1.3,7.9]];
-  add('woodland-sapling-bark',[.28,.22,.13],m=>{
-    saplings.forEach(([x,z,h],i)=>{
+  // Keep each tree's trunk/crown pair independently fadeable by the existing
+  // renderer; a whole forest batch would hide unrelated distant trees.
+  saplings.forEach(([x,z,h],i)=>{
+    add('trunk-'+(100+i),[.28,.22,.13],m=>{
       tube(m,[[x,0,z],[x+.13,h*.48,z-.12],[x-.18,h*.92,z+.14]],k=>.19-k*.052,7);
       for(let k=0;k<3;k++){const a=k*2.1+i;const bx=x+Math.cos(a)*.85,bz=z+Math.sin(a)*.85;
-        tube(m,[[x,h*.51,z],[bx,h*.68,bz],[bx*1+(Math.cos(a)*.25),h*.77,bz+Math.sin(a)*.25]],t=>.075-t*.026,5);
+        tube(m,[[x,h*.51,z],[bx,h*.68,bz],[bx+Math.cos(a)*.25,h*.77,bz+Math.sin(a)*.25]],t=>.075-t*.026,5);
       }
-    });
-  },[0,0,0]);
-  for(let shade=0;shade<3;shade++)add('woodland-layered-crowns-'+shade,[[.18,.28,.12],[.24,.34,.14],[.32,.39,.18]][shade],m=>{
-    saplings.forEach(([x,z,h],i)=>{
-      for(let k=0;k<6;k++){if(k%3!==shade)continue;const a=k*2.4+i,r=1.12+noise(i*11+k)*.52;
+    },[0,0,0]);
+    add('canopy-'+(100+i),[[.18,.28,.12],[.24,.34,.14],[.32,.39,.18]][i%3],m=>{
+      for(let k=0;k<6;k++){const a=k*2.4+i,r=1.12+noise(i*11+k)*.52;
         crown(m,x+Math.cos(a)*.78,h*(.64+k*.048),z+Math.sin(a)*.78,r,.65+noise(k+i)*.40,i*17+k);
       }
-    });
-  },[0,0,0]);
+    },[0,0,0]);
+  });
   for(let i=0;i<6;i++)add('path-amber-marker-'+i,[.92,.68,.28],m=>{
     orb(m,0,.28,0,.055,.08,.055,0);
   },[route[i+1][0]+.95,0,route[i+1][1]+.72]);
