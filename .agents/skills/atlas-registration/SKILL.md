@@ -1,0 +1,16 @@
+---
+name: atlas-registration
+description: Register Mr PinPin atlas ground landmarks to an authored 3D stage and plan explicit layout migrations. Use when transferring placement or terrain fields into world coordinates; exclude photo-brightness height inference and canonical architecture edits.
+---
+
+Read the atlas-field-compiler and render-evaluator skills only for their relevant inputs/evidence rules. Open actual source art and the route survey in canon `docs/storyboard/atlas-geometry.js`, or the versioned recorded coordinates and hashes in `assets/atlas-studies/registration.json`. Region/canopy/roof silhouette centers are not ground contacts. The first atlas metadata's approximate landmark percentages are not surveyed centers.
+
+Read current renderer route, measured house plan, Elder envelope and the actual bridge GLB deck. Include model scale, yaw and local deck asymmetry when transforming endpoints; a descriptor origin need not be the geometric center. Preserve local measured architecture while treating outdoor stage positions as explicit authoring choices.
+
+Fit only declared ground anchors with uncertainty. Keep independent checkpoints out of the fit: tractor side/position, crossing endpoints and bridge axis, route/shore overlap, plant footprints and building entrances. Three exact affine residuals and an invertible matrix establish neither geographic correctness nor placement safety. Check determinant/folds, support domain and inverse. Reject extrapolation and unsupported terrain or foliage consumers; diagnostic lookup must not become an accepted placement API by accident.
+
+Current staged-world fit was rejected: the tractor is west of its bridge while the atlas places it east/southeast, and the crossing axis differs by about77degrees. Do not force a global transform merely to keep all authored positions unchanged. A recorded migration candidate uses the ground doorway approach, Elder route end and traced crossing midpoint; it requires explicit tractor relocation, bridge yaw/scale/center correction and a real path update before acceptance. A mask-region center produced an additional0.93unit deck-midpoint error and was rejected. These are observed source-specific lessons, not universal fit tolerances.
+
+Version migrations with source hashes, forward/inverse, accepted purposes/domains, residuals, ground/exclusion bounds and remaining uncertainty. Re-run tests against actual moved geometry, not only fitted controls. Verify dry walking clearance and deck contact, full canopy radius/spacing, shoreline/water continuity and matched overview/eye-level GPU views. Generated bare-earth heights remain artist-estimated; world height scale is a separate authored contract, never silently metric truth.
+
+Use the existing registration tool/tests/diagnostic. A staged-anchor change must force intentional versioning rather than reuse a stale artifact. Publish a consumer contract only after its layout and exclusion checks pass. Record request, execution, commit and live verification where observed; leave missing times null. Update this skill narrowly from demonstrated registration or review failures, with evidence. Keep the high-level visual-quality objective open until its real criterion is met.

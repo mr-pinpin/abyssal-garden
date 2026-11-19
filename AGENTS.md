@@ -7,6 +7,7 @@ For a forest slice, read `wiki read topics/forest-specialists` and the relevant 
 - `foliage-geometry`: atlas/book-led tree and understory geometry.
 - `render-evaluator`: matched actual GPU frames and honest task timing.
 - `atlas-field-compiler`: estimated terrain/placement guides with canon protection.
+- `atlas-registration`: ground-contact anchors, independent geography/bridge checks and explicit layout migrations.
 
 The wiki is the maintained conceptual source. After a demonstrated failure or useful repeated practice, the role's agent should make a narrow authored correction with evidence and update its portable copy. Do not generate skill prose on a timer or append generic advice. Skill updates need actual behavioral/visual evaluation, not just a format validator.
 
@@ -19,3 +20,5 @@ Acceptance needs actual built behavior and visible frames. Use settled fades, ma
 Release builds must retain every enabled plugin. `source/tools/verify-release.mjs` checks the build log before Pages publication; an omitted required plugin is a failed release even if a preview build exits0. Optimize slow tests without deleting assertions; do not hide timeouts as optional fallback.
 
 Record observed task receipt, first execution, commit, deployment and verified-live timestamps, with null for missing boundaries. Include rejected drafts and rework. Never add parallel objective-hours as team wall-clock idle time or infer a skill speedup from unrelated tasks. Report the actual source/artifacts, what improved and what remains below the reference.
+
+Before ending an increment on an unfinished goal, verify its continuing objective and concrete successor in the ledger. A progress reply alone does not schedule work. Keep the node receipt scoped to the increment and leave the objective open until its real criterion is met. Report a queued successor as queued; actual dispatch is a separate check.
