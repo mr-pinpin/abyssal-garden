@@ -1,0 +1,103 @@
+{
+  "checkedAt": "2026-11-19T12:08:39.100Z",
+  "matchedCameraHardware": true,
+  "qualityNormalized": false,
+  "changeScope": "Source geometry density policy, foliage materials and sky may change intentionally. Not a performance or skill-speedup experiment.",
+  "sameSourceControl": false,
+  "results": [
+    {
+      "label": "before",
+      "url": "http://127.0.0.1:8768/before/",
+      "version": {
+        "commit": "cfca4b4819bc67a10a4c9459fc98b516d0855169",
+        "baseline": "8d4cade, only fade telemetry added"
+      },
+      "artifactSHA256": "f28de9d075c8e5575776bc3a1597f6940805bd629906b047c7c9652f364668d4",
+      "cameraPresetsSHA256": "c4027a2163766388a27d274f7c0a814f52ef89122ad9d1bdab2ee58690f9e726",
+      "mode": "webgpu",
+      "foliageQuality": "legacy",
+      "sky": false,
+      "viewport": [
+        960,
+        640
+      ],
+      "dpr": 1,
+      "reducedMotion": true,
+      "quality": "DPR cap1.5, actual DPR1; intentional source geometry/material/sky changes recorded separately",
+      "browser": "157.0.8103.50",
+      "gpu": [
+        {
+          "vendorId": 65535,
+          "deviceId": 65535,
+          "vendorString": "Google Inc. (Google)",
+          "deviceString": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver-5.0.0)",
+          "driverVendor": "SwANGLE",
+          "driverVersion": "5.0.0"
+        }
+      ],
+      "shots": [
+        {
+          "chapter": "home",
+          "pixelSha256": "a40fd376befd635ddfef7f09b1fab6fea657a431ffa4469dc2ce8d3d952e5817"
+        },
+        {
+          "chapter": "clearing",
+          "pixelSha256": "f72fdf89e140cb921436784c38207b1fd6998b4050efab2faee3927696c1f220"
+        },
+        {
+          "chapter": "walk",
+          "pixelSha256": "f1dd4aa82330e59a499ef3df53cac6e023f3f1dd4734151140ce93fa9ec22988"
+        }
+      ]
+    },
+    {
+      "label": "after",
+      "url": "http://127.0.0.1:8768/after/",
+      "version": {
+        "commit": "f6fac1eae0a02b161b43d91469d213c0ecc6a6a0"
+      },
+      "artifactSHA256": "ca01ed2710a440c0c7beef5e02cfc77a88d8d641b29d2591adf3bf2e7eb9a8bd",
+      "cameraPresetsSHA256": "c4027a2163766388a27d274f7c0a814f52ef89122ad9d1bdab2ee58690f9e726",
+      "mode": "webgpu",
+      "foliageQuality": "high",
+      "sky": true,
+      "viewport": [
+        960,
+        640
+      ],
+      "dpr": 1,
+      "reducedMotion": true,
+      "quality": "DPR cap1.5, actual DPR1; intentional source geometry/material/sky changes recorded separately",
+      "browser": "157.0.8103.50",
+      "gpu": [
+        {
+          "vendorId": 65535,
+          "deviceId": 65535,
+          "vendorString": "Google Inc. (Google)",
+          "deviceString": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver-5.0.0)",
+          "driverVendor": "SwANGLE",
+          "driverVersion": "5.0.0"
+        }
+      ],
+      "shots": [
+        {
+          "chapter": "home",
+          "pixelSha256": "59a8c966f6e419a81577c01d85680ef629f9830f9fd28bf0a23889bb502f9fee"
+        },
+        {
+          "chapter": "clearing",
+          "pixelSha256": "5cdcadd4c28209cd0b67242eb9e407c95acbed59df6a7e5d36994264caca31ba"
+        },
+        {
+          "chapter": "walk",
+          "pixelSha256": "058d9727812c8c5c84f9aa1a92f2ed9106edd0c3a1d6642766097a14d96632a2"
+        }
+      ]
+    }
+  ],
+  "performanceMeasured": false,
+  "artisticVerdict": "Requires image inspection; hashes are not visual-quality scores.",
+  "baseline_public_commit": "8d4cade7e6c77009b50799102cf233eaced73910",
+  "source_note": "Before staging adds only fade-settled telemetry. After staging includes proposed geometry quality, leaf tone and sky changes. Artifact hashes retained; final deployed commit is available in /version.json.",
+  "verdict": "Incremental foliage structure and crown coverage; not book-level photorealism. Terrain registration, cast shadows and material richness remain open."
+}

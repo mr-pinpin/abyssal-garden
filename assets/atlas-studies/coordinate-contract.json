@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "status": "image-coordinate study, no accepted world mapping",
+  "source_frame": {
+    "width": 1536,
+    "height": 1024,
+    "origin": "top-left",
+    "u": "x/width in[0,1]",
+    "v": "y/height in[0,1]",
+    "height_units": "artist estimate in[0,1], not meters"
+  },
+  "fields": "fields.json",
+  "seed": 731,
+  "grid": [
+    96,
+    96
+  ],
+  "exclusion_margin_cells": 2,
+  "classes": {
+    "water": "semantically flattened to.12; connectedness needs review",
+    "protected": "registered canon cottage/Elder/bridge footprints override generated guesses",
+    "path": "generated red candidate paths, no navigation proof",
+    "foliage": "generated green forest with conservative exclusion margin",
+    "excluded": "white/unknown/meadow; no tree candidates"
+  },
+  "candidate_semantics": "candidate centers only; consuming system must check full plant footprints and metric spacing after registration",
+  "world_transform": null,
+  "preserve_in_current_game": [
+    "measured house room dimensions",
+    "actual bridge/deck axis and grounded walking route",
+    "scene file ownership"
+  ],
+  "required_before_world_use": [
+    "declare pixel-to-world anchors and distortion tolerance",
+    "check landmark residuals plus bridge orientation, not just3exact anchor fits",
+    "validate house/door footprint, shoreline, water continuity and routes in resulting geometry",
+    "project exclusion margins to world canopy radii",
+    "review same-camera GPU results before accepting geography changes"
+  ]
+}

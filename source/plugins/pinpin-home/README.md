@@ -3,7 +3,7 @@
 `pinpinHomePieces()` defines a standalone pre-phase scene plugin in the existing
 Mesh/math scope. Calling it returns 131 piece descriptors: a three-room home,
 plan-based furniture, green open entry, round window frames, partial moss roof,
-13 woodland trees, ferns, amber markers, and a joined path toward the sanctuary.
+31 woodland trees and saplings, ferns, amber markers, and a joined path toward the sanctuary.
 No DOM, GPU, fetch, random-stream mutation, or registration occurs at definition
 time. Every piece has a private zero-argument `build()` returning the shared
 packed `{vb, ib, nv}` format. All assets are `null`: this is procedural geometry
@@ -102,25 +102,78 @@ height and silhouette; shared RNG and all measured plan records stay intact.
 Shoulder sites are rejected against every route segment and the stream bank,
 so bends cannot plant details across an adjoining walking segment.
 
-The complete plugin has 45,715 packed vertices and 40,023 triangles; added
-detail uses 14,040 vertices across 13 material batches. Contract checks cap that
-detail at 18,000 vertices and test real triangle clearance at low body heights
-across a 1.1m outdoor ribbon, plus bridge approach placement. This is geometry
-evidence; the browser render and integrated asset clearances require the parent
-integration review. No new visual approval or deployment is claimed.
+`pinpinHomePieces({foliageQuality: 'low' | 'high'} = {})` is a pure
+quality selection API, defaulting to `low`. It does not inspect DOM, navigator,
+GPU state or shared RNG. Unsupported values throw. Only tree crown geometry
+changes between quality levels; descriptor names/count, branches, all measured
+house records and the connecting route remain the same.
 
-The enclosure pass adds 17 broad irregular planting islands and 18 slender
-saplings with six overlapping angular crown layers each. Waist-high radiating
-leaves create a separate middle layer above the colored ground footprints.
-These are six low-plant batches plus 18 independent trunk/canopy pairs,
-18,139 vertices, with a 20,000-vertex contract
-limit; all ground islands together cover more than 70 square meters. Outdoor
-clearance is checked against the enclosure at offsets ±0.65m and heights
-0.12m, 0.5m and 1.25m. The earlier browser image `after-home.png` was inspected
-and showed insufficient enclosure; the new enclosure still requires a fresh
-browser visual review by the integration owner.
+Low uses 256 overlapping broad leaf surfaces per tree: 121,155 total vertices,
+83,305 triangles. High uses 1,024 smaller leaves per tree: 311,619 vertices,
+178,537 triangles. Both return 131 descriptors. Explicit contract limits are
+130,000 and 330,000 vertices respectively. The former arbitrary 100,000 limit
+was relaxed after matched GPU evidence showed 160 tiny leaves made bare-looking
+crowns and substantially worsened enclosure. Commit fc83ef8 was rejected for
+visual quality despite its passing geometry contracts.
 
-Saplings use `trunk-100`/`canopy-100` through `trunk-117`/`canopy-117` so
-the existing renderer can fade one occluding tree without removing the entire
-woodland. Low planting remains batched. The geometry and clearance budgets are
-unchanged; a separate contract verifies all 18 recognized pairs.
+All 31 crowns have irregular branching supports and overlapping folded ovate or
+narrow drooping needle sprays, rather than closed ball/umbrella meshes. Low
+leaves sum to 36.757–45.092 square meters of horizontal projected area per tree;
+high sums to 62.043–75.485 square meters. These sums count each physical leaf
+once and include overlap, so they are **not** union coverage or canopy footprint.
+Tests independently sample crown union silhouettes on a 32×32 grid, requiring
+more than 70% of their bounds covered for all 31 trees in both quality
+levels. The measured minima are 71.29% low and 72.17% high. These CPU measures guard against the observed bare-crown regression;
+they do not establish photorealism or substitute for browser review.
+
+Leaf fronts and backs have separate reverse vertices/normals. Their signed
+`Mesh.v` aux uses three nearby values -0.67/-0.65/-0.63, packed to
+normal.w=-85/-83/-80 for dark/middle/light cluster tones; bark stays nonnegative.
+All remain in the renderer leaf band; cluster tone shading needs matching
+renderer integration. Low leaf
+facets are shorter than 0.80m and bases remain within 1.4m of the branching envelope.
+Ground detail uses 14,040 vertices across 13 material batches, capped at 18,000.
+The 17 ground islands cover more than 70 square meters. The low-quality added
+enclosure is capped at 75,000 vertices. Outdoor clearance is tested at lateral
+offsets ±0.65m and heights 0.12m, 0.5m and 1.25m, alongside separate canonical
+doorway tests. High crowns stay above 3m and keep all non-crown geometry byte
+identical to low.
+
+Saplings retain `trunk-100`/`canopy-100` through `trunk-117`/`canopy-117`, and
+original trees retain their indices 0–12, for independent occlusion fading.
+Low plants remain batched. A private integer hash keeps all variation stable.
+
+The foliage reference review inspected the atlas `shire-v1.png` and its original
+cottage reference `standalone/timber-tractor/chapter-02/scene-05.png`. The atlas
+is an unapproved concept, not measured geography. Its referenced Elder image
+`chapter-02-landscapes/shot-03.png` was missing; only metadata could be read.
+Their material, branching and silhouette language informed authored foliage;
+no illustration pixels or upstream GPU source were copied. Hashes are recorded
+in `provenance.json`. The measured house records and their authority are unchanged.
+
+Twelve Node contracts verify mesh validity, deterministic rebuilds, shared RNG,
+canonical areas/heights, route/bridge clearance, material markers, small leaf
+facets, twig support distance, fade pairs, both quality levels, projected leaf
+area/coverage and budgets. These are geometry
+checks. A fresh browser comparison and GPU measurement remain with the
+integration owner; this pass does not claim photorealism, atlas equivalence,
+frame-rate gains or deployment.
+
+The matched GPU review of the density iteration was MIXED: foliage remained
+wispy, blended into the background and exposed flat-cut trunk tops. That review
+is preserved at `foliage-dense-matched/review.md` in parent evidence. The next
+rework changes spatial packing rather than leaf count: inner/top foliage joins
+shoulder sprays into an overlapping rough volume, leaf directions overlap
+tangentially, darker canopy palettes separate from the ground, and tapered
+leaders end in 6–8mm tips under top leaves. The 33% silhouette rule was rejected
+as insufficient. Matched browser acceptance of this revised volume remains
+pending; CPU metrics alone do not establish improvement.
+
+The parent integration observed the home contract exceed the builder's 15-second
+limit and be silently excluded, after which the built fade test detected the
+missing home. Test snapshots now stream all packed vertex/index bytes from one
+build per descriptor into SHA, without hex/index JSON expansion. Geometry tests
+reuse immutable fixtures and cached world bounds; conservative ray AABB rejection
+retains triangle tests for possible overlaps. Fresh rebuild/context determinism
+trials remain independent. No assertions or global timeout were relaxed. A
+contract timeout remains an integration failure, not an accepted partial scene.

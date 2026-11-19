@@ -1,6 +1,8 @@
 // Unreviewed procedural showcase interpretation; creative content is not blanket MIT.
 // No DOM/GPU/fetch/registration at definition time. See README.md and provenance.json.
-function pinpinHomePieces() {
+function pinpinHomePieces({foliageQuality = 'low'} = {}) {
+  if(foliageQuality !== 'low' && foliageQuality !== 'high')throw new RangeError('pinpin-home: foliageQuality must be low or high');
+  const highFoliage=foliageQuality === 'high';
   const anchor = [-12, 0, 0], prefix = 'pinpin-home/';
   // Reduced verbatim plan records; canonical XY maps to scene X,-Z.
   const plan = {"rooms":[{"id":"common","polygon":[[-4.189406,-0.205859],[-4.225522,-0.595907],[-4.160514,-0.964286],[-4.030498,-1.27488],[-3.748796,-1.585474],[-3.676565,-1.881621],[-3.575441,-2.076645],[-3.394864,-2.278892],[-3.163724,-2.437801],[-2.845907,-2.582263],[-2.477528,-2.697833],[-1.769663,-2.813403],[-0.700642,-2.820626],[-0.693419,-2.90008],[-0.101124,-2.90008],[-0.0939,-2.820626],[1.20626,-2.80618],[1.682986,-2.733949],[2.253612,-2.57504],[2.672552,-2.394462],[2.961477,-2.184992],[2.506421,-2.177769],[2.506421,-0.364767],[3.026485,-0.357544],[3.048154,-0.155297],[3.163724,0.061396],[3.156501,0.090289],[1.928571,0.090289],[1.502408,0.155297],[1.220706,0.263644],[0.953451,0.429775],[0.455056,0.913724],[0.108347,0.7187],[-0.303371,0.610353],[-0.55618,0.60313],[-0.866774,0.653692],[-1.083467,0.733146],[-1.394061,0.913724],[-1.964687,0.545345],[-2.31862,0.444222],[-2.593098,0.408106],[-2.910915,0.408106],[-3.243178,0.458668],[-3.510433,0.538122],[-3.683788,0.458668],[-3.914928,0.27809],[-4.073836,0.06862]]},{"id":"bath","polygon":[[-2.925361,0.632022],[-2.333066,0.660915],[-2.065811,0.733146],[-1.560193,1.065409],[-1.668539,1.238764],[-1.704928,1.327137],[-1.786813,1.361341],[-1.977376,1.825323],[-2.051945,2.223022],[-2.085087,2.83614],[-2.176226,3.175841],[-2.408217,3.556969],[-2.781059,3.880099],[-3.029621,4.00438],[-3.361036,4.087234],[-3.684167,4.095519],[-4.040438,4.045807],[-4.471279,3.921526],[-4.802694,3.772389],[-5.04297,3.614967],[-5.24182,3.424403],[-5.424098,3.126129],[-5.498667,2.844426],[-5.473811,2.479869],[-5.316388,2.098741],[-5.308103,2.546152],[-4.926975,2.554437],[-4.91869,1.982745],[-5.208678,1.949604],[-5.0264,1.767325],[-4.761267,1.576761],[-3.891301,1.162492],[-3.725594,1.054782],[-3.509218,0.981808],[-3.416533,0.906501],[-3.416533,0.725923]]},{"id":"bedroom","polygon":[[0.613965,1.065409],[1.09069,0.60313],[1.379615,0.436998],[1.603531,0.357544],[1.849117,0.314205],[3.510433,0.314205],[3.806581,0.422552],[4.066613,0.632022],[4.211075,0.920947],[4.239968,1.282103],[4.189406,1.57825],[4.095506,1.852729],[3.922151,2.163323],[3.676565,2.437801],[3.423756,2.618379],[3.040931,2.777287],[2.715891,2.842295],[2.398074,2.856742],[2.036918,2.813403],[1.769663,2.733949],[1.524077,2.611156],[1.278491,2.408909],[1.134029,2.221108],[1.032905,2.033307],[0.772873,1.325441]]}],"walls":[{"id":"exterior","path":[[4.153291,2.011637],[4.001605,2.257223],[3.73435,2.538925],[3.50321,2.697833],[3.207063,2.835072],[2.932584,2.914526],[2.600321,2.957865],[2.195827,2.943419],[1.921348,2.885634],[1.711878,2.813403],[1.480738,2.697833],[1.314607,2.582263],[1.11236,2.380016],[0.917335,2.069422],[0.621188,1.347111],[0.498395,1.166533],[0.353933,1.014848],[0.166132,0.877608],[-0.057785,0.776485],[-0.368379,0.7187],[-0.635634,0.725923],[-0.852327,0.769262],[-1.076244,0.863162],[-1.264045,0.993178],[-1.373852,1.107208],[-1.451846,1.188202],[-1.544502,1.351276],[-1.720529,1.618188],[-1.836525,1.966174],[-1.894523,2.289305],[-1.927664,2.877567],[-2.04366,3.275266],[-2.134799,3.449259],[-2.358504,3.747533],[-2.549068,3.921526],[-2.756203,4.062378],[-3.046192,4.194944],[-3.352751,4.269513],[-3.775306,4.286083],[-4.148148,4.236371],[-4.636986,4.087234],[-4.960116,3.929812],[-5.225249,3.739248],[-5.374386,3.590111],[-5.515238,3.399547],[-5.664375,3.05156],[-5.697516,2.695289],[-5.67266,2.496439],[-5.614662,2.305875],[-5.432384,1.97446],[-5.192107,1.709327],[-5.001543,1.56019],[-4.620416,1.336485],[-3.982441,1.054782],[-3.791877,0.922215],[-3.589888,0.920947],[-3.553772,0.769262],[-3.568218,0.689807],[-3.571306,0.685793],[-3.640449,0.595907],[-3.914928,0.436998],[-4.066613,0.306982],[-4.196629,0.140851],[-4.29053,-0.04695],[-4.362761,-0.321429],[-4.369984,-0.574238],[-4.348315,-0.754815],[-4.26886,-1.036517],[-4.124398,-1.339888],[-3.871589,-1.657705],[-3.784912,-1.961075],[-3.698234,-2.127207],[-3.539326,-2.329454],[-3.315409,-2.502809],[-3.069823,-2.632825],[-2.788122,-2.741172],[-2.419743,-2.842295],[-1.914125,-2.928973],[-1.487961,-2.957865],[0.772873,-2.957865],[1.126806,-2.936196],[1.545746,-2.878411],[2.008026,-2.777287],[2.361958,-2.668941],[2.75923,-2.495586],[2.975923,-2.351124],[3.149278,-2.170546],[3.308186,-1.874398],[3.394864,-1.556581],[3.402087,-1.209872],[3.351525,-0.92817],[3.192616,-0.473114],[3.185393,-0.191413],[3.228732,-0.075843],[3.286517,0.003612],[3.430979,0.133628],[3.582665,0.213082],[3.835474,0.299759],[4.052167,0.422552],[4.182183,0.552568],[4.297753,0.754815],[4.369984,1.014848],[4.369984,1.318218],[4.304976,1.636035]],"closed":true,"height":2.65,"thickness":0.25105},{"id":"common-bath-1","path":[[-3.571306,0.685793],[-3.2633,0.575785],[-2.972311,0.527287],[-2.611156,0.520064],[-2.328422,0.555148],[-2.012669,0.643889],[-1.507051,0.968929],[-1.373852,1.107208]],"closed":false,"height":2.65,"thickness":0.20785},{"id":"common-bedroom-1","path":[[0.434924,1.099889],[1.005561,0.532447],[1.25321,0.375602],[1.466808,0.285829],[1.685565,0.230108],[1.946629,0.202247],[3.174559,0.202247],[3.302511,0.156845],[3.385286,0.092504]],"closed":false,"height":2.65,"thickness":0.21669}],"openings":[{"id":"door-bath","wall":"common-bath-1","station":1.848274,"width":0.53105,"height":2.05,"sillZ":0,"kind":"door","shape":"arch"},{"id":"door-bedroom","wall":"common-bedroom-1","station":0.588718,"width":0.52822,"height":2.05,"sillZ":0,"kind":"door","shape":"arch"},{"id":"door-front","wall":"exterior","station":24.290529,"width":0.59952,"height":2.05,"sillZ":0,"kind":"door","shape":"arch"},{"id":"window-bath","wall":"exterior","station":12.102907,"width":0.75203,"height":0.75203,"sillZ":0.92,"kind":"window","shape":"round"},{"id":"window-bedroom","wall":"exterior","station":1.641346,"width":0.78513,"height":0.78513,"sillZ":0.92,"kind":"window","shape":"round"},{"id":"window-front-left","wall":"exterior","station":22.712658,"width":0.7938,"height":0.7938,"sillZ":0.92,"kind":"window","shape":"round"},{"id":"window-front-right","wall":"exterior","station":25.964708,"width":0.83206,"height":0.83206,"sillZ":0.92,"kind":"window","shape":"round"}],"furniture":[{"id":"bookcase","kind":"bookcase","room":"common","centerXY":[-3.871589,-0.588684],"sizeXY":[1.32905,0.27448],"height":1.65,"rotationDegrees":90.0},{"id":"stove","kind":"stove","room":"common","centerXY":[-3.039125,-1.95927],"sizeXY":[0.69973,0.68441],"height":1.0,"rotationDegrees":45.0},{"id":"table","kind":"table","room":"common","centerXY":[-0.303371,-1.09069],"sizeXY":[0.96067,0.9679],"height":0.7,"rotationDegrees":90.0},{"id":"kitchen-counter","kind":"kitchen-counter","room":"common","centerXY":[2.770064,-1.271268],"sizeXY":[1.79856,0.49839],"height":0.88,"rotationDegrees":90.0},{"id":"washstand","kind":"washstand","room":"bath","centerXY":[-5.113396,2.260306],"sizeXY":[0.339701,0.53855],"height":0.78,"rotationDegrees":-0.0},{"id":"bathtub","kind":"bathtub","room":"bath","centerXY":[-3.738022,2.66629],"sizeXY":[1.864212,1.184811],"height":0.48,"rotationDegrees":-0.0},{"id":"bed","kind":"bed","room":"bedroom","centerXY":[2.463082,1.639647],"sizeXY":[1.50241,1.52408],"height":0.65,"rotationDegrees":-0.0},{"id":"stool-1","kind":"stool","room":"common","centerXY":[-0.819823,-0.577849],"sizeXY":[0.25281,0.25281],"height":0.37,"rotationDegrees":90.0},{"id":"stool-2","kind":"stool","room":"common","centerXY":[0.213082,-0.577849],"sizeXY":[0.25281,0.25281],"height":0.37,"rotationDegrees":90.0},{"id":"stool-3","kind":"stool","room":"common","centerXY":[-0.888443,-1.538523],"sizeXY":[0.25281,0.26003],"height":0.37,"rotationDegrees":90.0},{"id":"stool-4","kind":"stool","room":"common","centerXY":[0.263644,-1.538523],"sizeXY":[0.25281,0.25281],"height":0.37,"rotationDegrees":90.0},{"id":"bath-mat","kind":"mat","room":"bath","centerXY":[-3.588022,2.54629],"sizeXY":[2.65,2.6],"height":0.012,"rotationDegrees":-0.0}]};
@@ -204,18 +206,67 @@ function pinpinHomePieces() {
       bottom.push(m.v(x+.9*Math.cos(a),0,z+.9*Math.sin(a)));}
     for(let k=0;k<24;k++){const j=(k+1)%24;m.tri(c,top[j],top[k]);m.quad(bottom[k],top[k],top[j],bottom[j]);}
   },[0,0,0]));
+  const noise=k=>{let n=Math.imul(k+117,374761393);n=Math.imul(n^(n>>>13),1274126177);return ((n^(n>>>16))>>>0)/4294967296;};
+  // Signed aux tags leaf surfaces for the renderer; bark never uses this band.
+  // Four folded outline vertices per side retain separate reverse normals.
+  const foliageBlade=(m,p,a,length,width,tilt,marker)=>{
+    const dx=Math.cos(a),dz=Math.sin(a),points=[p,
+      [p[0]+dx*length*.43-dz*width,p[1]+tilt*.4+.035,p[2]+dz*length*.43+dx*width],
+      [p[0]+dx*length,p[1]+tilt,p[2]+dz*length],
+      [p[0]+dx*length*.43+dz*width,p[1]+tilt*.4-.018,p[2]+dz*length*.43-dx*width]];
+    const front=points.map(q=>m.v(...q,marker)),back=points.map(q=>m.v(...q,marker));
+    m.tri(front[0],front[1],front[2]);m.tri(front[0],front[2],front[3]);
+    m.tri(back[2],back[1],back[0]);m.tri(back[3],back[2],back[0]);
+  };
+  const branchPlan=(x,z,h,seed)=>Array.from({length:8},(_,j)=>{
+    const a=j*2.399+seed*.71,r=(1.15+noise(seed*31+j)*.38)*(j>5?.72:1);
+    const y=h*(.61+j*.039),tip=[x+Math.cos(a)*r,y,z+Math.sin(a)*r];
+    return {a,j,tip,knee:[x+Math.cos(a)*r*.48,y-.30,z+Math.sin(a)*r*.48],start:[x,h*(.49+j*.03),z]};
+  });
+  const branchWood=(m,x,z,h,seed)=>{
+    for(const b of branchPlan(x,z,h,seed)){
+      tube(m,[b.start,b.knee,b.tip],k=>.075-k*.028,5);
+      for(const side of [-1,1]){
+        const t=[b.tip[0]-Math.sin(b.a)*side*.28+Math.cos(b.a)*.18,b.tip[1]+.18,b.tip[2]+Math.cos(b.a)*side*.28+Math.sin(b.a)*.18];
+        tube(m,[b.knee,b.tip,t],k=>.026-k*.009,4);
+      }
+    }
+  };
+  const leafyCrown=(m,x,z,h,seed)=>{
+    const fir=seed%4===0,count=highFoliage?1024:256;
+    // Overlapping inner, shoulder and tip leaves form one coherent rough
+    // volume. Sunflower packing avoids the empty radial gaps of twig-only sprays.
+    for(let k=0;k<count;k++){
+      const key=seed*811+k*7,a=k*2.399+seed*.71;
+      const inner=k<count/16,t=inner?k/(count/16):(k-count/16)/(count-count/16);
+      const radius=(inner?.24:1.75)*Math.sqrt(t)*(.94+.06*Math.sin(a*3+seed));
+      const y=inner?h+.60:h*.80+(1-t)*1.70+(noise(key+8)-.5)*.70;
+      const p=[x+Math.cos(a)*radius,y,z+Math.sin(a)*radius];
+      const length=highFoliage?.36+noise(key+1)*.16:.50+noise(key+1)*.20;
+      const width=(highFoliage?.13+noise(key+2)*.07:.25+noise(key+2)*.08)*(fir?.84:1);
+      // Three nearby signed markers remain in the leaf shader band, while
+      // allowing the renderer to retain dark inner and lit outer cluster tones.
+      const tone=inner?-.65:[-.67,-.65,-.63][Math.floor(k/8)%3];
+      const start=m.p.length;
+      foliageBlade(m,p,a+1.4+noise(key+3)*.4,length,width,(fir?-.08:.12)+(noise(key+4)-.5)*.45,tone);
+      const envelope=1.83+noise(seed*31+Math.floor(k/8))*.08;
+      for(let j=start;j<m.p.length;j+=3){const dx=m.p[j]-x,dz=m.p[j+2]-z,r=Math.hypot(dx,dz);
+        if(r>envelope){m.p[j]=x+dx*envelope/r;m.p[j+2]=z+dz*envelope/r;}
+      }
+    }
+  };
   const trees=[[-22,-5,7],[-21,3,6],[-20,8,7.5],[-16,10,6],[-9,-7,7],[-6,-4,6],[-5,11,7],[-1,-2,6.5],[2,7,7],[6,3,6],[7,-9,7],[11,1,6.5],[16,-2,7]];
   trees.forEach(([x,z,h],i)=>{
     add('trunk-'+i,[.25,.17,.105],m=>{
-      tube(m,[[x,0,z],[x+.12,h*.45,z-.10],[x-.18,h,z+.12]],k=>.36-k*.085,9);
+      tube(m,[[x,0,z],[x+.12,h*.45,z-.10],[x-.12,h*.85,z+.12],[x-.18,h+.25,z+.12]],k=>[.36,.20,.075,.008][k],9);
       for(let j=0;j<4;j++){const a=j*Math.PI/2+i;tube(m,[[x,0,z],[x+Math.cos(a)*.8,.03,z+Math.sin(a)*.8]],k=>.20-k*.16,7);}
+      branchWood(m,x,z,h,i);
     },[0,0,0]);
-    add('canopy-'+i,[.18+(i%3)*.025,.29+(i%4)*.02,.12],m=>{
-      orb(m,x,h-.2,z,1.7,1.6,1.6);orb(m,x+.8,h-.8,z-.6,1.2,1.1,1.3);
+    add('canopy-'+i,[.115+(i%3)*.018,.225+(i%4)*.018,.075],m=>{
+      leafyCrown(m,x,z,h,i);
     },[0,0,0]);
   });
   // A local integer hash provides repeatable variation without advancing rseed.
-  const noise=k=>{let n=Math.imul(k+117,374761393);n=Math.imul(n^(n>>>13),1274126177);return ((n^(n>>>16))>>>0)/4294967296;};
   const routeDistance=(x,z)=>Math.min(...route.slice(1).map((b,i)=>{
     const a=route[i],dx=b[0]-a[0],dz=b[1]-a[1],t=Math.max(0,Math.min(1,((x-a[0])*dx+(z-a[1])*dz)/(dx*dx+dz*dz)));
     return Math.hypot(x-a[0]-t*dx,z-a[1]-t*dz);
@@ -281,11 +332,6 @@ function pinpinHomePieces() {
     [-7,-5.4,1.35],[-20.3,-2.8,1.5],[-20.4,1.5,1.7],[-19.7,5.7,1.6],
     [-17.2,7.6,1.35],[-8.7,3.8,1.25],[-5.3,-1,1.45],[-4,2,1.25],
     [-3.8,11.7,1.35],[1.4,11.6,1.2],[10.6,9.5,1.5],[12.7,1.8,1.35],[16.5,-3.8,1.3]];
-  const crown=(m,x,y,z,r,h,seed)=>{
-    const top=m.v(x+.12*r,y+h,z-.08*r),bottom=m.v(x,y-h*.23,z),rim=[];
-    for(let k=0;k<9;k++){const a=k*Math.PI*2/9,q=r*(.8+.2*noise(seed+k));rim.push(m.v(x+Math.cos(a)*q,y+(.12*noise(seed+k+21)-.06)*h,z+Math.sin(a)*q));}
-    for(let k=0;k<9;k++){m.tri(top,rim[(k+1)%9],rim[k]);m.tri(bottom,rim[k],rim[(k+1)%9]);}
-  };
   for(let shade=0;shade<3;shade++)add('planted-ground-'+shade,[[.24,.31,.13],[.30,.36,.17],[.36,.39,.19]][shade],m=>{
     islands.forEach(([x,z,r],i)=>{if(i%3!==shade)return;const c=m.v(x,.017,z),rim=[];
       for(let k=0;k<13;k++){const a=k*Math.PI*2/13,q=r*(.85+.15*noise(i*17+k));rim.push(m.v(x+Math.cos(a)*q,.016,z+Math.sin(a)*q));}
@@ -298,7 +344,8 @@ function pinpinHomePieces() {
         if(routeDistance(px,pz)<1.7)continue;
         const height=.55+noise(i*41+j)*.65;
         for(let k=0;k<9;k++)leaf(m,px,.02,pz,k*2.4+j,height*(.7+.3*noise(k+j*4)));
-        crown(m,px,.30,pz,.40,height*.35,i*10+j);
+        // Low shrubs use short supported sprays rather than closed cone caps.
+        for(let k=0;k<5;k++)foliageBlade(m,[px,.25+height*.28,pz],k*2.4+i,.28,.08,.12,-.65);
       }
     });
   },[0,0,0]);
@@ -309,15 +356,11 @@ function pinpinHomePieces() {
   // renderer; a whole forest batch would hide unrelated distant trees.
   saplings.forEach(([x,z,h],i)=>{
     add('trunk-'+(100+i),[.28,.22,.13],m=>{
-      tube(m,[[x,0,z],[x+.13,h*.48,z-.12],[x-.18,h*.92,z+.14]],k=>.19-k*.052,7);
-      for(let k=0;k<3;k++){const a=k*2.1+i;const bx=x+Math.cos(a)*.85,bz=z+Math.sin(a)*.85;
-        tube(m,[[x,h*.51,z],[bx,h*.68,bz],[bx+Math.cos(a)*.25,h*.77,bz+Math.sin(a)*.25]],t=>.075-t*.026,5);
-      }
+      tube(m,[[x,0,z],[x+.13,h*.48,z-.12],[x-.12,h*.85,z+.14],[x-.18,h+.25,z+.14]],k=>[.19,.11,.045,.006][k],7);
+      branchWood(m,x,z,h,100+i);
     },[0,0,0]);
-    add('canopy-'+(100+i),[[.18,.28,.12],[.24,.34,.14],[.32,.39,.18]][i%3],m=>{
-      for(let k=0;k<6;k++){const a=k*2.4+i,r=1.12+noise(i*11+k)*.52;
-        crown(m,x+Math.cos(a)*.78,h*(.64+k*.048),z+Math.sin(a)*.78,r,.65+noise(k+i)*.40,i*17+k);
-      }
+    add('canopy-'+(100+i),[[.105,.205,.065],[.15,.26,.085],[.20,.31,.105]][i%3],m=>{
+      leafyCrown(m,x,z,h,100+i);
     },[0,0,0]);
   });
   for(let i=0;i<6;i++)add('path-amber-marker-'+i,[.92,.68,.28],m=>{

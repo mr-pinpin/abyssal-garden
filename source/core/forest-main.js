@@ -1,7 +1,14 @@
 // Demand-driven forest renderer; original underwater main.js remains available.
 const forestState=window.__pinpin={ready:false,mode:'loading',models:[],frames:0,errors:[],chapter:'clearing'};
 const forestFail=error=>{forestState.errors.push(String(error));const el=document.getElementById('error');el.hidden=false;el.textContent='The forest could not open. '+error.message;};
-const forestSources={home:typeof pinpinHomePieces==='function'?pinpinHomePieces:null,clearing:typeof pinpinClearingPieces==='function'?pinpinClearingPieces:null,elder:typeof pinpinElderPieces==='function'?pinpinElderPieces:null};
+// Choose geometry detail only after an actual device succeeds. Keep the adapter
+// and device alive for the renderer; software fallback builds the lower detail.
+const forestPreparedGPU=await(async()=>{
+ if(!navigator.gpu)return null;
+ try{const adapter=await navigator.gpu.requestAdapter();return adapter?{adapter,device:await adapter.requestDevice()}:null;}catch{return null;}
+})();
+const forestFoliageQuality=forestPreparedGPU?'high':'low';forestState.foliageQuality=forestFoliageQuality;
+const forestSources={home:typeof pinpinHomePieces==='function'?()=>pinpinHomePieces({foliageQuality:forestFoliageQuality}):null,clearing:typeof pinpinClearingPieces==='function'?pinpinClearingPieces:null,elder:typeof pinpinElderPieces==='function'?pinpinElderPieces:null};
 const forestPieces=Object.values(forestSources).flatMap(make=>make?make():[]);
 if(typeof pinpinLifePieces==='function')forestPieces.push(...pinpinLifePieces());
 {
@@ -118,9 +125,8 @@ function forestCapturePixels(source,destination,width,height,bytesPerRow,format)
  }
 }
 async function forestGPU(){
- if(!navigator.gpu)return null;
- const adapter=await navigator.gpu.requestAdapter();if(!adapter)return null;
- const device=await adapter.requestDevice(),canvas=document.getElementById('scene'),context=canvas.getContext('webgpu');
+ if(!forestPreparedGPU)return null;
+ const {device}=forestPreparedGPU,canvas=document.getElementById('scene'),context=canvas.getContext('webgpu');
  const format=navigator.gpu.getPreferredCanvasFormat();context.configure({device,format,alphaMode:'opaque',usage:GPUTextureUsage.RENDER_ATTACHMENT|GPUTextureUsage.COPY_SRC});
  const shader=device.createShaderModule({code:W_FOREST}),messages=await shader.getCompilationInfo(),errors=messages.messages.filter(m=>m.type==='error');
  if(errors.length)throw new Error(errors.map(m=>m.message).join('; '));
@@ -138,6 +144,9 @@ async function forestGPU(){
  const binding=device.createBindGroup({layout,entries:[{binding:0,resource:{buffer:uniform,size:176}}]});
  const data=new Float32Array(stride/4*draws.length);let depth,width=0,height=0;
  device.lost.then(info=>{if(info.reason!=='destroyed')forestFail(new Error('The graphics device was lost; reload to reopen the forest.'));});
+ const skyShader=typeof W_SKY==='string'?device.createShaderModule({code:W_SKY}):null;
+ const skyPipeline=skyShader&&await device.createRenderPipelineAsync({layout:device.createPipelineLayout({bindGroupLayouts:[layout]}),vertex:{module:skyShader,entryPoint:'vs'},fragment:{module:skyShader,entryPoint:'fs',targets:[{format}]},primitive:{topology:'triangle-list'},depthStencil:{format:'depth24plus',depthWriteEnabled:false,depthCompare:'always'}});
+ forestState.sky=!!skyPipeline;
  forestState.mode='webgpu';forestState.draws=draws.length;
  return ()=>{
   const ratio=Math.min(devicePixelRatio||1,1.5),w=Math.max(1,Math.floor(innerWidth*ratio)),h=Math.max(1,Math.floor(innerHeight*ratio));
@@ -146,6 +155,7 @@ async function forestGPU(){
   for(let i=0;i<draws.length;i++){const d=draws[i],o=i*stride/4;data.set(vp,o);data.set(d.model,o+16);data.set([...d.group.color,d.tree?d.tree.fade:1],o+32);data.set([.45,.86,.25,0],o+36);data.set([...forestEye,0],o+40);}
   device.queue.writeBuffer(uniform,0,data);
   const texture=context.getCurrentTexture(),encoder=device.createCommandEncoder(),pass=encoder.beginRenderPass({colorAttachments:[{view:texture.createView(),clearValue:{r:.66,g:.73,b:.55,a:1},loadOp:'clear',storeOp:'store'}],depthStencilAttachment:{view:depth.createView(),depthClearValue:1,depthLoadOp:'clear',depthStoreOp:'store'}});
+  if(skyPipeline&&draws.length){pass.setPipeline(skyPipeline);pass.setBindGroup(0,binding,[0]);pass.draw(3);}
   pass.setPipeline(pipeline);
   for(let i=0;i<draws.length;i++){const d=draws[i];if(d.tree&&d.tree.fade<=0)continue;pass.setBindGroup(0,binding,[i*stride]);pass.setVertexBuffer(0,d.vertex);pass.setIndexBuffer(d.index,'uint32');pass.drawIndexed(d.group.indexCount,1,d.group.firstIndex);}
   pass.end();
@@ -227,7 +237,7 @@ function forestLifeActive(){return forestState.mode==='webgpu'&&typeof pinpinUpd
 forestMotion?.addEventListener?.('change',()=>{forestLifeAt=-Infinity;if(forestMotion.matches&&typeof pinpinUpdateLife==='function'){pinpinUpdateLife(0);for(const object of forestObjects)if(object.piece.dynamic)object.model.set(forestModel(object.piece));}forestRequest();});
 function forestFrame(time){
  forestQueued=false;if(document.hidden)return;
- try{if(forestLifeActive()&&time-forestLifeAt>=1000/30){pinpinUpdateLife(time/1000);for(const object of forestObjects)if(object.piece.dynamic)object.model.set(forestModel(object.piece));forestLifeAt=time;}if(forestWalkMoving())forestWalkStep(forestLast?Math.max(0,(time-forestLast)/1000):0);if(forestTour)forestCamera.yaw+=Math.min((time-forestLast)/1000,.05)*.075;forestDraw();forestState.frames++;forestLast=time;}catch(error){forestFail(error);forestTour=false;}
+ try{if(forestLifeActive()&&time-forestLifeAt>=1000/30){pinpinUpdateLife(time/1000);for(const object of forestObjects)if(object.piece.dynamic)object.model.set(forestModel(object.piece));forestLifeAt=time;}if(forestWalkMoving())forestWalkStep(forestLast?Math.max(0,(time-forestLast)/1000):0);if(forestTour)forestCamera.yaw+=Math.min((time-forestLast)/1000,.05)*.075;forestDraw();forestState.fading=forestFading;forestState.frames++;forestLast=time;}catch(error){forestFail(error);forestTour=false;}
  if(forestTour||forestLifeActive())setTimeout(forestRequest,forestState.mode==='canvas2d'?150:33);else if(forestFading||forestWalkMoving())forestRequest();
 }
 function forestChapter(name){
