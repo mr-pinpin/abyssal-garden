@@ -28,6 +28,9 @@ fn filmic(x:vec3f)->vec3f { return clamp((x*(2.51*x+.03))/(x*(2.43*x+.59)+.14),v
  let br=vnoise(i.wp.xz*.35)*.6+vnoise(i.wp.xz*1.7)*.4;
  albedo*=mix(1.,.68+.42*br,flat);
  albedo=mix(albedo,albedo*vec3f(1.08,1.02,.82),flat*smoothstep(.55,.85,vnoise(i.wp.xz*.12+vec2f(7.,3.))));
+ let dk=clamp((-.6535-i.aux)/.0158,0.,1.);let lt=clamp((i.aux+.6535)/.0236,0.,1.);
+ let tone=.94-.22*dk+.18*lt;
+ albedo*=mix(1.,tone,1.-smoothstep(.03,.05,abs(i.aux+.6535)));
  let sun=normalize(vec3f(.52,.62,.34));
  let sunC=vec3f(1.,.90,.74)*1.12;
  let wrap=max((dot(n,sun)+.25)/1.25,0.);
@@ -37,9 +40,10 @@ fn filmic(x:vec3f)->vec3f { return clamp((x*(2.51*x+.03))/(x*(2.43*x+.59)+.14),v
  var c=albedo*(sky*.50*ao+sunC*wrap*.85);
  // Soft rim from the sun side for silhouettes against the haze.
  c+=albedo*sunC*.18*pow(1.-max(dot(n,view),0.),3.)*max(dot(sun,-view)*.5+.5,0.);
- // Foliage marker: leaf vertices carry aux = -0.65 (snorm8 -83) in the normal's w.
+ // Foliage marker: leaf vertices carry aux near -0.65 in the normal's w. Cluster tone: snorm -85/-83/-80
+ // (dark/mid/light) maps to albedo x0.72/0.94/1.12, interpolated and clamped; bark and others unchanged.
  // Leaves let light through (backscatter) and show a soft waxy sheen; everything else is unchanged.
- let leaf=1.-smoothstep(.02,.05,abs(i.aux+.65));
+ let leaf=1.-smoothstep(.03,.05,abs(i.aux+.6535));
  let back=max(dot(-n,sun),0.)*.6+pow(max(dot(sun,-view),0.),4.)*.8;
  c+=leaf*albedo*vec3f(1.,1.05,.7)*sunC*back*.55;
  let hv=normalize(sun+view);
