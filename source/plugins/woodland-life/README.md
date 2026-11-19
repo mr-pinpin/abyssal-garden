@@ -24,3 +24,22 @@ textures, downloads, per-blade draws or animation scheduler.
 The atlas-inspired image study and provenance are under `references/`. They are
 visual references only. The current scene placement is authored world-space data;
 a later density-map consumer must use its owner's explicit coordinate contract.
+
+## Registered texture consumer
+
+Call `pinpinLifePieces({vegetationField})` on first construction. The field is
+`{width,height,density,excluded,worldFromUV,seed,limit,marginCells}`: row-major
+linear density values in [0,1], equally sized boolean exclusions, normalized
+image u-right/v-down, and an explicit `worldFromUV(u,v) => [x,y,z]` registered
+projection including terrain height. The plugin does not guess that projection.
+Cells are sampled deterministically and ranked without top-left truncation bias.
+A valid empty mask produces no vegetation; invalid/unregistered input is rejected.
+Up to 260 points control all this plugin's grass, flower and fern placement;
+legacy ellipses are used only when no field is supplied. Sampling is cached at
+scene initialization; a new world requires reconstruction, not in-place reuse.
+
+The producer must choose `marginCells` to cover actual plant extents in world
+units, mark water/roads/prop footprints excluded, and supply ground height from
+the registered terrain. This is decoded texture-driven placement, not a claim
+that the current unregistered atlas fields have been activated. Trees, rocks and
+other plugins require their own species fields and migration hooks.

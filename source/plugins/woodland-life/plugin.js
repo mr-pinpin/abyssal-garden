@@ -1,17 +1,42 @@
+// Texture-field boundary: decoded linear densities [0,1], explicit exclusions,
+// and an owner's registered projection. Never infers elevation from image RGB.
+function pinpinSampleVegetationField(field){
+ const {width,height,density,excluded,worldFromUV,seed=731,limit=260,marginCells=1}=field||{};
+ if(!Number.isInteger(width)||!Number.isInteger(height)||width<1||height<1||width*height>1048576)throw new Error('Invalid vegetation field dimensions');
+ if(density?.length!==width*height||excluded?.length!==width*height||typeof worldFromUV!=='function')throw new Error('Vegetation requires density, exclusion mask and registered worldFromUV');
+ if(!Number.isInteger(limit)||limit<0||limit>260||!Number.isInteger(marginCells)||marginCells<0||marginCells>8)throw new Error('Invalid vegetation sampling budget');
+ if(!Array.from(density).every(v=>Number.isFinite(v)&&v>=0&&v<=1))throw new Error('Vegetation densities must be linear [0,1]');
+ const hash=i=>{let n=(i^(seed>>>0))>>>0;n=Math.imul(n^(n>>>16),0x7feb352d);n=Math.imul(n^(n>>>15),0x846ca68b);return ((n^(n>>>16))>>>0)/4294967296;};
+ const ranked=[];
+ for(let y=0;y<height;y++)for(let x=0;x<width;x++){
+  const i=y*width+x,d=density[i];if(!d||excluded[i]||hash(i)>=d)continue;
+  let clear=true;for(let yy=y-marginCells;yy<=y+marginCells&&clear;yy++)for(let xx=x-marginCells;xx<=x+marginCells;xx++)if(xx<0||yy<0||xx>=width||yy>=height||excluded[yy*width+xx]){clear=false;break;}
+  if(clear)ranked.push({i,x,y,rank:hash(i+1048576)});
+ }
+ ranked.sort((a,b)=>a.rank-b.rank||a.i-b.i);
+ return ranked.slice(0,limit).map(({i,x,y})=>{
+  const u=(x+.5)/width,v=(y+.5)/height,position=worldFromUV(u,v);
+  if(!Array.isArray(position)||position.length!==3||!position.every(Number.isFinite))throw new Error('Registered vegetation position must be finite world XYZ');
+  return {cell:i,u,v,position:position.slice()};
+ });
+}
 // Authored woodland detail. No timers, DOM, asset requests or audio ownership.
 const pinpinLifeActors=[];
 let pinpinLifeScene=null;
-function pinpinLifePieces(){
+let pinpinLifeAnchor=[8.7,0,10.1];
+function pinpinLifePieces(options={}){
  if(pinpinLifeScene)return pinpinLifeScene;
+ const fieldPoints=options.vegetationField?pinpinSampleVegetationField(options.vegetationField):null;
+ if(fieldPoints?.length)pinpinLifeAnchor=fieldPoints[0].position.slice();
  const pieces=[];
  const descriptor=(name,mesh,color,position=[0,0,0],dynamic=false)=>{
-  const built=mesh.build();const p={name:'woodland-life/'+name,asset:null,build:()=>built,color,position,rotation:[0,0,0],scale:[1,1,1],dynamic};pieces.push(p);return p;
+  if(!mesh.p.length)return null;const built=mesh.build();const p={name:'woodland-life/'+name,asset:null,build:()=>built,color,position,rotation:[0,0,0],scale:[1,1,1],dynamic};pieces.push(p);return p;
  };
  // Three batched meshes: stems, warm petals and pale flower centres.
  const stems=new Mesh(),petals=new Mesh(),centres=new Mesh();
- for(let i=0;i<32;i++){
-  const a=i*2.399963,x=8.7+Math.cos(a)*(1+(i%7)*.22),z=10.1+Math.sin(a)*(.7+(i%5)*.17),h=.19+(i%4)*.055;
-  stems.tube([[x,.02,z],[x+.035,h,z]],t=>t?.012:.021,4);
+ for(let i=0;i<(fieldPoints?Math.min(32,fieldPoints.length):32);i++){
+  const a=i*2.399963,point=fieldPoints?.[i],x=point?point.position[0]:8.7+Math.cos(a)*(1+(i%7)*.22),z=point?point.position[2]:10.1+Math.sin(a)*(.7+(i%5)*.17),baseY=point?point.position[1]:0,h=baseY+.19+(i%4)*.055;
+  stems.tube([[x,baseY+.02,z],[x+.035,h,z]],t=>t?.012:.021,4);
   for(let j=0;j<5;j++){
    const r=j*Math.PI*2/5,px=x+Math.cos(r)*.10,pz=z+Math.sin(r)*.10;
    const v=petals.v(x,h,z),l=petals.v(px-Math.sin(r)*.058,h+.035,pz+Math.cos(r)*.058),tip=petals.v(x+Math.cos(r)*.18,h+.025,z+Math.sin(r)*.18),rr=petals.v(px+Math.sin(r)*.058,h+.035,pz-Math.cos(r)*.058);petals.quad(v,l,tip,rr);
@@ -19,7 +44,7 @@ function pinpinLifePieces(){
   centres.tube([[x,h,z],[x,h+.027,z]],()=>.044,6);
  }
  // Low leaves gather the flowers into a habitat instead of isolated stems.
- for(let i=0;i<60;i++){
+ for(let i=0;i<(fieldPoints?0:60);i++){
   const a=i*2.399963,r=.35+Math.sqrt(i/60)*1.9,x=8.7+Math.cos(a)*r,z=10.1+Math.sin(a)*r*.72;
   for(let j=0;j<3;j++){
    const d=a+j*2.094,h=.12+(i%5)*.024,dx=Math.cos(d),dz=Math.sin(d);
@@ -27,7 +52,7 @@ function pinpinLifePieces(){
   }
  }
  // Three feathered ferns frame the patch; individual leaf silhouettes, one batch.
- for(const [x,z,size] of [[11.1,11.6,.9],[7.2,11.5,.7],[10.7,8.7,.65]]){
+ for(const [x,z,size] of (fieldPoints?[]:[[11.1,11.6,.9],[7.2,11.5,.7],[10.7,8.7,.65]])){
   for(let f=0;f<5;f++){
    const a=f*Math.PI*2/5,dx=Math.cos(a),dz=Math.sin(a);
    for(let k=1;k<=6;k++){
@@ -54,29 +79,30 @@ function pinpinLifePieces(){
   }
  }
  for(let i=0;i<260;i++){
-  const h=habitat[i%habitat.length],a=random()*Math.PI*2,r=Math.sqrt(random()),x=h.x+Math.cos(a)*r*h.rx,z=h.z+Math.sin(a)*r*h.rz;
+  const h=habitat[i%habitat.length],a=random()*Math.PI*2,r=Math.sqrt(random()),point=fieldPoints?.[i],x=point?point.position[0]:h.x+Math.cos(a)*r*h.rx,z=point?point.position[2]:h.z+Math.sin(a)*r*h.rz,baseY=point?point.position[1]:0;
+  if(fieldPoints&&!point)break;
   // Keep the stream and bridge corridor clear even if an ellipse is later widened.
-  if(z<8.15||Math.abs(x-7)<1.2&&z<11)continue;
+  if(!fieldPoints&&(z<8.15||Math.abs(x-7)<1.2&&z<11))continue;
   const mesh=foliage[i%3],height=.13+random()*.29;
-  for(let j=0;j<4;j++)leaf(mesh,x,.018,z,random()*Math.PI*2,.12+random()*.20,.012+random()*.014,height*(.6+random()*.4));
+  for(let j=0;j<4;j++)leaf(mesh,x,baseY+.018,z,random()*Math.PI*2,.12+random()*.20,.012+random()*.014,height*(.6+random()*.4));
  }
- for(let i=0;i<12;i++){
-  const h=habitat[i%habitat.length],a=random()*Math.PI*2,r=Math.sqrt(random()),x=h.x+Math.cos(a)*r*h.rx,z=h.z+Math.sin(a)*r*h.rz,mesh=foliage[i%3];
+ for(let i=0;i<(fieldPoints?Math.min(12,fieldPoints.length):12);i++){
+  const h=habitat[i%habitat.length],a=random()*Math.PI*2,r=Math.sqrt(random()),point=fieldPoints?.[i],x=point?point.position[0]:h.x+Math.cos(a)*r*h.rx,z=point?point.position[2]:h.z+Math.sin(a)*r*h.rz,baseY=point?point.position[1]:0,mesh=foliage[i%3];
   for(let f=0;f<7;f++){
    const angle=f*Math.PI*2/7+random()*.22,dx=Math.cos(angle),dz=Math.sin(angle),size=.4+random()*.45;
    for(let k=1;k<=7;k++){
-    const t=k/8,cx=x+dx*t*size,cz=z+dz*t*size,cy=.03+Math.sin(t*Math.PI*.8)*size*.65;
+    const t=k/8,cx=x+dx*t*size,cz=z+dz*t*size,cy=baseY+.03+Math.sin(t*Math.PI*.8)*size*.65;
     for(const side of [-1,1])leaf(mesh,cx,cy,cz,angle+side*1.05,(1-t)*size*.34,.018+(1-t)*.025,.035,2);
    }
   }
  }
- [[.12,.23,.065],[.22,.34,.09],[.34,.42,.14]].forEach((color,i)=>{foliage[i].aux.fill(-.65);descriptor('understory-'+i,foliage[i],color);});
+ [[.12,.23,.065],[.22,.34,.09],[.34,.42,.14]].forEach((color,i)=>{if(!foliage[i].p.length)return;foliage[i].aux.fill(-.65);descriptor('understory-'+i,foliage[i],color);});
  const wing=(side)=>{
   const m=new Mesh(),v=(x,z)=>m.v(x*side,0,z);
   const root=v(0,0),a=v(.12,-.21),b=v(.32,-.18),c=v(.29,.04),d=v(.20,.18),e=v(.06,.15);
   m.tri(root,b,a);m.tri(root,c,b);m.tri(root,d,c);m.tri(root,e,d);return m;
  };
- for(let i=0;i<6;i++){
+ for(let i=0;i<(fieldPoints&&!fieldPoints.length?0:6);i++){
   const color=i%2?[.98,.73,.28]:[.59,.77,.86];
   const left=descriptor('butterfly-'+i+'-left',wing(-1),color,[0,0,0],true);
   const right=descriptor('butterfly-'+i+'-right',wing(1),color,[0,0,0],true);
@@ -89,7 +115,7 @@ function pinpinLifePieces(){
 function pinpinUpdateLife(seconds){
  const t=Number.isFinite(seconds)?seconds:0;
  for(const {left,right,body,phase} of pinpinLifeActors){
-  const a=t*.30+phase,x=8.7+Math.cos(a)*1.65,z=10.1+Math.sin(a*.83+phase)*1.1,y=.82+.32*Math.sin(t*.71+phase);
+  const a=t*.30+phase,x=pinpinLifeAnchor[0]+Math.cos(a)*1.65,z=pinpinLifeAnchor[2]+Math.sin(a*.83+phase)*1.1,y=pinpinLifeAnchor[1]+.82+.32*Math.sin(t*.71+phase);
   for(const p of [left,right,body]){p.position[0]=x;p.position[1]=y;p.position[2]=z;p.rotation[1]=-a;}
   const flap=.30+.9*(.5+.5*Math.sin(t*13+phase));left.rotation[2]=-flap;right.rotation[2]=flap;
  }
