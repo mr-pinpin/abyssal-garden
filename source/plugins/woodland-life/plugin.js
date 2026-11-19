@@ -70,7 +70,7 @@ function pinpinLifePieces(){
    }
   }
  }
- [[.12,.23,.065],[.22,.34,.09],[.34,.42,.14]].forEach((color,i)=>descriptor('understory-'+i,foliage[i],color));
+ [[.12,.23,.065],[.22,.34,.09],[.34,.42,.14]].forEach((color,i)=>{foliage[i].aux.fill(-.65);descriptor('understory-'+i,foliage[i],color);});
  const wing=(side)=>{
   const m=new Mesh(),v=(x,z)=>m.v(x*side,0,z);
   const root=v(0,0),a=v(.12,-.21),b=v(.32,-.18),c=v(.29,.04),d=v(.20,.18),e=v(.06,.15);
