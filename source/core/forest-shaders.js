@@ -47,6 +47,28 @@ fn filmic(x:vec3f)->vec3f { return clamp((x*(2.51*x+.03))/(x*(2.43*x+.59)+.14),v
  let br=vnoise(i.wp.xz*.35)*.6+vnoise(i.wp.xz*1.7)*.4;
  albedo*=mix(1.,.68+.42*br,flat);
  albedo=mix(albedo,albedo*vec3f(1.08,1.02,.82),flat*smoothstep(.55,.85,vnoise(i.wp.xz*.12+vec2f(7.,3.))));
+ // Ground detail by surface kind (until the atlas ground-type texture is registered): fine detail fades with distance
+ // so it never shimmers. Grass: dark clumps, single blades, dry tips, a few daisies. Dirt: pebbles, ruts and dust.
+ let near=1.-smoothstep(6.,26.,distance(g.camera.xyz,i.wp));
+ let col=g.color.rgb;
+ let grassy=flat*step(col.r+.04,col.g)*step(col.b+.04,col.g)*step(i.wp.y,.3);
+ let dirt=flat*step(col.b+.06,col.r)*step(col.g*.92,col.r)*step(i.wp.y,.3);
+ if(grassy>.5){
+  let clump=vnoise(i.wp.xz*.9);let blade=hash2(floor(i.wp.xz*48.));let tip=hash2(floor(i.wp.xz*48.)+vec2f(5.,9.));
+  albedo*=mix(1.,.62+.5*clump,.8);
+  albedo*=mix(1.,.72+.56*blade,near*.9);
+  albedo=mix(albedo,albedo*vec3f(1.25,1.12,.62),near*step(.93,tip)*.8);
+  let dc=leafCells(vec3f(i.wp.x*4.,0.,i.wp.z*4.));
+  let daisy=near*step(dc.x,.09)*step(.86,dc.y)*smoothstep(.3,.7,vnoise(i.wp.xz*.4+vec2f(3.,8.)));
+  albedo=mix(albedo,vec3f(.92,.90,.82),daisy);
+ }
+ if(dirt>.5){
+  let pc=leafCells(vec3f(i.wp.x*9.,0.,i.wp.z*9.));
+  let pebble=near*(1.-smoothstep(.28,.36,pc.x));
+  albedo*=mix(1.,.80+.35*vnoise(i.wp.xz*2.3),.9);
+  albedo=mix(albedo,albedo*(1.15+.35*pc.y)*vec3f(1.,.98,.94),pebble);
+  albedo*=mix(1.,.78,near*(1.-pebble)*smoothstep(.36,.5,pc.x)*.6);
+ }
  let dk=clamp((-.6535-i.aux)/.0158,0.,1.);let lt=clamp((i.aux+.6535)/.0236,0.,1.);
  let tone=.94-.22*dk+.18*lt;
  albedo*=mix(1.,tone,1.-smoothstep(.03,.05,abs(i.aux+.6535)));
