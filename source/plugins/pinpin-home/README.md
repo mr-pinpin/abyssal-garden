@@ -1,7 +1,7 @@
 # PinPin home and connecting forest — unreviewed showcase study
 
 `pinpinHomePieces()` defines a standalone pre-phase scene plugin in the existing
-Mesh/math scope. Calling it returns 84 piece descriptors: a three-room home,
+Mesh/math scope. Calling it returns 89 piece descriptors: a three-room home,
 plan-based furniture, green open entry, round window frames, partial moss roof,
 13 woodland trees, ferns, amber markers, and a joined path toward the sanctuary.
 No DOM, GPU, fetch, random-stream mutation, or registration occurs at definition
@@ -37,9 +37,12 @@ The home and sanctuary's relative world coordinates are staging, not book
 geography. This plugin is not a replacement for the location pack's measured
 Blender builder, a new approved location version, or a panorama.
 
-The path joins `[-12.4,3]` through `[-8,7]`, `[-2,5]`, `[3,1]`, `[7,-3]`,
-`[11,-5]` to `[14,-7]`. It is 1.8 m wide with rounded joins, not a solid wall
-between scene areas. The canonical 0.59952 m doorway remains a narrow pinch
+The path joins `[-12.4,3]` through `[-12.4,6]`, `[-8,8.8]`,
+`[3.8,8.8]`, `[7,8.8]`, `[7,2.5]`, `[9,-1]`, `[11,-5]` to `[14,-7]`.
+It follows the north bank before crossing the existing timber-clearing bridge
+at `[7,5.6]`. No dirt strip is drawn over its open water; two earth approaches
+meet the scaled GLB deck top at y=0.804. The outdoor ribbon is at least 1.8m wide,
+with varied shoulders and rounded joins. The canonical 0.59952 m doorway remains a narrow pinch
 point. Tests sample a 0.2 m-wide central doorway route and a wider outdoor route;
 these rays do not constitute a navigation/collision engine or adult clearance
 approval. Amber pieces are geometry/color cues; the rendezvous renderer owns
@@ -89,3 +92,19 @@ software MIT grant. The read canon `LICENSE`, `CONTENT-LICENSE.md`, and
 Their inclusion does not grant broader rights to adaptations or third-party
 content. No book images, external models, textures, or upstream GPU code were
 copied. This remains an unreviewed study produced for Miguel's assigned showcase.
+
+## Woodland craft pass
+
+The authored exterior now uses three batched leaf palettes, sparse ferns,
+shoulder stones, cream/ochre flowers, mushroom clusters, directional root
+fingers, and two entry herb pots. A private integer hash varies placement,
+height and silhouette; shared RNG and all measured plan records stay intact.
+Shoulder sites are rejected against every route segment and the stream bank,
+so bends cannot plant details across an adjoining walking segment.
+
+The complete plugin has 27,576 packed vertices and 27,616 triangles; added
+detail uses 14,040 vertices across 13 material batches. Contract checks cap that
+detail at 18,000 vertices and test real triangle clearance at low body heights
+across a 1.1m outdoor ribbon, plus bridge approach placement. This is geometry
+evidence; the browser render and integrated asset clearances require the parent
+integration review. No new visual approval or deployment is claimed.

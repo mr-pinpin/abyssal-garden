@@ -175,9 +175,26 @@ function pinpinHomePieces() {
     box(m,-.94,1.44,3.04,.16,.22,.16);tube(m,[[-.94,1.67,3.04],[-.94,1.80,2.94]],.025);
   });
   // Forest is authored, with a continuous 1.8m path kept free of trunks.
-  const route=[[-12.4,3.0],[-12.4,6],[-8,7],[-2,5],[3,1],[7,-3],[11,-5],[14,-7]];
-  for(let i=0;i<route.length-1;i++)add('path-'+i,[.47,.37,.24],m=>{
-    m.sweep([[route[i][0],.025,route[i][1]],[route[i+1][0],.025,route[i+1][1]]],1.8,.05,()=>[0,1,0]);
+  const route=[[-12.4,3.0],[-12.4,6],[-8,8.8],[3.8,8.8],[7,8.8],[7,2.5],[9,-1],[11,-5],[14,-7]];
+  // Irregular shoulders keep the full central 1.8m ribbon available. Low
+  // polygon counts and grouped materials matter more here than dense meshes.
+  for(let i=0;i<route.length-1;i++)add('path-'+i,[.43,.33,.21],m=>{
+    if(i===4){
+      // Authored earth approaches meet the measured GLB deck at y=.804.
+      for(const [z0,z1] of [[8.8,7.75],[2.5,3.48]]) {
+        const ids=[[5.98,.035,z0],[8.02,.035,z0],[8.02,.804,z1],[5.98,.804,z1]].map(p=>m.v(...p));
+        m.quad(...(z1>z0?ids.slice().reverse():ids));
+      }
+      return;
+    }
+    const [a,b]=[route[i],route[i+1]],dx=b[0]-a[0],dz=b[1]-a[1],len=Math.hypot(dx,dz),n=[-dz/len,dx/len];
+    const rows=[];
+    for(let k=0;k<=8;k++) {
+      const t=k/8,x=a[0]+dx*t,z=a[1]+dz*t;
+      const widths=[.91+.14*(.5+.5*Math.sin(k*2.7+i*1.8)),.91+.13*(.5+.5*Math.cos(k*2.2+i))];
+      rows.push([-1,1].map((side,j)=>m.v(x+n[0]*widths[j]*side,.032+.006*Math.sin(k*1.3+i),z+n[1]*widths[j]*side)));
+    }
+    for(let k=0;k<8;k++)m.quad(rows[k][0],rows[k+1][0],rows[k+1][1],rows[k][1]);
   },[0,0,0]);
   // Rounded joints close the wedges left by adjoining path strips.
   route.forEach(([x,z],i)=>add('path-joint-'+i,[.47,.37,.24],m=>{
@@ -197,7 +214,67 @@ function pinpinHomePieces() {
       orb(m,x,h-.2,z,1.7,1.6,1.6);orb(m,x+.8,h-.8,z-.6,1.2,1.1,1.3);
     },[0,0,0]);
   });
-  for(let i=0;i<10;i++)add('fern-'+i,[.23,.40,.17],m=>fern(m,0,0,.55+(i%3)*.1),[-18+i*3.1,0,9-i*1.48]);
+  // A local integer hash provides repeatable variation without advancing rseed.
+  const noise=k=>{let n=Math.imul(k+117,374761393);n=Math.imul(n^(n>>>13),1274126177);return ((n^(n>>>16))>>>0)/4294967296;};
+  const routeDistance=(x,z)=>Math.min(...route.slice(1).map((b,i)=>{
+    const a=route[i],dx=b[0]-a[0],dz=b[1]-a[1],t=Math.max(0,Math.min(1,((x-a[0])*dx+(z-a[1])*dz)/(dx*dx+dz*dz)));
+    return Math.hypot(x-a[0]-t*dx,z-a[1]-t*dz);
+  }));
+  const edgeSites=[];
+  for(let i=1;i<route.length-1;i++) {
+    const a=route[i],b=route[i+1],dx=b[0]-a[0],dz=b[1]-a[1],l=Math.hypot(dx,dz);
+    for(let k=0;k<7;k++)for(const side of [-1,1]) {
+      const seed=i*71+k*7+(side+1),t=(k+.25+noise(seed)*.5)/7;
+      const setback=1.16+noise(seed+1)*.65;
+      const x=a[0]+dx*t-dz/l*side*setback,z=a[1]+dz*t+dx/l*side*setback;
+      // At bends a shoulder can face the neighboring segment: reject it too.
+      if(routeDistance(x,z)>1.18&&!(x>-3&&x<18&&Math.abs(z-5.6)<2.05))edgeSites.push([x,z,seed]);
+    }
+  }
+  const leaf=(m,x,y,z,a,s)=>{
+    const dx=Math.cos(a),dz=Math.sin(a),base=m.v(x,y,z),tip=m.v(x+dx*s*.55,y+s,z+dz*s*.55);
+    const left=m.v(x+dx*s*.25-dz*s*.16,y+s*.42,z+dz*s*.25+dx*s*.16);
+    const right=m.v(x+dx*s*.25+dz*s*.16,y+s*.42,z+dz*s*.25-dx*s*.16);
+    twoSided(m,base,left,tip);twoSided(m,base,tip,right);
+  };
+  for(let shade=0;shade<3;shade++)add('understory-leaves-'+shade,[[.18,.30,.11],[.26,.38,.14],[.34,.42,.18]][shade],m=>{
+    edgeSites.forEach(([x,z,seed],i)=>{if(i%3!==shade)return;
+      for(let k=0;k<7;k++)leaf(m,x+(noise(seed+k)-.5)*.28,.015,z+(noise(seed+k+20)-.5)*.28,k*2.4+seed,.18+noise(seed+k+40)*.32);
+    });
+  },[0,0,0]);
+  add('woodland-ferns',[.22,.37,.15],m=>{
+    edgeSites.forEach(([x,z,seed],i)=>{if(i%9===3)fern(m,x,z,.48+noise(seed)*.3);});
+  },[0,0,0]);
+  add('shoulder-stones',[.40,.40,.31],m=>{
+    edgeSites.forEach(([x,z,seed],i)=>{if(i%3===0)orb(m,x,.065,z,.12+noise(seed)*.16,.07+noise(seed+4)*.08,.10+noise(seed+3)*.13,0);});
+  },[0,0,0]);
+  add('forest-flower-stems',[.24,.34,.12],m=>{
+    edgeSites.forEach(([x,z,seed],i)=>{if(i%4===1)for(let k=0;k<3;k++)tube(m,[[x+k*.09,0,z],[x+k*.09,.26+noise(seed+k)*.18,z+.04]],.009,4);});
+  },[0,0,0]);
+  for(let shade=0;shade<2;shade++)add('forest-flowers-'+shade,shade?[.73,.59,.34]:[.72,.69,.49],m=>{
+    edgeSites.forEach(([x,z,seed],i)=>{if(i%4!==1||Math.floor(i/4)%2!==shade)return;
+      for(let k=0;k<3;k++){const y=.26+noise(seed+k)*.18;for(let j=0;j<5;j++){const a=j*Math.PI*2/5;orb(m,x+k*.09+Math.cos(a)*.037,y,z+.04+Math.sin(a)*.037,.035,.018,.035,0);}}
+    });
+  },[0,0,0]);
+  add('mushroom-stems',[.67,.58,.39],m=>{
+    for(const [x,z,seed] of edgeSites.filter((_,i)=>i%11===0))for(let k=0;k<3;k++)tube(m,[[x+k*.11,0,z],[x+k*.11,.12+noise(seed+k)*.10,z]],.022,5);
+  },[0,0,0]);
+  add('mushroom-caps',[.57,.28,.14],m=>{
+    for(const [x,z,seed] of edgeSites.filter((_,i)=>i%11===0))for(let k=0;k<3;k++)orb(m,x+k*.11,.13+noise(seed+k)*.10,z,.075,.035,.075,0);
+  },[0,0,0]);
+  add('entry-terracotta',[.48,.28,.15],m=>{
+    for(const [x,z] of [[-1.48,3.30],[.64,3.32]]){tube(m,[[x,.02,z],[x,.29,z]],k=>.12+k*.05,10);ring(m,x,.29,z,.18,.18,.025);}
+  });
+  add('entry-herbs',[.30,.43,.17],m=>{
+    for(const [x,z] of [[-1.48,3.30],[.64,3.32]])for(let k=0;k<9;k++)leaf(m,x,.28,z,k*2.4,.27+(k%3)*.05);
+  });
+  // Fine buttress roots and broken bark silhouettes bind trees to the floor.
+  add('root-fingers',[.29,.20,.12],m=>{
+    trees.forEach(([x,z],i)=>{for(let k=0;k<5;k++){const a=k*1.256+i*.7,r=.75+noise(i*9+k)*.35;
+      if([.20,.57,r].some(d=>routeDistance(x+Math.cos(a)*d,z+Math.sin(a)*d)<.85))continue;
+      tube(m,[[x+Math.cos(a)*.20,.24,z+Math.sin(a)*.20],[x+Math.cos(a)*.57,.08,z+Math.sin(a)*.57],[x+Math.cos(a)*r,.015,z+Math.sin(a)*r]],t=>.09-t*.038,5);
+    }});
+  },[0,0,0]);
   for(let i=0;i<6;i++)add('path-amber-marker-'+i,[.92,.68,.28],m=>{
     orb(m,0,.28,0,.055,.08,.055,0);
   },[route[i+1][0]+.95,0,route[i+1][1]+.72]);
