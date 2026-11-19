@@ -71,6 +71,20 @@ fn filmic(x:vec3f)->vec3f { return clamp((x*(2.51*x+.03))/(x*(2.43*x+.59)+.14),v
  // Warm sanctuary lamplight is bounded, independent of the optional ambience.
  let lamp=vec3f(14.,2.8,-19.);let d=distance(lamp,i.wp);
  c+=albedo*vec3f(.72,.40,.12)*(.60/(1.+d*d*.13));
+ // Water (stream and pond): flat, low and blue-green pieces. Small static ripples bend the normal; the surface
+ // mixes its deep colour with the reflected sky by Fresnel, and the sun leaves a glint where it is not shadowed.
+ let rawN=normalize(i.n);
+ let water=step(.95,abs(rawN.y))*step(i.wp.y,.12)*step(g.color.r+.12,g.color.b)*step(g.color.r+.12,g.color.g);
+ if(water>.5){
+  let q=i.wp.xz;
+  let rn=normalize(vec3f((vnoise(q*3.1)-.5)*.35+(vnoise(q*9.7+vec2f(3.,1.))-.5)*.18,1.,(vnoise(q*3.1+vec2f(17.,5.))-.5)*.35+(vnoise(q*9.7+vec2f(8.,2.))-.5)*.18));
+  let r=reflect(-view,rn);
+  let skyR=mix(vec3f(.40,.49,.31),vec3f(.30,.50,.66),smoothstep(0.,.5,r.y));
+  let fres=.04+.96*pow(1.-max(dot(rn,view),0.),5.);
+  let deep=g.color.rgb*vec3f(.35,.55,.6);
+  c=mix(deep*(.5+.5*sh),skyR,clamp(fres*1.4+.12,0.,1.));
+  c+=sunC*sh*2.2*pow(max(dot(r,sun),0.),180.);
+ }
  // Aerial perspective: distance and height fog toward the horizon colour.
  let dist=distance(g.camera.xyz,i.wp);
  let fog=(1.-exp(-dist*.012))*mix(1.,.6,smoothstep(0.,12.,i.wp.y));
