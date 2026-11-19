@@ -1,0 +1,42 @@
+{
+  "version": 2,
+  "status": "generated candidate; not yet wired into runtime",
+  "generator": "built-in image_gen",
+  "modelIdentity": "not exposed by tool; no exact-model claim",
+  "sourceAtlasSHA256": "80af7f9eb7188f0a1f64969a22632d0ef9732284d027042222c1543879f03780",
+  "createdAt": "2026-11-19T17:44:25.847034+00:00",
+  "height": {
+    "file": "height-guide-v2.png",
+    "sha256": "c0d42554048a151848705be68e00d3ceaf31cfa7dcf87d6f3c114ae5ee7400e3",
+    "semantics": "Artist-authored bare-earth displacement, black low/white high; no metric units; atlas IMAGE-PLANE geography reference, no automatic orthographic survey claim",
+    "prompt": "Generate a 1536x1024 grayscale bare-earth heightmap aligned to supplied atlas image-plane, no relighting or canopy/buildings/props, flat connected central lake and continuous inflow/outflow, soft raised banks and rolling ground, gentle cottage/Elder platforms, level crossing approaches, no text/contours/perspective. Height is inferred artist-authored ground relief, never canopy brightness.",
+    "channel": "R/255; other channels ignored. Generated near-neutral RGB differs by at most4 codes, not exact grayscale."
+  },
+  "landcover": {
+    "file": "landcover-seed-v2.png",
+    "sha256": "5136824b780aab5c7fffa0c39348f610da04b842a0774c81f829d80f1b4f8ceb",
+    "status": "generated candidate; semantic validation and runtime wiring next",
+    "palette": {
+      "#006600": "dense mixed woodland",
+      "#66cc33": "deciduous margins",
+      "#999900": "fern/grass",
+      "#ff66cc": "flower meadow",
+      "#0000ff": "lake/stream",
+      "#ff0000": "paths/tracks",
+      "#ffffff": "occupied/protected props/buildings/rocks",
+      "#000000": "open ground"
+    },
+    "prompt": "Generate a 1536x1024 flat semantic class raster aligned to supplied atlas image plane, eight-color palette listed, connected lake/inflow/outflow and paths with bridge sole water crossing, organic detailed woodland patch structure, actual cottage/Elder/bridge/tractor landmarks, no lighting/shadows/text/legend. Atlas is sole geographic reference; no invented reframing."
+  },
+  "runtimeAcceptance": {
+    "enabled": false,
+    "required": [
+      "Decode/validate grayscale dimensions and channels",
+      "Validate continuous registered water and shores",
+      "Full-radius placement exclusions from generated semantic texture",
+      "Preserve traversable route and level scene entry regions",
+      "Demonstrate generated texture input change changes GPU scene"
+    ]
+  },
+  "policy": "All new world geometry/placement derives from ChatGPT-generated textures; manual geometry/coordinate lists are migration debt."
+}
