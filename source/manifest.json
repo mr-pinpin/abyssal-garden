@@ -110,6 +110,10 @@
         "assets/materials/moss.webp"
       ],
       "provenance": "assets/materials/provenance.json"
+    },
+    "ground-types": {
+      "format": "generated-class-grid-v3",
+      "url": "assets/atlas-studies/runtime-v3.json"
     }
   },
   "template": "core/forest-template.html",

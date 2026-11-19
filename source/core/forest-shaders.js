@@ -52,8 +52,8 @@ fn filmic(x:vec3f)->vec3f { return clamp((x*(2.51*x+.03))/(x*(2.43*x+.59)+.14),v
  // so it never shimmers. Grass: dark clumps, single blades, dry tips, a few daisies. Dirt: pebbles, ruts and dust.
  let near=1.-smoothstep(6.,26.,distance(g.camera.xyz,i.wp));
  let col=g.color.rgb;
- let grassy=flat*step(col.r+.04,col.g)*step(col.b+.04,col.g)*step(i.wp.y,.3);
- let dirt=flat*step(col.b+.06,col.r)*step(col.g*.92,col.r)*step(i.wp.y,.3);
+ let grassy=flat*step(col.r+.04,col.g)*step(col.b+.04,col.g)*step(i.wp.y,3.);
+ let dirt=flat*step(col.b+.06,col.r)*step(col.g*.92,col.r)*step(i.wp.y,3.);
  if(grassy>.5){
   let clump=vnoise(i.wp.xz*.9);let blade=hash2(floor(i.wp.xz*48.));let tip=hash2(floor(i.wp.xz*48.)+vec2f(5.,9.));
   albedo*=mix(1.,.62+.5*clump,.8);
@@ -167,7 +167,7 @@ fn sunShadow(wp:vec3f,n:vec3f)->f32 {
   let ruv=clamp(i.cp.xy/refl.screen.xy+rn.xz*.04,vec2f(.001),vec2f(.999));
   let rc=textureSampleLevel(reflTex,groundSampler,ruv,0.);
   skyR=mix(skyR,pow(rc.rgb,vec3f(2.2))*.9,rc.a);`).replace('/*GROUND_TERM*/',`
- if(ground.t0.w>.5&&flat>.5&&i.wp.y<.3){
+ if(ground.t0.w>.5&&flat>.5&&i.wp.y<3.){
   let guv=vec2f(dot(ground.t0.xy,i.wp.xz)+ground.t0.z,dot(ground.t1.xy,i.wp.xz)+ground.t1.z);
   if(all(guv>vec2f(0.))&&all(guv<vec2f(1.))){
    let gt=textureSampleLevel(groundTypes,groundSampler,guv,0.);
@@ -187,7 +187,7 @@ fn sunShadow(wp:vec3f,n:vec3f)->f32 {
   if(grassy>.5){albedo=mix(albedo,mat(0,tp),near*.9);}
   if(dirt>.5){albedo=mix(albedo,mat(1,tp),near*.9);}
   if(barkish>.5){let bu=vec2f((i.wp.x+i.wp.z)*1.1,i.wp.y*.7);albedo=mix(albedo,mix(mat(4,bu),mat(5,bu*1.6),smoothstep(.2,.7,-dot(n,normalize(vec3f(.62,0.,-.70))))*(1.-smoothstep(.3,2.2,i.wp.y))),.3+.6*near);}
-  if(ground.t0.w>.5&&flat>.5&&i.wp.y<.3){
+  if(ground.t0.w>.5&&flat>.5&&i.wp.y<3.){
    let guv=vec2f(dot(ground.t0.xy,i.wp.xz)+ground.t0.z,dot(ground.t1.xy,i.wp.xz)+ground.t1.z);
    if(all(guv>vec2f(0.))&&all(guv<vec2f(1.))){
     let gt=textureSampleLevel(groundTypes,groundSampler,guv,0.);let gw=clamp(gt.r+gt.g+gt.b+gt.a,0.,1.);
@@ -244,12 +244,28 @@ async function forestGroundTexture(device,materials=false){
  const entry=typeof PLUGIN_ASSETS==='object'&&PLUGIN_ASSETS?PLUGIN_ASSETS['ground-types']:null;
  const uniform=device.createBuffer({size:32,usage:GPUBufferUsage.UNIFORM|GPUBufferUsage.COPY_DST});
  let texture=null,t=[0,0,0,0,0,0,0,0];
- if(entry&&entry.url&&Array.isArray(entry.worldToUV)&&entry.worldToUV.length===6){
+ if(entry&&entry.url&&(entry.format==='generated-class-grid-v3'||Array.isArray(entry.worldToUV)&&entry.worldToUV.length===6)){
   try{
+   if(entry.format==='generated-class-grid-v3'){
+    // Zhukov's runtime field: a categorical ground-class grid (0 grass, 1 path, 2 water, 3 rock, 4 garden, 5 home, 6 elder,
+    // 7 bridge, 8 tractor yard) with its own inverse world->uv. Decoded here into the RGBA weights the shader reads; a cell
+    // next to water gets the shore (mud) weight. Pure decoding, nothing painted.
+    const grid=await (await fetch(entry.url)).json(),W=grid.width,H=grid.height,g=grid.groundClasses,px=new Uint8Array(W*H*4);
+    if(!Array.isArray(g)||g.length!==W*H||!Array.isArray(grid.inverse)||grid.inverse.length!==6)throw new Error('class grid malformed');
+    const at=(x,y)=>x<0||y<0||x>=W||y>=H?-1:g[y*W+x];
+    for(let y=0;y<H;y++)for(let x=0;x<W;x++){
+     const k=g[y*W+x],o=(y*W+x)*4,shore=k!==2&&[[1,0],[-1,0],[0,1],[0,-1]].some(([dx,dy])=>at(x+dx,y+dy)===2);
+     px[o]=k===1||k===8?255:0;px[o+1]=k===4?255:k===8?90:0;px[o+2]=shore?200:0;px[o+3]=k===3?255:0;
+    }
+    texture=device.createTexture({size:[W,H],format:'rgba8unorm',usage:GPUTextureUsage.TEXTURE_BINDING|GPUTextureUsage.COPY_DST});
+    device.queue.writeTexture({texture},px,{bytesPerRow:W*4},[W,H]);
+    const [a,b,c,d,e,f]=grid.inverse;t=[a,b,c,1,d,e,f,0];
+   }else{
    const bitmap=await createImageBitmap(await (await fetch(entry.url)).blob(),{colorSpaceConversion:'none',premultiplyAlpha:'none'});
    texture=device.createTexture({size:[bitmap.width,bitmap.height],format:'rgba8unorm',usage:GPUTextureUsage.TEXTURE_BINDING|GPUTextureUsage.COPY_DST|GPUTextureUsage.RENDER_ATTACHMENT});
    device.queue.copyExternalImageToTexture({source:bitmap},{texture},[bitmap.width,bitmap.height]);
    const [a,b,c,d,e,f]=entry.worldToUV;t=[a,b,c,1,d,e,f,0];
+   }
   }catch(error){console.warn('ground-types texture not used:',error);texture=null;}
  }
  if(!texture){texture=device.createTexture({size:[1,1],format:'rgba8unorm',usage:GPUTextureUsage.TEXTURE_BINDING|GPUTextureUsage.COPY_DST});}  // WebGPU zero-initialises textures: all-zero means plain grass, and the shader ignores it anyway
