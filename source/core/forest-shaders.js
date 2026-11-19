@@ -69,6 +69,15 @@ fn filmic(x:vec3f)->vec3f { return clamp((x*(2.51*x+.03))/(x*(2.43*x+.59)+.14),v
   albedo=mix(albedo,albedo*(1.15+.35*pc.y)*vec3f(1.,.98,.94),pebble);
   albedo*=mix(1.,.78,near*(1.-pebble)*smoothstep(.36,.5,pc.x)*.6);
  }
+ // Bark: brown, steep, above the ground and not foliage. Vertical fibres and furrows; moss on the shaded, lower side.
+ let barkish=step(col.b+.05,col.r)*step(col.g,col.r+.02)*step(col.r*.45,col.g)*step(col.r,.5)*(1.-smoothstep(.35,.6,abs(n.y)))*step(.05,i.wp.y)*(1.-leafBand);
+ if(barkish>.5){
+  let fib=vnoise(vec2f((i.wp.x+i.wp.z)*9.,i.wp.y*1.2))*.6+vnoise(vec2f((i.wp.x-i.wp.z)*23.,i.wp.y*3.))*.4;
+  albedo*=mix(1.,.62+.6*fib,near*.85+.15);
+  albedo*=mix(1.,.7,smoothstep(.62,.8,vnoise(vec2f((i.wp.x+i.wp.z)*14.,i.wp.y*.5))));
+  let mossy=smoothstep(.15,.6,-dot(n,normalize(vec3f(.62,.0,-.70))))*(1.-smoothstep(.3,2.2,i.wp.y))*smoothstep(.4,.7,vnoise(i.wp.xz*3.+vec2f(i.wp.y*2.)));
+  albedo=mix(albedo,vec3f(.16,.24,.07)*(.8+.4*fib),mossy*.85);
+ }
  /*GROUND_TERM*/
  let dk=clamp((-.6535-i.aux)/.0158,0.,1.);let lt=clamp((i.aux+.6535)/.0236,0.,1.);
  let tone=.94-.22*dk+.18*lt;
@@ -113,7 +122,10 @@ fn filmic(x:vec3f)->vec3f { return clamp((x*(2.51*x+.03))/(x*(2.43*x+.59)+.14),v
  // Aerial perspective: distance and height fog toward the horizon colour.
  let dist=distance(g.camera.xyz,i.wp);
  let fog=(1.-exp(-dist*.012))*mix(1.,.6,smoothstep(0.,12.,i.wp.y));
- c=mix(c,vec3f(.26,.34,.17),clamp(fog*.8,0.,1.));
+ // Haze lit by the low sun: toward the sun the air glows warm and bright (forward scattering), elsewhere it stays green-grey.
+ let toSun=max(dot(normalize(i.wp-g.camera.xyz),sun),0.);
+ let hazeC=mix(vec3f(.26,.34,.17),vec3f(.95,.72,.40),pow(toSun,5.)*.85);
+ c=mix(c,hazeC,clamp(fog*(.8+.5*pow(toSun,5.)),0.,1.));
  c=filmic(c*.98);let lum=dot(c,vec3f(.2126,.7152,.0722));c=max(mix(vec3f(lum),c,1.12),vec3f(0.));
  return vec4f(pow(c,vec3f(1./2.2)),1.);
 }`;
