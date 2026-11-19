@@ -60,6 +60,11 @@
       "name": "forest-ambience",
       "phase": "pre",
       "enabled": true
+    },
+    {
+      "name": "woodland-life",
+      "phase": "pre",
+      "enabled": false
     }
   ],
   "assets": {
