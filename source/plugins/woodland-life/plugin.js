@@ -18,6 +18,14 @@ function pinpinLifePieces(){
   }
   centres.tube([[x,h,z],[x,h+.027,z]],()=>.044,6);
  }
+ // Low leaves gather the flowers into a habitat instead of isolated stems.
+ for(let i=0;i<60;i++){
+  const a=i*2.399963,r=.35+Math.sqrt(i/60)*1.9,x=8.7+Math.cos(a)*r,z=10.1+Math.sin(a)*r*.72;
+  for(let j=0;j<3;j++){
+   const d=a+j*2.094,h=.12+(i%5)*.024,dx=Math.cos(d),dz=Math.sin(d);
+   const b=stems.v(x-dz*.035,.015,z+dx*.035),c=stems.v(x+dz*.035,.015,z-dx*.035),tip=stems.v(x+dx*.16,h,z+dz*.16);stems.tri(b,tip,c);
+  }
+ }
  descriptor('meadow-stems',stems,[.25,.39,.13]);descriptor('meadow-petals',petals,[.94,.65,.22]);descriptor('meadow-pollen',centres,[1,.89,.53]);
  const wing=(side)=>{
   const m=new Mesh(),v=(x,z)=>m.v(x*side,0,z);
