@@ -76,7 +76,7 @@ function overlaps(box, rect) {
     && box.top < rect.bottom + padding && box.bottom > rect.top - padding;
 }
 
-test('trees crossing the desktop headline, paragraph or actions are faded', async t => {
+test('trees remain fully opaque even when crossing desktop text', async t => {
   const frames = [];
   let bounds;
   await exercise(process.env.GARDEN_FADE_PAGE || 'dev.html', {
@@ -105,12 +105,11 @@ test('trees crossing the desktop headline, paragraph or actions are faded', asyn
       const hits = protectedTrees.get(treeName(piece));
       if (!hits) continue;
       const where = chapter+' '+piece+' ('+hits.join(', ')+')';
-      if (fade === 1) violations.add(where+' at full opacity');
-      else if (frame === finalFrames.get(chapter)) violations.add(where+' after the fade settled');
+      if (fade !== 1) violations.add(where+' lost opacity');
     }
   }
   assert.deepEqual([...covered].sort(), Object.keys(rectangles).sort(), 'Every rectangle needs an overlapping tree');
-  assert.equal(violations.size, 0, 'Overlapping tree pieces reached rasterization:\n'+
+  assert.equal(violations.size, 0, 'Tree opacity changed:\n'+
     [...violations].join('\n'));
   t.diagnostic('Checked '+frames.length+' frames across '+[...new Set(frames.map(f => f.chapter))].join(', '));
 });

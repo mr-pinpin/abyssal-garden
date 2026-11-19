@@ -76,46 +76,9 @@ function forestVP(width,height){
  const f=1/Math.tan(.72/2),near=.1,far=180,p=new Float32Array(16);p[0]=f/(width/height);p[5]=f;p[8]=forestWalk.active?0:width>820?-.30:0;p[9]=forestWalk.active?0:width>820?0:-.26;p[10]=far/(near-far);p[11]=-1;p[14]=far*near/(near-far);return forestMultiply(p,view);
 }
 const forestObjects=forestGeometry.map(({piece,mesh})=>({piece,mesh,model:forestModel(piece)}));
-// Trees never stand between the reader and the text column. A tree is a "<plugin>/trunk-N" plus "<plugin>/canopy-N";
-// when its screen box meets the headline, the paragraph or the buttons it fades out (dithered), and back in once the
-// camera moves on. Nothing else in the scene is touched.
-const forestTrees=new Map();
-for(const object of forestObjects){
- const named=/^(.*\/)(?:trunk|canopy)-(\d+)$/.exec(object.piece.name);if(!named||!object.mesh.vb)continue;
- let tree=forestTrees.get(named[1]+named[2]);
- if(!tree)forestTrees.set(named[1]+named[2],tree={lo:[Infinity,Infinity,Infinity],hi:[-Infinity,-Infinity,-Infinity],fade:1,target:1});
- object.tree=tree;const f=new Float32Array(object.mesh.vb),M=object.model;
- for(let i=0;i<object.mesh.nv;i++){
-  const x=f[i*4],y=f[i*4+1],z=f[i*4+2];
-  for(let k=0;k<3;k++){const v=M[k]*x+M[4+k]*y+M[8+k]*z+M[12+k];tree.lo[k]=Math.min(tree.lo[k],v);tree.hi[k]=Math.max(tree.hi[k],v);}
- }
-}
-let forestFadeAt=0;
-function forestTextRects(){
- return [document.getElementById('chapter-title'),document.getElementById('chapter-description'),document.querySelector('.intro .actions')]
-  .filter(el=>el&&el.getClientRects().length).map(el=>{const r=el.getBoundingClientRect(),pad=14;return [r.left-pad,r.top-pad,r.right+pad,r.bottom+pad];});
-}
-function forestFadeTrees(vp){
- const now=performance.now(),step=forestFadeAt?Math.min((now-forestFadeAt)/1000,.1)*3.5:forestState.frames?.06:1,rects=forestTextRects();forestFadeAt=now;
- let moving=false;
- for(const tree of forestTrees.values()){
-  let x0=Infinity,y0=Infinity,x1=-Infinity,y1=-Infinity;
-  for(let c=0;c<8;c++){
-   const x=c&1?tree.hi[0]:tree.lo[0],y=c&2?tree.hi[1]:tree.lo[1],z=c&4?tree.hi[2]:tree.lo[2],w=vp[3]*x+vp[7]*y+vp[11]*z+vp[15];
-   if(w<=.1)continue;
-   const sx=((vp[0]*x+vp[4]*y+vp[8]*z+vp[12])/w*.5+.5)*innerWidth,sy=(.5-(vp[1]*x+vp[5]*y+vp[9]*z+vp[13])/w*.5)*innerHeight;
-   x0=Math.min(x0,sx);x1=Math.max(x1,sx);y0=Math.min(y0,sy);y1=Math.max(y1,sy);
-  }
-  tree.target=rects.some(r=>x0<r[2]&&x1>r[0]&&y0<r[3]&&y1>r[1])?0:1;
-  tree.fade=tree.fade<tree.target?Math.min(tree.target,tree.fade+step):Math.max(tree.target,tree.fade-step);
-  if(tree.fade!==tree.target)moving=true;
- }
- forestState.fadedTrees=[...forestTrees.values()].filter(t=>t.target===0).length;
- if(!moving)forestFadeAt=0;
- return moving;
-}
+// UI readability must never remove world geometry.
 let forestFading=false;
-const forestDither=(x,y)=>{const v=52.9829189*((.06711056*x+.00583715*y)%1);return v-Math.floor(v);};
+forestState.fadedTrees=0;
 // Canvas readback rows are padded to 256 bytes; preserve alpha and convert BGRA.
 function forestCapturePixels(source,destination,width,height,bytesPerRow,format){
  const bgra=format.startsWith('bgra');
@@ -152,13 +115,13 @@ async function forestGPU(){
  return ()=>{
   const ratio=Math.min(devicePixelRatio||1,1.5),w=Math.max(1,Math.floor(innerWidth*ratio)),h=Math.max(1,Math.floor(innerHeight*ratio));
   if(w!==width||h!==height){width=canvas.width=w;height=canvas.height=h;depth?.destroy();depth=device.createTexture({size:[w,h],format:'depth24plus',usage:GPUTextureUsage.RENDER_ATTACHMENT});}
-  const vp=forestVP(innerWidth,innerHeight);forestFading=forestFadeTrees(vp);
-  for(let i=0;i<draws.length;i++){const d=draws[i],o=i*stride/4;data.set(vp,o);data.set(d.model,o+16);data.set([...d.group.color,d.tree?d.tree.fade:1],o+32);data.set([.45,.86,.25,0],o+36);data.set([...forestEye,0],o+40);}
+  const vp=forestVP(innerWidth,innerHeight);forestFading=false;
+  for(let i=0;i<draws.length;i++){const d=draws[i],o=i*stride/4;data.set(vp,o);data.set(d.model,o+16);data.set([...d.group.color,1],o+32);data.set([.45,.86,.25,0],o+36);data.set([...forestEye,0],o+40);}
   device.queue.writeBuffer(uniform,0,data);
   const texture=context.getCurrentTexture(),encoder=device.createCommandEncoder();shadow?.encode(encoder,draws,binding,stride);const pass=encoder.beginRenderPass({colorAttachments:[{view:texture.createView(),clearValue:{r:.66,g:.73,b:.55,a:1},loadOp:'clear',storeOp:'store'}],depthStencilAttachment:{view:depth.createView(),depthClearValue:1,depthLoadOp:'clear',depthStoreOp:'store'}});
   if(skyPipeline&&draws.length){pass.setPipeline(skyPipeline);pass.setBindGroup(0,binding,[0]);pass.draw(3);}
   pass.setPipeline(pipeline);if(shadow)pass.setBindGroup(1,shadow.group);
-  for(let i=0;i<draws.length;i++){const d=draws[i];if(d.tree&&d.tree.fade<=0)continue;pass.setBindGroup(0,binding,[i*stride]);pass.setVertexBuffer(0,d.vertex);pass.setIndexBuffer(d.index,'uint32');pass.drawIndexed(d.group.indexCount,1,d.group.firstIndex);}
+  for(let i=0;i<draws.length;i++){const d=draws[i];pass.setBindGroup(0,binding,[i*stride]);pass.setVertexBuffer(0,d.vertex);pass.setIndexBuffer(d.index,'uint32');pass.drawIndexed(d.group.indexCount,1,d.group.firstIndex);}
   pass.end();
   // Explicit QA request only: no mapping, pixel copy or extra frame in ordinary use.
   let capture=null;
@@ -197,7 +160,7 @@ function forestCompatibility(){
  }
  let image,depth,width=0,height=0;
  return ()=>{
-  const ratio=Math.min(1,Math.sqrt(1800000/(innerWidth*innerHeight))),w=Math.max(1,Math.floor(innerWidth*ratio)),h=Math.max(1,Math.floor(innerHeight*ratio)),vp=forestVP(innerWidth,innerHeight);forestFading=forestFadeTrees(vp);
+  const ratio=Math.min(1,Math.sqrt(1800000/(innerWidth*innerHeight))),w=Math.max(1,Math.floor(innerWidth*ratio)),h=Math.max(1,Math.floor(innerHeight*ratio)),vp=forestVP(innerWidth,innerHeight);forestFading=false;
   if(w!==width||h!==height){canvas.width=width=w;canvas.height=height=h;image=context.createImageData(w,h);depth=new Float32Array(w*h);}
   const pixels=image.data;depth.fill(Infinity);
   for(let i=0;i<pixels.length;i+=4){pixels[i]=190;pixels[i+1]=201;pixels[i+2]=165;pixels[i+3]=255;}
@@ -205,7 +168,7 @@ function forestCompatibility(){
   // Depth testing keeps thin spines, window frames and overlapping wall pieces
   // correct in compatibility mode; triangle-average painter sorting cannot.
   for(const t of triangles){
-   const fade=t.tree?t.tree.fade:1;if(fade<=0)continue;
+   const fade=1;
    const p=t.v.map(v=>{const [x,y,z]=v,cw=vp[3]*x+vp[7]*y+vp[11]*z+vp[15];return [(vp[0]*x+vp[4]*y+vp[8]*z+vp[12])/cw*w/2+w/2,h/2-(vp[1]*x+vp[5]*y+vp[9]*z+vp[13])/cw*h/2,(vp[2]*x+vp[6]*y+vp[10]*z+vp[14])/cw,cw];});
    if(p.some(v=>v[3]<=.1))continue;
    const [a,b,c]=p,den=(b[1]-c[1])*(a[0]-c[0])+(c[0]-b[0])*(a[1]-c[1]);
@@ -218,7 +181,7 @@ function forestCompatibility(){
     let wa=((b[1]-c[1])*(minX+.5-c[0])+(c[0]-b[0])*(y+.5-c[1]))/den;
     let wb=((c[1]-a[1])*(minX+.5-c[0])+(a[0]-c[0])*(y+.5-c[1]))/den;
     for(let x=minX;x<=maxX;x++,wa+=stepA,wb+=stepB){
-     const wc=1-wa-wb;if(wa<0||wb<0||wc<0||fade<1&&forestDither(x,y)>=fade)continue;
+     const wc=1-wa-wb;if(wa<0||wb<0||wc<0)continue;
      const z=wa*a[2]+wb*b[2]+wc*c[2],index=y*w+x;
      if(z<0||z>1||z>=depth[index])continue;depth[index]=z;
      const offset=index*4;pixels[offset]=t.color[0];pixels[offset+1]=t.color[1];pixels[offset+2]=t.color[2];
