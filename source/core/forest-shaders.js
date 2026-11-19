@@ -36,7 +36,8 @@ fn filmic(x:vec3f)->vec3f { return clamp((x*(2.51*x+.03))/(x*(2.43*x+.59)+.14),v
  // Foliage is cut into separate leaves: world-space cells (~14 cm) with gaps between them, each leaf tilted and
  // toned on its own, darker toward its edge. The shadow pass cuts the same gaps, so light falls through in spots.
  let leafBand=1.-smoothstep(.03,.05,abs(i.aux+.6535));
- if(leafBand>.5){
+ // Only tree crowns are cut (above 1.6 m); understory leaves near the ground keep their own silhouettes.
+ if(leafBand>.5&&i.wp.y>1.6){
   let lc=leafCells(i.wp*7.);if(lc.x>.5){discard;}
   albedo*=(.80+.40*lc.y)*mix(1.,.72,smoothstep(.22,.5,lc.x));
   n=normalize(n+(hash3(vec3f(lc.y*97.3,lc.y*13.1,lc.y*51.7))-.5)*.9);
@@ -122,7 +123,7 @@ fn leafCells(p:vec3f)->vec2f {
  }}}
  return vec2f(sqrt(d),id);
 }
-@fragment fn fs(i:SOut) { if(abs(i.aux+.6535)<.04&&leafCells(i.wp*7.).x>.5){discard;} }`;
+@fragment fn fs(i:SOut) { if(abs(i.aux+.6535)<.04&&i.wp.y>1.6&&leafCells(i.wp*7.).x>.5){discard;} }`;
 const FOREST_SUN=[.52,.62,.34];
 // forestShadow(device, sceneLayout, objects) -> null | {layout, group, encode(encoder, draws, binding, stride)}
 // Hook contract for forest-main: scene pipeline uses W_FOREST_SHADOWED with bindGroupLayouts
