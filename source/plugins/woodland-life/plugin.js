@@ -26,6 +26,18 @@ function pinpinLifePieces(){
    const b=stems.v(x-dz*.035,.015,z+dx*.035),c=stems.v(x+dz*.035,.015,z-dx*.035),tip=stems.v(x+dx*.16,h,z+dz*.16);stems.tri(b,tip,c);
   }
  }
+ // Three feathered ferns frame the patch; individual leaf silhouettes, one batch.
+ for(const [x,z,size] of [[11.1,11.6,.9],[7.2,11.5,.7],[10.7,8.7,.65]]){
+  for(let f=0;f<5;f++){
+   const a=f*Math.PI*2/5,dx=Math.cos(a),dz=Math.sin(a);
+   for(let k=1;k<=6;k++){
+    const t=k/7,cx=x+dx*t*size,cz=z+dz*t*size,cy=.04+Math.sin(t*Math.PI*.8)*size*.65;
+    for(const side of [-1,1]){
+     const w=(1-t)*size*.30,base=stems.v(cx,cy,cz),tip=stems.v(cx-dz*w*side+dx*.11*size,cy+.02,cz+dx*w*side+dz*.11*size),end=stems.v(cx+dx*.13*size,cy+.04,cz+dz*.13*size);stems.tri(base,tip,end);
+    }
+   }
+  }
+ }
  descriptor('meadow-stems',stems,[.25,.39,.13]);descriptor('meadow-petals',petals,[.94,.65,.22]);descriptor('meadow-pollen',centres,[1,.89,.53]);
  const wing=(side)=>{
   const m=new Mesh(),v=(x,z)=>m.v(x*side,0,z);
