@@ -3,6 +3,7 @@ const forestState=window.__pinpin={ready:false,mode:'loading',models:[],frames:0
 const forestFail=error=>{forestState.errors.push(String(error));const el=document.getElementById('error');el.hidden=false;el.textContent='The forest could not open. '+error.message;};
 const forestSources={home:typeof pinpinHomePieces==='function'?pinpinHomePieces:null,clearing:typeof pinpinClearingPieces==='function'?pinpinClearingPieces:null,elder:typeof pinpinElderPieces==='function'?pinpinElderPieces:null};
 const forestPieces=Object.values(forestSources).flatMap(make=>make?make():[]);
+if(typeof pinpinLifePieces==='function')forestPieces.push(...pinpinLifePieces());
 {
  const m=new Mesh();m.sweep([[-70,-.12,0],[70,-.12,0]],140,.12,()=>[0,1,0]);
  forestPieces.unshift({name:'forest/ground',asset:null,build:()=>m.build(),position:[0,0,0],rotation:[0,0,0],scale:[1,1,1],color:[.24,.34,.14]});
@@ -27,11 +28,45 @@ const forestPresets={
  elder:{target:[14,1.8,-16],distance:18,yaw:.42,elevation:.55,kicker:'Field notes · Chapter 03',title:'Under the roots.<br><em>Into wonder.</em>',description:'Beyond the Elder’s woven mat, pale roots lead to old paintings, warm lamps and stories about caring for one another.',action:'Look inside the sanctuary'}
 };
 let forestCamera={...forestPresets.clearing},forestEye=[0,0,0],forestTour=false,forestQueued=false,forestLast=0,forestDraw;
+// Grounded outdoor corridor, not general mesh collision. Radius stays inside the
+// authored 1.8m path; the northern endpoint stops before the sanctuary walls.
+const forestWalkRoute=[[-12.4,3],[-12.4,6],[-8,8.8],[3.8,8.8],[7,8.8],[7,2.5],[9,-1],[11,-5],[14,-7]];
+const forestWalk={active:false,position:[-12.4,3],yaw:Math.PI,pitch:0,keys:new Set()};
+function forestWalkClamp(p){
+ let best=null,distance=Infinity;
+ for(let i=1;i<forestWalkRoute.length;i++){
+  const a=forestWalkRoute[i-1],b=forestWalkRoute[i],dx=b[0]-a[0],dz=b[1]-a[1],t=Math.max(0,Math.min(1,((p[0]-a[0])*dx+(p[1]-a[1])*dz)/(dx*dx+dz*dz))),q=[a[0]+dx*t,a[1]+dz*t],d=Math.hypot(p[0]-q[0],p[1]-q[1]);
+  if(d<distance){distance=d;best=q;}
+ }
+ return distance<=.65?p:[best[0]+(p[0]-best[0])*.65/distance,best[1]+(p[1]-best[1])*.65/distance];
+}
+// Bridge deck is .804m high; authored earth ramps meet its two ends.
+function forestWalkHeight(){const [x,z]=forestWalk.position;if(Math.abs(x-7)>.66||z<2.5||z>8.8)return 1.25;return 1.25+.804*Math.max(0,Math.min(1,(8.8-z)/1.05,(z-2.5)/.98));}
+function forestWalkMoving(){return forestWalk.active&&forestWalk.keys.size>0;}
+function forestWalkRelease(){forestWalk.keys.clear();forestLast=0;}
+function forestWalkMode(active){
+ forestWalkRelease();forestWalk.active=active;forestState.walking=active;forestTour=false;
+ document.getElementById('walk').textContent=active?'Return to overview':'Enter forest';
+ document.getElementById('walk').setAttribute('aria-pressed',String(active));
+ document.getElementById('walk-controls').hidden=!active;
+ document.getElementById('walk-help').hidden=!active;
+ document.getElementById('tour').setAttribute('aria-pressed','false');document.getElementById('tour').textContent='Take a gentle tour';
+ document.getElementById('chapter-title').hidden=active;document.getElementById('chapter-description').hidden=active;
+ forestRequest();
+}
+function forestWalkStep(dt){
+ const k=forestWalk.keys,forward=(k.has('w')||k.has('arrowup')?1:0)-(k.has('s')||k.has('arrowdown')?1:0),side=(k.has('d')||k.has('arrowright')?1:0)-(k.has('a')||k.has('arrowleft')?1:0),length=Math.hypot(forward,side)||1,speed=2.4*Math.min(dt,.05)/length;
+ const [x,z]=forestWalk.position,y=forestWalk.yaw;
+ forestWalk.position=forestWalkClamp([x+(Math.sin(y)*forward+Math.cos(y)*side)*speed,z+(-Math.cos(y)*forward+Math.sin(y)*side)*speed]);
+ forestState.walkPosition=forestWalk.position.slice();
+}
 function forestVP(width,height){
  const c=forestCamera,t=c.target;forestEye=[t[0]+Math.sin(c.yaw)*Math.cos(c.elevation)*c.distance,t[1]+Math.sin(c.elevation)*c.distance,t[2]+Math.cos(c.yaw)*Math.cos(c.elevation)*c.distance];
- const z=forestVec.norm(forestVec.sub(forestEye,t)),x=forestVec.norm(forestVec.cross([0,1,0],z)),y=forestVec.cross(z,x);
+ const look=forestWalk.active?[forestWalk.position[0]+Math.sin(forestWalk.yaw)*Math.cos(forestWalk.pitch),forestWalkHeight()+Math.sin(forestWalk.pitch),forestWalk.position[1]-Math.cos(forestWalk.yaw)*Math.cos(forestWalk.pitch)]:t;
+ if(forestWalk.active)forestEye=[forestWalk.position[0],forestWalkHeight(),forestWalk.position[1]];
+ const z=forestVec.norm(forestVec.sub(forestEye,look)),x=forestVec.norm(forestVec.cross([0,1,0],z)),y=forestVec.cross(z,x);
  const view=Float32Array.of(x[0],y[0],z[0],0,x[1],y[1],z[1],0,x[2],y[2],z[2],0,-forestVec.dot(x,forestEye),-forestVec.dot(y,forestEye),-forestVec.dot(z,forestEye),1);
- const f=1/Math.tan(.72/2),near=.1,far=180,p=new Float32Array(16);p[0]=f/(width/height);p[5]=f;p[8]=width>820?-.30:0;p[9]=width>820?0:-.26;p[10]=far/(near-far);p[11]=-1;p[14]=far*near/(near-far);return forestMultiply(p,view);
+ const f=1/Math.tan(.72/2),near=.1,far=180,p=new Float32Array(16);p[0]=f/(width/height);p[5]=f;p[8]=forestWalk.active?0:width>820?-.30:0;p[9]=forestWalk.active?0:width>820?0:-.26;p[10]=far/(near-far);p[11]=-1;p[14]=far*near/(near-far);return forestMultiply(p,view);
 }
 const forestObjects=forestGeometry.map(({piece,mesh})=>({piece,mesh,model:forestModel(piece)}));
 // Trees never stand between the reader and the text column. A tree is a "<plugin>/trunk-N" plus "<plugin>/canopy-N";
@@ -158,13 +193,18 @@ function forestCompatibility(){
 try{forestDraw=await forestGPU();}catch(error){forestState.compatibilityReason=String(error);console.warn('Using the compatibility renderer:',error);}
 if(!forestDraw)forestDraw=forestCompatibility();
 function forestRequest(){if(!forestQueued){forestQueued=true;requestAnimationFrame(forestFrame);}}
+let forestLifeAt=-Infinity;
+const forestMotion=typeof matchMedia==='function'?matchMedia('(prefers-reduced-motion: reduce)'):null;
+function forestLifeActive(){return forestState.mode==='webgpu'&&typeof pinpinUpdateLife==='function'&&!forestMotion?.matches&&!document.hidden;}
+forestMotion?.addEventListener?.('change',()=>{forestLifeAt=-Infinity;if(forestMotion.matches&&typeof pinpinUpdateLife==='function'){pinpinUpdateLife(0);for(const object of forestObjects)if(object.piece.dynamic)object.model.set(forestModel(object.piece));}forestRequest();});
 function forestFrame(time){
  forestQueued=false;if(document.hidden)return;
- try{if(forestTour)forestCamera.yaw+=Math.min((time-forestLast)/1000,.05)*.075;forestDraw();forestState.frames++;forestLast=time;}catch(error){forestFail(error);forestTour=false;}
- if(forestTour)setTimeout(forestRequest,forestState.mode==='canvas2d'?150:33);else if(forestFading)forestRequest();
+ try{if(forestLifeActive()&&time-forestLifeAt>=1000/30){pinpinUpdateLife(time/1000);for(const object of forestObjects)if(object.piece.dynamic)object.model.set(forestModel(object.piece));forestLifeAt=time;}if(forestWalkMoving())forestWalkStep(forestLast?Math.max(0,(time-forestLast)/1000):0);if(forestTour)forestCamera.yaw+=Math.min((time-forestLast)/1000,.05)*.075;forestDraw();forestState.frames++;forestLast=time;}catch(error){forestFail(error);forestTour=false;}
+ if(forestTour||forestLifeActive())setTimeout(forestRequest,forestState.mode==='canvas2d'?150:33);else if(forestFading||forestWalkMoving())forestRequest();
 }
 function forestChapter(name){
  if(!forestSources[name])return;
+ if(forestWalk.active)forestWalkMode(false);
  forestCamera={...forestPresets[name],target:forestPresets[name].target.slice()};forestState.chapter=name;
  for(const [id,key] of [['chapter-kicker','kicker'],['chapter-title','title'],['chapter-description','description']]){
   const el=document.getElementById(id);if(key==='title')el.innerHTML=forestCamera[key];else el.textContent=forestCamera[key];
@@ -176,13 +216,20 @@ document.querySelectorAll('[data-chapter]').forEach(button=>{button.disabled=!fo
 let forestDrag=null;
 for(const canvas of document.querySelectorAll('canvas')){
  canvas.addEventListener('pointerdown',event=>{forestDrag=[event.clientX,event.clientY];canvas.setPointerCapture(event.pointerId);});
- canvas.addEventListener('pointermove',event=>{if(!forestDrag)return;forestCamera.yaw-=(event.clientX-forestDrag[0])*.006;forestCamera.elevation=Math.max(.12,Math.min(1.25,forestCamera.elevation+(event.clientY-forestDrag[1])*.005));forestDrag=[event.clientX,event.clientY];forestRequest();});
+ canvas.addEventListener('pointermove',event=>{if(!forestDrag)return;if(forestWalk.active){forestWalk.yaw+=(event.clientX-forestDrag[0])*.006;forestWalk.pitch=Math.max(-1.1,Math.min(1.1,forestWalk.pitch-(event.clientY-forestDrag[1])*.005));forestDrag=[event.clientX,event.clientY];forestRequest();return;}forestCamera.yaw-=(event.clientX-forestDrag[0])*.006;forestCamera.elevation=Math.max(.12,Math.min(1.25,forestCamera.elevation+(event.clientY-forestDrag[1])*.005));forestDrag=[event.clientX,event.clientY];forestRequest();});
  canvas.addEventListener('pointerup',()=>forestDrag=null);canvas.addEventListener('pointercancel',()=>forestDrag=null);
- canvas.addEventListener('wheel',event=>{event.preventDefault();forestCamera.distance=Math.max(5,Math.min(45,forestCamera.distance*Math.exp(event.deltaY*.001)));forestRequest();},{passive:false});
+ canvas.addEventListener('wheel',event=>{if(forestWalk.active)return;event.preventDefault();forestCamera.distance=Math.max(5,Math.min(45,forestCamera.distance*Math.exp(event.deltaY*.001)));forestRequest();},{passive:false});
 }
+document.getElementById('walk').addEventListener('click',()=>forestWalkMode(!forestWalk.active));
+const forestWalkKey=event=>String(event.key||'').toLowerCase();
+const forestTextInput=event=>event.target?.isContentEditable||/^(INPUT|TEXTAREA|SELECT)$/.test(event.target?.tagName||'');
+addEventListener('keydown',event=>{if(!forestWalk.active||forestTextInput(event))return;const key=forestWalkKey(event);if(key==='escape'){forestWalkMode(false);return;}if(!['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright'].includes(key))return;event.preventDefault();forestWalk.keys.add(key);forestRequest();});
+addEventListener('keyup',event=>{forestWalk.keys.delete(forestWalkKey(event));});
+addEventListener('blur',forestWalkRelease);
+for(const key of ['w','a','s','d']){const button=document.getElementById('walk-'+key);button.addEventListener('pointerdown',event=>{event.preventDefault();button.setPointerCapture(event.pointerId);forestWalk.keys.add(key);forestRequest();});for(const type of ['pointerup','pointercancel','lostpointercapture'])button.addEventListener(type,()=>forestWalk.keys.delete(key));}
 document.getElementById('explore').addEventListener('click',()=>{forestCamera.distance=Math.max(7,forestPresets[forestState.chapter].distance*.62);forestRequest();});
-document.getElementById('tour').addEventListener('click',()=>{forestTour=!forestTour;document.getElementById('tour').setAttribute('aria-pressed',String(forestTour));document.getElementById('tour').textContent=forestTour?'Pause the gentle tour':'Take a gentle tour';forestLast=performance.now();forestRequest();});
+document.getElementById('tour').addEventListener('click',()=>{if(forestWalk.active)forestWalkMode(false);forestTour=!forestTour;document.getElementById('tour').setAttribute('aria-pressed',String(forestTour));document.getElementById('tour').textContent=forestTour?'Pause the gentle tour':'Take a gentle tour';forestLast=performance.now();forestRequest();});
 const forestAudio=typeof pinpinCreateAmbience==='function'?pinpinCreateAmbience():null,forestSound=document.getElementById('sound');forestSound.disabled=!forestAudio;
 forestSound.addEventListener('click',async()=>{const enabled=forestSound.getAttribute('aria-pressed')!=='true';try{await forestAudio.setEnabled(enabled);forestSound.setAttribute('aria-pressed',String(enabled));forestSound.textContent=enabled?'♫  Sound on':'♫  Sound off';}catch(error){forestSound.textContent='Sound unavailable';forestSound.disabled=true;}});
-addEventListener('pagehide',()=>forestAudio?.dispose(),{once:true});addEventListener('resize',forestRequest);document.addEventListener('visibilitychange',()=>{if(!document.hidden)forestRequest();});
+addEventListener('pagehide',()=>forestAudio?.dispose(),{once:true});addEventListener('resize',forestRequest);document.addEventListener('visibilitychange',()=>{forestWalkRelease();if(!document.hidden)forestRequest();});
 forestState.ready=true;forestState.pieces=forestPieces.length;forestChapter(forestSources.clearing?'clearing':Object.keys(forestSources).find(key=>forestSources[key]));forestRequest();
