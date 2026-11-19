@@ -28,6 +28,7 @@ fn leafCells(p:vec3f)->vec2f {
 }
 fn filmic(x:vec3f)->vec3f { return clamp((x*(2.51*x+.03))/(x*(2.43*x+.59)+.14),vec3f(0.),vec3f(1.)); }
 @fragment fn fs(i:Out)->@location(0) vec4f {
+ /*REFL_CLIP*/
  if(g.color.a<1.){let v=52.9829189*fract(dot(floor(i.cp.xy),vec2f(.06711056,.00583715)));if(fract(v)>=g.color.a){discard;}}
  var n=normalize(i.n);
  // Thin cards are drawn double-sided: light the side that faces the camera.
@@ -114,9 +115,10 @@ fn filmic(x:vec3f)->vec3f { return clamp((x*(2.51*x+.03))/(x*(2.43*x+.59)+.14),v
   let rn=normalize(vec3f((vnoise(q*3.1)-.5)*.10+(vnoise(q*9.7+vec2f(3.,1.))-.5)*.06,1.,(vnoise(q*3.1+vec2f(17.,5.))-.5)*.10+(vnoise(q*9.7+vec2f(8.,2.))-.5)*.06));
   let r=reflect(-view,rn);
   // Low reflected rays meet the far treeline (dark green), higher ones the sky.
-  let skyR=mix(vec3f(.07,.11,.05),mix(vec3f(.55,.50,.34),vec3f(.30,.46,.66),smoothstep(.1,.5,r.y)),smoothstep(.04,.22,r.y));
+  var skyR=mix(vec3f(.07,.11,.05),mix(vec3f(.55,.50,.34),vec3f(.30,.46,.66),smoothstep(.1,.5,r.y)),smoothstep(.04,.22,r.y));
   let fres=.04+.96*pow(1.-max(dot(rn,view),0.),5.);
   let deep=g.color.rgb*vec3f(.16,.28,.30);
+  /*REFL_WATER*/
   c=mix(deep*(.5+.5*sh),skyR,clamp(fres*1.4+.12,0.,1.));
   c+=sunC*sh*2.2*pow(max(dot(r,sun),0.),180.);
  }
@@ -131,7 +133,7 @@ fn filmic(x:vec3f)->vec3f { return clamp((x*(2.51*x+.03))/(x*(2.43*x+.59)+.14),v
  return vec4f(pow(c,vec3f(1./2.2)),1.);
 }`;
 // The unshadowed scene shader (used when forest-main has no shadow hook) and the shadowed variant.
-const W_FOREST=W_FOREST_SRC.replace('/*SHADOW_DECL*/','').replace('/*SHADOW_TERM*/1.','1.').replace('/*GROUND_TERM*/','').replace('/*MATERIAL_TERM*/','');
+const W_FOREST=W_FOREST_SRC.replace('/*SHADOW_DECL*/','').replace('/*SHADOW_TERM*/1.','1.').replace('/*GROUND_TERM*/','').replace('/*MATERIAL_TERM*/','').replace('/*REFL_CLIP*/','').replace('/*REFL_WATER*/','');
 // Sun shadows (Konev): one 2048^2 depth map from an orthographic sun camera fitted to the scene's
 // objects (ground-sized pieces excluded from the fit, so resolution goes to the forest). 3x3 PCF with
 // a normal offset; outside the map is lit. Group 1: light matrix, depth map, comparison sampler.
@@ -148,6 +150,11 @@ struct Ground { t0:vec4f, t1:vec4f };
 // Material textures (generated, tileable): layers 0 grass, 1 path/dirt, 2 mud, 3 rock, 4 bark, 5 moss. ground.t1.w=1 when loaded.
 @group(1) @binding(6) var materials:texture_2d_array<f32>;
 @group(1) @binding(7) var matSampler:sampler;
+// Planar water reflection (Konev, 19 Nov): the scene drawn mirrored in the water plane into a half-size texture.
+// refl.screen=(canvas w, canvas h, mode, water level): mode 1 = this is the reflection pass itself.
+struct Refl { vp:mat4x4f, screen:vec4f };
+@group(1) @binding(8) var<uniform> refl:Refl;
+@group(1) @binding(9) var reflTex:texture_2d<f32>;
 fn mat(l:i32,uv:vec2f)->vec3f { return pow(textureSampleLevel(materials,matSampler,uv,l,0.).rgb,vec3f(2.2)); }
 fn sunShadow(wp:vec3f,n:vec3f)->f32 {
  let lp=light*vec4f(wp+n*.05,1.);let uv=lp.xy*vec2f(.5,-.5)+.5;let z=lp.z-.0012;
@@ -155,7 +162,11 @@ fn sunShadow(wp:vec3f,n:vec3f)->f32 {
  let t=1.25/f32(textureDimensions(shadowMap).x);var s=0.;
  for(var y=-1;y<=1;y++){for(var x=-1;x<=1;x++){s+=textureSampleCompareLevel(shadowMap,shadowCmp,uv+vec2f(f32(x),f32(y))*t,z);}}
  return s/9.;
-}`).replace('/*SHADOW_TERM*/1.','sunShadow(i.wp,n)').replace('/*GROUND_TERM*/',`
+}`).replace('/*SHADOW_TERM*/1.','sunShadow(i.wp,n)').replace('/*REFL_CLIP*/',' if(refl.screen.z>.5&&i.wp.y<refl.screen.w){discard;}').replace('/*REFL_WATER*/',`
+  if(refl.screen.z>.5){discard;}
+  let ruv=clamp(i.cp.xy/refl.screen.xy+rn.xz*.04,vec2f(.001),vec2f(.999));
+  let rc=textureSampleLevel(reflTex,groundSampler,ruv,0.);
+  skyR=mix(skyR,pow(rc.rgb,vec3f(2.2))*.9,rc.a);`).replace('/*GROUND_TERM*/',`
  if(ground.t0.w>.5&&flat>.5&&i.wp.y<.3){
   let guv=vec2f(dot(ground.t0.xy,i.wp.xz)+ground.t0.z,dot(ground.t1.xy,i.wp.xz)+ground.t1.z);
   if(all(guv>vec2f(0.))&&all(guv<vec2f(1.))){
@@ -185,6 +196,11 @@ fn sunShadow(wp:vec3f,n:vec3f)->f32 {
    }
   }
  }`);
+const W_FOREST_REFLECTED=W_FOREST_SHADOWED+`
+@vertex fn vsr(@location(0) p:vec3f,@location(1) n:vec4f)->Out {
+ var o:Out; let wp=g.model*vec4f(p,1.);o.cp=refl.vp*wp;o.wp=wp.xyz;
+ o.n=normalize((g.model*vec4f(n.xyz,0.)).xyz);o.aux=n.w;return o;
+}`;
 const W_SHADOW=/*wgsl*/`
 struct Globals { vp:mat4x4f, model:mat4x4f, color:vec4f, sun:vec4f, camera:vec4f };
 @group(0) @binding(0) var<uniform> g:Globals;
@@ -261,18 +277,53 @@ async function forestShadow(device,sceneLayout,objects,size=2048){
  const lightBuf=device.createBuffer({size:64,usage:GPUBufferUsage.UNIFORM|GPUBufferUsage.COPY_DST});device.queue.writeBuffer(lightBuf,0,L);
  const map=device.createTexture({size:[size,size],format:'depth32float',usage:GPUTextureUsage.RENDER_ATTACHMENT|GPUTextureUsage.TEXTURE_BINDING});
  const castLayout=device.createBindGroupLayout({entries:[{binding:0,visibility:GPUShaderStage.VERTEX,buffer:{type:'uniform'}}]});
- const layout=device.createBindGroupLayout({entries:[{binding:0,visibility:GPUShaderStage.FRAGMENT,buffer:{type:'uniform'}},{binding:1,visibility:GPUShaderStage.FRAGMENT,texture:{sampleType:'depth'}},{binding:2,visibility:GPUShaderStage.FRAGMENT,sampler:{type:'comparison'}},{binding:3,visibility:GPUShaderStage.FRAGMENT,buffer:{type:'uniform'}},{binding:4,visibility:GPUShaderStage.FRAGMENT,texture:{sampleType:'float'}},{binding:5,visibility:GPUShaderStage.FRAGMENT,sampler:{type:'filtering'}},{binding:6,visibility:GPUShaderStage.FRAGMENT,texture:{sampleType:'float',viewDimension:'2d-array'}},{binding:7,visibility:GPUShaderStage.FRAGMENT,sampler:{type:'filtering'}}]});
+ const layout=device.createBindGroupLayout({entries:[{binding:0,visibility:GPUShaderStage.FRAGMENT,buffer:{type:'uniform'}},{binding:1,visibility:GPUShaderStage.FRAGMENT,texture:{sampleType:'depth'}},{binding:2,visibility:GPUShaderStage.FRAGMENT,sampler:{type:'comparison'}},{binding:3,visibility:GPUShaderStage.FRAGMENT,buffer:{type:'uniform'}},{binding:4,visibility:GPUShaderStage.FRAGMENT,texture:{sampleType:'float'}},{binding:5,visibility:GPUShaderStage.FRAGMENT,sampler:{type:'filtering'}},{binding:6,visibility:GPUShaderStage.FRAGMENT,texture:{sampleType:'float',viewDimension:'2d-array'}},{binding:7,visibility:GPUShaderStage.FRAGMENT,sampler:{type:'filtering'}},{binding:8,visibility:GPUShaderStage.VERTEX|GPUShaderStage.FRAGMENT,buffer:{type:'uniform'}},{binding:9,visibility:GPUShaderStage.FRAGMENT,texture:{sampleType:'float'}}]});
  const matSet=await forestMaterialTextures(device),groundSet=await forestGroundTexture(device,matSet.enabled);
  const module=device.createShaderModule({code:W_SHADOW});
  const pipeline=await device.createRenderPipelineAsync({layout:device.createPipelineLayout({bindGroupLayouts:[sceneLayout,castLayout]}),vertex:{module,entryPoint:'vs',buffers:[{arrayStride:16,attributes:[{shaderLocation:0,offset:0,format:'float32x3'},{shaderLocation:1,offset:12,format:'snorm8x4'}]}]},fragment:{module,entryPoint:'fs',targets:[]},primitive:{topology:'triangle-list',cullMode:'none'},depthStencil:{format:'depth32float',depthWriteEnabled:true,depthCompare:'less',depthBias:2,depthBiasSlopeScale:2.5}});
  const castGroup=device.createBindGroup({layout:castLayout,entries:[{binding:0,resource:{buffer:lightBuf}}]});
- const group=device.createBindGroup({layout,entries:[{binding:0,resource:{buffer:lightBuf}},{binding:1,resource:map.createView()},{binding:2,resource:device.createSampler({compare:'less',magFilter:'linear',minFilter:'linear'})},{binding:3,resource:{buffer:groundSet.uniform}},{binding:4,resource:groundSet.texture.createView()},{binding:5,resource:device.createSampler({magFilter:'linear',minFilter:'linear'})},{binding:6,resource:matSet.texture.createView({dimension:'2d-array'})},{binding:7,resource:device.createSampler({magFilter:'linear',minFilter:'linear',addressModeU:'repeat',addressModeV:'repeat'})}]});
- return {layout,group,light:L,encode(encoder,draws,binding,stride){
+ const sharedEntries=[{binding:0,resource:{buffer:lightBuf}},{binding:1,resource:map.createView()},{binding:2,resource:device.createSampler({compare:'less',magFilter:'linear',minFilter:'linear'})},{binding:3,resource:{buffer:groundSet.uniform}},{binding:4,resource:groundSet.texture.createView()},{binding:5,resource:device.createSampler({magFilter:'linear',minFilter:'linear'})},{binding:6,resource:matSet.texture.createView({dimension:'2d-array'})},{binding:7,resource:device.createSampler({magFilter:'linear',minFilter:'linear',addressModeU:'repeat',addressModeV:'repeat'})}];
+ const reflBufMain=device.createBuffer({size:80,usage:GPUBufferUsage.UNIFORM|GPUBufferUsage.COPY_DST}),reflBufPass=device.createBuffer({size:80,usage:GPUBufferUsage.UNIFORM|GPUBufferUsage.COPY_DST});
+ const blank=device.createTexture({size:[1,1],format:'rgba8unorm',usage:GPUTextureUsage.TEXTURE_BINDING|GPUTextureUsage.COPY_DST});
+ const makeGroup=(buffer,view)=>device.createBindGroup({layout,entries:[...sharedEntries,{binding:8,resource:{buffer}},{binding:9,resource:view}]});
+ const api={layout,group:makeGroup(reflBufMain,blank.createView()),light:L};
+ const passGroup=makeGroup(reflBufPass,blank.createView());
+ let refl=null;   // {pipeline,texture,depth,w,h,format}
+ api.encode=function(encoder,draws,binding,stride){
   const pass=encoder.beginRenderPass({colorAttachments:[],depthStencilAttachment:{view:map.createView(),depthClearValue:1,depthLoadOp:'clear',depthStoreOp:'store'}});
   pass.setPipeline(pipeline);pass.setBindGroup(1,castGroup);
   for(let i=0;i<draws.length;i++){const d=draws[i];if(d.tree&&d.tree.fade<=0)continue;pass.setBindGroup(0,binding,[i*stride]);pass.setVertexBuffer(0,d.vertex);pass.setIndexBuffer(d.index,'uint32');pass.drawIndexed(d.group.indexCount,1,d.group.firstIndex);}
   pass.end();
- }};
+  reflect(encoder,draws,binding,stride);
+ };
+ // Water reflection: the scene again, mirrored in the plane y=level, at half size; water samples it at its own screen spot.
+ function reflect(encoder,draws,binding,stride){
+  const canvas=typeof document==='object'&&document.getElementById?document.getElementById('scene'):null;
+  if(!canvas||!canvas.width||typeof forestVP!=='function'||typeof forestMultiply!=='function')return;
+  const level=.03,W=canvas.width,H=canvas.height,w=Math.max(1,W>>1),h=Math.max(1,H>>1);
+  if(!refl||refl.w!==w||refl.h!==h){
+   const format=refl?refl.format:(typeof navigator==='object'&&navigator.gpu?navigator.gpu.getPreferredCanvasFormat():'rgba8unorm');
+   refl?.texture.destroy();refl?.depth.destroy();
+   const texture=device.createTexture({size:[w,h],format,usage:GPUTextureUsage.RENDER_ATTACHMENT|GPUTextureUsage.TEXTURE_BINDING});
+   const depth=device.createTexture({size:[w,h],format:'depth24plus',usage:GPUTextureUsage.RENDER_ATTACHMENT});
+   const module=refl?null:device.createShaderModule({code:W_FOREST_REFLECTED});
+   const pipeline=refl?refl.pipeline:device.createRenderPipeline({layout:device.createPipelineLayout({bindGroupLayouts:[sceneLayout,layout]}),
+    vertex:{module,entryPoint:'vsr',buffers:[{arrayStride:16,attributes:[{shaderLocation:0,offset:0,format:'float32x3'},{shaderLocation:1,offset:12,format:'snorm8x4'}]}]},
+    fragment:{module,entryPoint:'fs',targets:[{format}]},primitive:{topology:'triangle-list',cullMode:'none'},depthStencil:{format:'depth24plus',depthWriteEnabled:true,depthCompare:'less'}});
+   refl={pipeline,texture,depth,w,h,format};
+   api.group=makeGroup(reflBufMain,texture.createView());
+  }
+  const vp=forestVP(innerWidth,innerHeight),mirror=new Float32Array([1,0,0,0, 0,-1,0,0, 0,0,1,0, 0,2*level,0,1]);
+  const passData=new Float32Array(20);passData.set(forestMultiply(vp,mirror),0);passData.set([w,h,1,level],16);
+  const mainData=new Float32Array(20);mainData.set([W,H,0,level],16);
+  device.queue.writeBuffer(reflBufPass,0,passData);device.queue.writeBuffer(reflBufMain,0,mainData);
+  const pass=encoder.beginRenderPass({colorAttachments:[{view:refl.texture.createView(),clearValue:{r:0,g:0,b:0,a:0},loadOp:'clear',storeOp:'store'}],
+   depthStencilAttachment:{view:refl.depth.createView(),depthClearValue:1,depthLoadOp:'clear',depthStoreOp:'store'}});
+  pass.setPipeline(refl.pipeline);pass.setBindGroup(1,passGroup);
+  for(let i=0;i<draws.length;i++){const d=draws[i];if(d.tree&&d.tree.fade<=0)continue;pass.setBindGroup(0,binding,[i*stride]);pass.setVertexBuffer(0,d.vertex);pass.setIndexBuffer(d.index,'uint32');pass.drawIndexed(d.group.indexCount,1,d.group.firstIndex);}
+  pass.end();
+ }
+ return api;
 }
 // Sky (Konev, iteration 1): a full-screen triangle drawn first, no depth writes. It reads the same
 // uniform block as the scene (draw 0's slot: vp and camera) to rebuild each pixel's view ray, so the
