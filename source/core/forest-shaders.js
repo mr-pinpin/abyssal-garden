@@ -2,14 +2,14 @@
 // Lighting (Konev, iteration 1): a low warm sun with a cool sky fill and warm ground bounce,
 // soft wrap so shadowed sides keep their form, contact darkening near the ground, procedural
 // breakup on near-horizontal surfaces so the meadow is not one flat colour, aerial perspective
-// toward the horizon colour, and a gentle filmic curve. Uniform layout is unchanged (176 bytes).
+// toward the horizon colour, and a gentle filmic curve. Leaf vertices (aux -0.65) get backscatter and sheen. Uniform layout is unchanged (176 bytes).
 const W_FOREST=/*wgsl*/`
 struct Globals { vp:mat4x4f, model:mat4x4f, color:vec4f, sun:vec4f, camera:vec4f };
 @group(0) @binding(0) var<uniform> g:Globals;
-struct Out { @builtin(position) cp:vec4f, @location(0) wp:vec3f, @location(1) n:vec3f };
+struct Out { @builtin(position) cp:vec4f, @location(0) wp:vec3f, @location(1) n:vec3f, @location(2) aux:f32 };
 @vertex fn vs(@location(0) p:vec3f,@location(1) n:vec4f)->Out {
  var o:Out; let wp=g.model*vec4f(p,1.);o.cp=g.vp*wp;o.wp=wp.xyz;
- o.n=normalize((g.model*vec4f(n.xyz,0.)).xyz);return o;
+ o.n=normalize((g.model*vec4f(n.xyz,0.)).xyz);o.aux=n.w;return o;
 }
 fn hash2(p:vec2f)->f32 { return fract(sin(dot(p,vec2f(127.1,311.7)))*43758.5453); }
 fn vnoise(p:vec2f)->f32 {
@@ -37,6 +37,14 @@ fn filmic(x:vec3f)->vec3f { return clamp((x*(2.51*x+.03))/(x*(2.43*x+.59)+.14),v
  var c=albedo*(sky*.50*ao+sunC*wrap*.85);
  // Soft rim from the sun side for silhouettes against the haze.
  c+=albedo*sunC*.18*pow(1.-max(dot(n,view),0.),3.)*max(dot(sun,-view)*.5+.5,0.);
+ // Foliage marker: leaf vertices carry aux = -0.65 (snorm8 -83) in the normal's w.
+ // Leaves let light through (backscatter) and show a soft waxy sheen; everything else is unchanged.
+ let leaf=1.-smoothstep(.02,.05,abs(i.aux+.65));
+ let back=max(dot(-n,sun),0.)*.6+pow(max(dot(sun,-view),0.),4.)*.8;
+ c+=leaf*albedo*vec3f(1.,1.05,.7)*sunC*back*.55;
+ let hv=normalize(sun+view);
+ c+=leaf*sunC*vec3f(.9,1.,.8)*.07*pow(max(dot(n,hv),0.),24.);
+ c*=mix(1.,.86+.14*vnoise(i.wp.xz*3.1+i.wp.y),leaf);
  // Warm sanctuary lamplight is bounded, independent of the optional ambience.
  let lamp=vec3f(14.,2.8,-19.);let d=distance(lamp,i.wp);
  c+=albedo*vec3f(.72,.40,.12)*(.60/(1.+d*d*.13));
