@@ -1,0 +1,238 @@
+{
+  "schema": "independent-artwork-checkpoints-v1",
+  "reviewStartedAt": "2026-11-19T17:26:27Z",
+  "finishedAt": "2026-11-19T17:30:11.945Z",
+  "sources": [
+    {
+      "file": "shire-v1.png",
+      "sha256": "80af7f9eb7188f0a1f64969a22632d0ef9732284d027042222c1543879f03780"
+    },
+    {
+      "file": "atlas-geometry.js",
+      "sha256": "d0b1a47ca275c400cbddc4788062c78c2709f26cefd61becf10bc451dcfdc025"
+    }
+  ],
+  "frame": [
+    1536,
+    1024
+  ],
+  "observations": [
+    {
+      "id": "deck-west",
+      "pixel": [
+        887,
+        621
+      ],
+      "normalized": [
+        0.5774739583333334,
+        0.6064453125
+      ],
+      "uncertaintyPixels": 12,
+      "candidateXZ": [
+        5.062635039585192,
+        5.953784894404073
+      ],
+      "usedAsFitControl": false
+    },
+    {
+      "id": "deck-east",
+      "pixel": [
+        1014,
+        603
+      ],
+      "normalized": [
+        0.66015625,
+        0.5888671875
+      ],
+      "uncertaintyPixels": 10,
+      "candidateXZ": [
+        8.904402699359018,
+        6.682714166915019
+      ],
+      "usedAsFitControl": false
+    },
+    {
+      "id": "rail-west-far",
+      "pixel": [
+        902,
+        607
+      ],
+      "normalized": [
+        0.5872395833333334,
+        0.5927734375
+      ],
+      "uncertaintyPixels": 8,
+      "candidateXZ": [
+        5.487694290049696,
+        5.564222569466487
+      ],
+      "usedAsFitControl": false
+    },
+    {
+      "id": "rail-west-near",
+      "pixel": [
+        920,
+        633
+      ],
+      "normalized": [
+        0.5989583333333334,
+        0.6181640625
+      ],
+      "uncertaintyPixels": 8,
+      "candidateXZ": [
+        6.101188981953214,
+        6.811255449556491
+      ],
+      "usedAsFitControl": false
+    },
+    {
+      "id": "rail-east-far",
+      "pixel": [
+        1006,
+        591
+      ],
+      "normalized": [
+        0.6549479166666666,
+        0.5771484375
+      ],
+      "uncertaintyPixels": 8,
+      "candidateXZ": [
+        8.630664418935169,
+        6.110673513354612
+      ],
+      "usedAsFitControl": false
+    },
+    {
+      "id": "rail-east-near",
+      "pixel": [
+        1020,
+        619
+      ],
+      "normalized": [
+        0.6640625,
+        0.6044921875
+      ],
+      "uncertaintyPixels": 8,
+      "candidateXZ": [
+        9.126621483027904,
+        7.392154790031718
+      ],
+      "usedAsFitControl": false
+    },
+    {
+      "id": "tractor-front-near-contact",
+      "pixel": [
+        1320,
+        801
+      ],
+      "normalized": [
+        0.859375,
+        0.7822265625
+      ],
+      "uncertaintyPixels": 6,
+      "candidateXZ": [
+        18.744201333483993,
+        18.107977065742112
+      ],
+      "usedAsFitControl": false
+    },
+    {
+      "id": "tractor-rear-near-contact",
+      "pixel": [
+        1360,
+        791
+      ],
+      "normalized": [
+        0.8854166666666666,
+        0.7724609375
+      ],
+      "uncertaintyPixels": 7,
+      "candidateXZ": [
+        19.94374200209323,
+        18.164079004080172
+      ],
+      "usedAsFitControl": false
+    },
+    {
+      "id": "tractor-far-front-contact",
+      "pixel": [
+        1304,
+        788
+      ],
+      "normalized": [
+        0.8489583333333334,
+        0.76953125
+      ],
+      "uncertaintyPixels": 7,
+      "candidateXZ": [
+        18.223305602187864,
+        17.404540253251348
+      ],
+      "usedAsFitControl": false
+    },
+    {
+      "id": "tractor-support-representative",
+      "pixel": [
+        1335,
+        793
+      ],
+      "normalized": [
+        0.869140625,
+        0.7744140625
+      ],
+      "uncertaintyPixels": 12,
+      "candidateXZ": [
+        19.18375921824935,
+        17.95876628333
+      ],
+      "usedAsFitControl": false
+    }
+  ],
+  "notValidationControls": [
+    [
+      309.000192,
+      712.000512
+    ],
+    [
+      1212,
+      205
+    ],
+    [
+      952.5,
+      593.5
+    ]
+  ],
+  "criticalSemantics": {
+    "tractorNavigationTarget": [
+      1248,
+      819.999744
+    ],
+    "meaning": "road approach, not tire-support center",
+    "bridgeTraceEnds": [
+      [
+        873,
+        606
+      ],
+      [
+        1032,
+        581
+      ]
+    ],
+    "meaningBridge": "approach trace controls, not measured deck corners"
+  },
+  "candidateMatrix": [
+    46.99027426984999,
+    2.4744335873463186,
+    -23.5736332963328,
+    17.53681315381283,
+    41.019996591015754,
+    -29.049652665467768
+  ],
+  "candidateSource": "registration-timing.json grounded_proposal snapshot from commit3f4880e; root registration artifact is now actively migrating",
+  "limits": [
+    "Manual original-art pixel reads with uncertainty, not surveyed world points",
+    "Raised deck and rail image projection is not ground/metric elevation",
+    "CandidateXZ values are predictions, not independent physical ground truth",
+    "No production files changed"
+  ]
+}

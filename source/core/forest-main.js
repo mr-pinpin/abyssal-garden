@@ -31,14 +31,14 @@ function forestModel(piece){
 }
 const forestPresets={
  home:{target:[-12,1.5,0],distance:23,yaw:.65,elevation:.70,kicker:'Field notes · Chapter 01',title:'A quiet place.<br><em>A warm welcome.</em>',description:'A green door, round windows and a mossy roof. Follow the woodland path to the place PinPin and his family call home.',action:'Step a little closer'},
- clearing:{target:[6,1,8.6],distance:19.5,yaw:.36,elevation:.38,kicker:'Field notes · Chapter 02',title:'Small paws.<br><em>Big discoveries.</em>',description:'A red tractor, a helpful beaver, and a bridge made just right for little paws. Every adventure begins with a little curiosity.',action:'Meet the little lookout'},
+ clearing:{target:[10,1,11],distance:38,yaw:.36,elevation:.70,kicker:'Field notes · Chapter 02',title:'Small paws.<br><em>Big discoveries.</em>',description:'A red tractor, a helpful beaver, and a bridge made just right for little paws. Every adventure begins with a little curiosity.',action:'Meet the little lookout'},
  elder:{target:[14,1.8,-16],distance:18,yaw:.42,elevation:.55,kicker:'Field notes · Chapter 03',title:'Under the roots.<br><em>Into wonder.</em>',description:'Beyond the Elder’s woven mat, pale roots lead to old paintings, warm lamps and stories about caring for one another.',action:'Look inside the sanctuary'}
 };
 let forestCamera={...forestPresets.clearing},forestEye=[0,0,0],forestTour=false,forestQueued=false,forestLast=0,forestDraw;
 // Grounded outdoor corridor, not general mesh collision. Radius stays inside the
 // authored 1.8m path; the northern endpoint stops before the sanctuary walls.
-const forestWalkRoute=[[-12.4,3],[-12.4,6],[-8,8.8],[3.8,8.8],[7,8.8],[7,2.5],[9,-1],[11,-5],[14,-7]];
-const forestWalk={active:false,position:[-12.4,6],yaw:Math.atan2(4.4,-2.8),pitch:-.12,keys:new Set()};
+const forestWalkRoute=typeof pinpinAtlasLayout==='function'?pinpinAtlasLayout().route:[[-12.4,3],[-12.4,6],[-8,8.8],[14,-7]];
+const forestWalk={active:false,position:[-12.4,6],yaw:Math.atan2(forestWalkRoute[2][0]-forestWalkRoute[1][0],forestWalkRoute[1][1]-forestWalkRoute[2][1]),pitch:-.12,keys:new Set()};
 function forestWalkClamp(p){
  let best=null,distance=Infinity;
  for(let i=1;i<forestWalkRoute.length;i++){
@@ -48,7 +48,7 @@ function forestWalkClamp(p){
  return distance<=.65?p:[best[0]+(p[0]-best[0])*.65/distance,best[1]+(p[1]-best[1])*.65/distance];
 }
 // Bridge deck is .804m high; authored earth ramps meet its two ends.
-function forestWalkHeight(){const [x,z]=forestWalk.position;if(Math.abs(x-7)>.66||z<2.5||z>8.8)return 1.25;return 1.25+.804*Math.max(0,Math.min(1,(8.8-z)/1.05,(z-2.5)/.98));}
+function forestWalkHeight(){if(typeof pinpinAtlasLayout!=='function')return 1.25;const b=pinpinAtlasLayout().bridge,a=b.outerWest,z=b.outerEast,dx=z[0]-a[0],dz=z[1]-a[1],len=Math.hypot(dx,dz),p=forestWalk.position,t=((p[0]-a[0])*dx+(p[1]-a[1])*dz)/len,lateral=Math.abs((p[0]-a[0])*dz-(p[1]-a[1])*dx)/len;if(lateral>.85||t<0||t>len)return 1.25;return 1.25+b.deckHeight*Math.max(0,Math.min(1,t/1.3,(len-t)/1.3));}
 function forestWalkMoving(){return forestWalk.active&&forestWalk.keys.size>0;}
 function forestWalkRelease(){forestWalk.keys.clear();forestLast=0;}
 function forestWalkMode(active){

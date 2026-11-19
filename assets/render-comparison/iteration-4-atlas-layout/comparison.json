@@ -1,0 +1,109 @@
+{
+  "checkedAt": "2026-11-19T17:35:05.957Z",
+  "matchedCameraHardware": true,
+  "qualityNormalized": false,
+  "changeScope": "Atlas-authored bridge/tractor/path geography is the intended change; camera and hardware held fixed. No performance claim.",
+  "sameSourceControl": false,
+  "results": [
+    {
+      "label": "before",
+      "url": "http://127.0.0.1:58221/",
+      "version": {
+        "commit": "b6a1adaa1b0f5c075c5d8d05de51250d4f9edf41"
+      },
+      "artifactSHA256": "f317fbb4b332ae73c0bdb1f7b21970979bccef585886f02ade49135986d26dec",
+      "cameraPresetsSHA256": "f88cc74732822a009fbee89ccee913fea738e563114509ac87c42e8801f183e6",
+      "mode": "webgpu",
+      "foliageQuality": "high",
+      "sky": true,
+      "shadows": true,
+      "viewport": [
+        960,
+        640
+      ],
+      "dpr": 1,
+      "reducedMotion": true,
+      "quality": "DPR cap1.5, actual DPR1; intentional source geometry/material/sky changes recorded separately",
+      "browser": "157.0.8103.50",
+      "gpu": [
+        {
+          "vendorId": 65535,
+          "deviceId": 65535,
+          "vendorString": "Google Inc. (Google)",
+          "deviceString": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver-5.0.0)",
+          "driverVendor": "SwANGLE",
+          "driverVersion": "5.0.0"
+        }
+      ],
+      "shots": [
+        {
+          "chapter": "home",
+          "pixelSha256": "e92c335074a31301b74cad545ca2614ea8a1de92133b1fc10a835fce18041f6b"
+        },
+        {
+          "chapter": "clearing",
+          "pixelSha256": "58fc2d12f761c038b9f83735c3c868171ae9dc68d68c64d1769f6fbcc5c0d511"
+        },
+        {
+          "chapter": "walk",
+          "pixelSha256": "712c871a68dbbdd918d5268dfe7be1103cca766f716e99608558b63051cb8244"
+        }
+      ]
+    },
+    {
+      "label": "after",
+      "url": "http://127.0.0.1:58222/",
+      "version": {
+        "commit": "b6a1adaa1b0f5c075c5d8d05de51250d4f9edf41"
+      },
+      "artifactSHA256": "e0e87ad2087726527b9eddee3476263948dc13a1aff93b954f8626908d7b6f78",
+      "cameraPresetsSHA256": "f88cc74732822a009fbee89ccee913fea738e563114509ac87c42e8801f183e6",
+      "mode": "webgpu",
+      "foliageQuality": "high",
+      "sky": true,
+      "shadows": true,
+      "viewport": [
+        960,
+        640
+      ],
+      "dpr": 1,
+      "reducedMotion": true,
+      "quality": "DPR cap1.5, actual DPR1; intentional source geometry/material/sky changes recorded separately",
+      "browser": "157.0.8103.50",
+      "gpu": [
+        {
+          "vendorId": 65535,
+          "deviceId": 65535,
+          "vendorString": "Google Inc. (Google)",
+          "deviceString": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver-5.0.0)",
+          "driverVendor": "SwANGLE",
+          "driverVersion": "5.0.0"
+        }
+      ],
+      "shots": [
+        {
+          "chapter": "home",
+          "pixelSha256": "a35058302195133711307fa845ef62fdb0f8dfacfbe99d919f609e5e5cb6b346"
+        },
+        {
+          "chapter": "clearing",
+          "pixelSha256": "6513bbf18e5dfd3b2c2700bd258aebdf78c36ebe96335d65f8b592778a269822"
+        },
+        {
+          "chapter": "walk",
+          "pixelSha256": "5308c148df743ebd80dcbef720128c8801ce726f31c925863e4a8a5f250b8b44"
+        }
+      ]
+    }
+  ],
+  "performanceMeasured": false,
+  "artisticVerdict": "Requires image inspection; hashes are not visual-quality scores.",
+  "sourceIdentityNote": "Local version.json was stale and is not source identity. Baseline renderer/plugin source was current shared eaf28d6; clearing camera preset explicitly overridden to the new preset on BOTH pages. Artifact hashes record actual served code.",
+  "beforeBaseCommit": "eaf28d65f57c796614fadaa084944715a1bffd0f",
+  "afterSourceFilesSHA256": {
+    "source/core/forest-main.js": "a7eeeca65034da3bfbdf91ab01830cd954b7f73eb64f1915c24b3c33c1eb5471",
+    "source/plugins/pinpin-home/plugin.js": "f1d4847410a55358bfd6ee0e2d63740a085a19222bff5e6be66afed73f441257",
+    "source/plugins/timber-clearing/plugin.js": "489ce90337bc725e04728f31529a24f3b098aab4b1f2f882fc106710274b5cb1"
+  },
+  "verdict": "Accept authored layout increment only. Bridge is rotated, tractor lies southeast on the atlas-correct side and dry route/ramp navigation checks pass. Broad texture/terrain consumers remain disabled. Book-level photorealism, detailed shores and hardware performance remain unmet/unmeasured."
+}

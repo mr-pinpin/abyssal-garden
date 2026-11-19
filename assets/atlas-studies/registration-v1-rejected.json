@@ -1,0 +1,2449 @@
+{
+  "schema": "atlas-staged-registration",
+  "version": 1,
+  "status": "global-affine-rejected; bridge-local-diagnostic-only",
+  "consumerGate": {
+    "terrain": false,
+    "foliage": false,
+    "reason": "Independent checkpoint and bridge orientation failures; no validated 2D terrain correspondence"
+  },
+  "coordinates": {
+    "image": "u=x/1536,v=y/1024; top-left; original oblique art, not ground orthophoto",
+    "world": "current staged X/Z; units scene units, no metric-height inference"
+  },
+  "inputs": {
+    "currentWorld": [
+      {
+        "path": "source/core/math.js",
+        "sha256": "a792e5547d7f8011e39231e979b8abb592e1ad306fad67ed583af5aa0e549cae"
+      },
+      {
+        "path": "source/core/forest-main.js",
+        "sha256": "f91f2dfcdddf5c2abcc648b71951b461cf73ea2eaca941e61929db814054118b"
+      },
+      {
+        "path": "source/plugins/pinpin-home/plugin.js",
+        "sha256": "0b6f13215ecffeb15358fd77da23cda7dbc8c6016cbeeb06d905776de0408f2b"
+      },
+      {
+        "path": "source/plugins/elder-sanctuary/plugin.js",
+        "sha256": "6d8d4d404442c9fce3eff6b046c5fcfca652e2ef94329263f757f86382678764"
+      },
+      {
+        "path": "source/plugins/timber-clearing/plugin.js",
+        "sha256": "2db849b2f7a2e279195e68c1026bad028a89be5782114019d81cf43c2d0da9b9"
+      }
+    ],
+    "canonMask": {
+      "path": "canon-regions-v2.png",
+      "sha256": "89520ed7acf156bf925d62f79dc807892b3b828e1f19a499007634e303c9e810"
+    },
+    "fields": {
+      "path": "fields.json",
+      "sha256": "c476d63d622fb83587b452b0f379c7f460ee68668b5a0241b82b964377fbcbef"
+    }
+  },
+  "sourceGeometry": {
+    "path": "docs/storyboard/atlas-geometry.js",
+    "sha256": "d0b1a47ca275c400cbddc4788062c78c2709f26cefd61becf10bc451dcfdc025",
+    "version": 13,
+    "extractedLandmarks": {
+      "frame": [
+        1536,
+        1024
+      ],
+      "bridgeWest": [
+        873,
+        606
+      ],
+      "bridgeEast": [
+        1032,
+        581
+      ],
+      "bridgeInterior": [
+        [
+          902.00064,
+          606.000128
+        ],
+        [
+          928.0005120000001,
+          600.000512
+        ],
+        [
+          957.000192,
+          593.000448
+        ],
+        [
+          985.9998720000001,
+          588.000256
+        ],
+        [
+          1012.99968,
+          584.999936
+        ]
+      ],
+      "tractor": [
+        1248,
+        819.999744
+      ],
+      "homeDoor": [
+        309.000192,
+        712.000512
+      ]
+    },
+    "note": "Exact traced route coordinates copied from canon; approximate region centers deliberately unused. Mask is an interaction silhouette, not a ground footprint survey."
+  },
+  "world": {
+    "sources": [
+      {
+        "path": "source/core/math.js",
+        "sha256": "a792e5547d7f8011e39231e979b8abb592e1ad306fad67ed583af5aa0e549cae"
+      },
+      {
+        "path": "source/core/forest-main.js",
+        "sha256": "f91f2dfcdddf5c2abcc648b71951b461cf73ea2eaca941e61929db814054118b"
+      },
+      {
+        "path": "source/plugins/pinpin-home/plugin.js",
+        "sha256": "0b6f13215ecffeb15358fd77da23cda7dbc8c6016cbeeb06d905776de0408f2b"
+      },
+      {
+        "path": "source/plugins/elder-sanctuary/plugin.js",
+        "sha256": "6d8d4d404442c9fce3eff6b046c5fcfca652e2ef94329263f757f86382678764"
+      },
+      {
+        "path": "source/plugins/timber-clearing/plugin.js",
+        "sha256": "2db849b2f7a2e279195e68c1026bad028a89be5782114019d81cf43c2d0da9b9"
+      }
+    ],
+    "route": [
+      [
+        -12.4,
+        3
+      ],
+      [
+        -12.4,
+        6
+      ],
+      [
+        -8,
+        8.8
+      ],
+      [
+        3.8,
+        8.8
+      ],
+      [
+        7,
+        8.8
+      ],
+      [
+        7,
+        2.5
+      ],
+      [
+        9,
+        -1
+      ],
+      [
+        11,
+        -5
+      ],
+      [
+        14,
+        -7
+      ]
+    ],
+    "houseOrigin": [
+      -12,
+      0
+    ],
+    "elderOrigin": [
+      14,
+      -16
+    ],
+    "bridgeOrigin": [
+      7,
+      5.6
+    ],
+    "tractor": [
+      0.5,
+      9.3
+    ],
+    "housePolygon": [
+      [
+        -7.846709,
+        -2.011637
+      ],
+      [
+        -7.998395,
+        -2.257223
+      ],
+      [
+        -8.26565,
+        -2.538925
+      ],
+      [
+        -8.49679,
+        -2.697833
+      ],
+      [
+        -8.792937,
+        -2.835072
+      ],
+      [
+        -9.067416,
+        -2.914526
+      ],
+      [
+        -9.399678999999999,
+        -2.957865
+      ],
+      [
+        -9.804173,
+        -2.943419
+      ],
+      [
+        -10.078652,
+        -2.885634
+      ],
+      [
+        -10.288122,
+        -2.813403
+      ],
+      [
+        -10.519262,
+        -2.697833
+      ],
+      [
+        -10.685393,
+        -2.582263
+      ],
+      [
+        -10.88764,
+        -2.380016
+      ],
+      [
+        -11.082665,
+        -2.069422
+      ],
+      [
+        -11.378812,
+        -1.347111
+      ],
+      [
+        -11.501605,
+        -1.166533
+      ],
+      [
+        -11.646067,
+        -1.014848
+      ],
+      [
+        -11.833868,
+        -0.877608
+      ],
+      [
+        -12.057785,
+        -0.776485
+      ],
+      [
+        -12.368379000000001,
+        -0.7187
+      ],
+      [
+        -12.635634,
+        -0.725923
+      ],
+      [
+        -12.852327,
+        -0.769262
+      ],
+      [
+        -13.076243999999999,
+        -0.863162
+      ],
+      [
+        -13.264045,
+        -0.993178
+      ],
+      [
+        -13.373852,
+        -1.107208
+      ],
+      [
+        -13.451846,
+        -1.188202
+      ],
+      [
+        -13.544502,
+        -1.351276
+      ],
+      [
+        -13.720528999999999,
+        -1.618188
+      ],
+      [
+        -13.836525,
+        -1.966174
+      ],
+      [
+        -13.894523,
+        -2.289305
+      ],
+      [
+        -13.927664,
+        -2.877567
+      ],
+      [
+        -14.04366,
+        -3.275266
+      ],
+      [
+        -14.134799000000001,
+        -3.449259
+      ],
+      [
+        -14.358504,
+        -3.747533
+      ],
+      [
+        -14.549068,
+        -3.921526
+      ],
+      [
+        -14.756203,
+        -4.062378
+      ],
+      [
+        -15.046192,
+        -4.194944
+      ],
+      [
+        -15.352751,
+        -4.269513
+      ],
+      [
+        -15.775306,
+        -4.286083
+      ],
+      [
+        -16.148148,
+        -4.236371
+      ],
+      [
+        -16.636986,
+        -4.087234
+      ],
+      [
+        -16.960116,
+        -3.929812
+      ],
+      [
+        -17.225248999999998,
+        -3.739248
+      ],
+      [
+        -17.374386,
+        -3.590111
+      ],
+      [
+        -17.515238,
+        -3.399547
+      ],
+      [
+        -17.664375,
+        -3.05156
+      ],
+      [
+        -17.697516,
+        -2.695289
+      ],
+      [
+        -17.67266,
+        -2.496439
+      ],
+      [
+        -17.614662,
+        -2.305875
+      ],
+      [
+        -17.432384,
+        -1.97446
+      ],
+      [
+        -17.192107,
+        -1.709327
+      ],
+      [
+        -17.001542999999998,
+        -1.56019
+      ],
+      [
+        -16.620416,
+        -1.336485
+      ],
+      [
+        -15.982441,
+        -1.054782
+      ],
+      [
+        -15.791877,
+        -0.922215
+      ],
+      [
+        -15.589888,
+        -0.920947
+      ],
+      [
+        -15.553772,
+        -0.769262
+      ],
+      [
+        -15.568218,
+        -0.689807
+      ],
+      [
+        -15.571306,
+        -0.685793
+      ],
+      [
+        -15.640449,
+        -0.595907
+      ],
+      [
+        -15.914928,
+        -0.436998
+      ],
+      [
+        -16.066613,
+        -0.306982
+      ],
+      [
+        -16.196629,
+        -0.140851
+      ],
+      [
+        -16.29053,
+        0.04695
+      ],
+      [
+        -16.362761,
+        0.321429
+      ],
+      [
+        -16.369984,
+        0.574238
+      ],
+      [
+        -16.348315,
+        0.754815
+      ],
+      [
+        -16.26886,
+        1.036517
+      ],
+      [
+        -16.124398,
+        1.339888
+      ],
+      [
+        -15.871589,
+        1.657705
+      ],
+      [
+        -15.784912,
+        1.961075
+      ],
+      [
+        -15.698234,
+        2.127207
+      ],
+      [
+        -15.539325999999999,
+        2.329454
+      ],
+      [
+        -15.315408999999999,
+        2.502809
+      ],
+      [
+        -15.069823,
+        2.632825
+      ],
+      [
+        -14.788122,
+        2.741172
+      ],
+      [
+        -14.419743,
+        2.842295
+      ],
+      [
+        -13.914125,
+        2.928973
+      ],
+      [
+        -13.487961,
+        2.957865
+      ],
+      [
+        -11.227127,
+        2.957865
+      ],
+      [
+        -10.873194,
+        2.936196
+      ],
+      [
+        -10.454254,
+        2.878411
+      ],
+      [
+        -9.991973999999999,
+        2.777287
+      ],
+      [
+        -9.638042,
+        2.668941
+      ],
+      [
+        -9.24077,
+        2.495586
+      ],
+      [
+        -9.024077,
+        2.351124
+      ],
+      [
+        -8.850722000000001,
+        2.170546
+      ],
+      [
+        -8.691814,
+        1.874398
+      ],
+      [
+        -8.605136,
+        1.556581
+      ],
+      [
+        -8.597913,
+        1.209872
+      ],
+      [
+        -8.648475,
+        0.92817
+      ],
+      [
+        -8.807383999999999,
+        0.473114
+      ],
+      [
+        -8.814607,
+        0.191413
+      ],
+      [
+        -8.771268,
+        0.075843
+      ],
+      [
+        -8.713483,
+        -0.003612
+      ],
+      [
+        -8.569021,
+        -0.133628
+      ],
+      [
+        -8.417335,
+        -0.213082
+      ],
+      [
+        -8.164526,
+        -0.299759
+      ],
+      [
+        -7.947833,
+        -0.422552
+      ],
+      [
+        -7.817817,
+        -0.552568
+      ],
+      [
+        -7.702247,
+        -0.754815
+      ],
+      [
+        -7.630016,
+        -1.014848
+      ],
+      [
+        -7.630016,
+        -1.318218
+      ],
+      [
+        -7.695024,
+        -1.636035
+      ]
+    ],
+    "elderBounds": [
+      7.964633941650391,
+      -21.300000190734863,
+      20.035322189331055,
+      -7.020000457763672
+    ],
+    "bridge": {
+      "file": "assets/pinpin/footbridge.glb",
+      "sha256": "c44c919ea7bca21a97f16ed6f314ef537c09bdd3f14927852b149dd561401267",
+      "scale": 1.6,
+      "position": [
+        7,
+        0.02,
+        5.6
+      ],
+      "rotationY": 0,
+      "local": {
+        "min": [
+          -0.7200000286102295,
+          0.38999998569488525,
+          -1.3224999904632568
+        ],
+        "max": [
+          0.7200000286102295,
+          0.49000000953674316,
+          1.3624999523162842
+        ]
+      },
+      "world": {
+        "min": [
+          5.847999954223633,
+          0.6439999771118164,
+          3.4840000152587884
+        ],
+        "max": [
+          8.152000045776367,
+          0.8040000152587892,
+          7.779999923706054
+        ]
+      }
+    }
+  },
+  "globalCandidate": {
+    "model": "affine image-normalized to staged X/Z",
+    "fit": [
+      {
+        "id": "home-origin-estimate",
+        "pixel": [
+          302,
+          675
+        ],
+        "world": [
+          -12,
+          0
+        ],
+        "uncertaintyPixels": 30,
+        "source": "manual source-art building/root footprint representative; NOT doorway or surveyed center",
+        "image": [
+          0.19661458333333334,
+          0.6591796875
+        ]
+      },
+      {
+        "id": "elder-origin-estimate",
+        "pixel": [
+          1212,
+          180
+        ],
+        "world": [
+          14,
+          -16
+        ],
+        "uncertaintyPixels": 30,
+        "source": "manual source-art Elder root-mass representative; NOT surveyed center",
+        "image": [
+          0.7890625,
+          0.17578125
+        ]
+      },
+      {
+        "id": "bridge-midpoint",
+        "pixel": [
+          952.5,
+          593.5
+        ],
+        "world": [
+          7,
+          5.6
+        ],
+        "uncertaintyPixels": 12,
+        "source": "midpoint of independently traced west/east route junctions in canon atlas-geometry.js",
+        "image": [
+          0.6201171875,
+          0.57958984375
+        ]
+      }
+    ],
+    "forward": [
+      45.156692524184685,
+      1.557697235027689,
+      -21.905266661959182,
+      25.261965238618828,
+      64.0597823126507,
+      -47.19377805574331
+    ],
+    "inverse": [
+      0.022450511565836297,
+      -0.0005459134971826803,
+      0.4660207221233688,
+      -0.008853355760676154,
+      0.01582569923265124,
+      0.5529394183718862
+    ],
+    "determinant": 2853.37739965501,
+    "fitResiduals": [
+      8.881784197001252e-15,
+      1.2809491335957509e-14,
+      8.881784197001252e-15
+    ],
+    "independentCheckpoints": [
+      {
+        "id": "home-doorstep",
+        "pixel": [
+          309.000192,
+          712.000512
+        ],
+        "world": [
+          -12.4,
+          3
+        ],
+        "source": "canon home-to-lake first waypoint vs current outdoor route first endpoint; structural opening approximate",
+        "image": [
+          0.20117200000000002,
+          0.695313
+        ],
+        "predicted": [
+          -11.737917375905091,
+          2.42982143439621
+        ],
+        "residualWorldUnits": 0.8737602633459568
+      },
+      {
+        "id": "tractor-navigation-target",
+        "pixel": [
+          1248,
+          819.999744
+        ],
+        "world": [
+          0.5,
+          9.3
+        ],
+        "source": "canon navigationDestinations tractor vs actual timber-clearing tractor descriptor",
+        "image": [
+          0.8125,
+          0.800781
+        ],
+        "predicted": [
+          16.03192036350358,
+          24.629425240741227
+        ],
+        "residualWorldUnits": 21.822736500945325
+      },
+      {
+        "id": "bridge-west-end",
+        "pixel": [
+          873,
+          606
+        ],
+        "world": [
+          7,
+          7.779999923706054
+        ],
+        "source": "canon home-to-west-bridge endpoint; actual GLB repaired-deck south end",
+        "image": [
+          0.568359375,
+          0.591796875
+        ],
+        "predicted": [
+          4.681803234039123,
+          5.074475704356772
+        ],
+        "residualWorldUnits": 3.5628496385894555
+      },
+      {
+        "id": "bridge-east-end",
+        "pixel": [
+          1032,
+          581
+        ],
+        "world": [
+          7,
+          3.4840000152587884
+        ],
+        "source": "canon east-bridge-to-picnic-north start; actual GLB repaired-deck north end",
+        "image": [
+          0.671875,
+          0.5673828125
+        ],
+        "predicted": [
+          9.318196765960888,
+          6.125524295643217
+        ],
+        "residualWorldUnits": 3.5144966594908
+      }
+    ],
+    "tolerances": {
+      "holdoutWorldUnits": 1,
+      "bridgeAxisDegrees": 10
+    },
+    "maxIndependentResidual": 21.822736500945325,
+    "bridgeAxisErrorDegrees": 77.22719741391546,
+    "accepted": false,
+    "reason": "Three exact fit anchors do not validate shape, relative scene geography or crossing orientation"
+  },
+  "localBridge": {
+    "accepted": true,
+    "acceptedFor": "numeric coordinate roundtrip and sampled canon-mask/actual-route coverage only; physical registration unvalidated",
+    "purpose": "bridge-local diagnostic coordinate lookup only; ALL plant/terrain placement excluded",
+    "forward": [
+      14.195412252566083,
+      60.188547950880185,
+      -36.68749022385435,
+      -40.499740663962946,
+      4.245255834797135,
+      28.286078078529655
+    ],
+    "inverse": [
+      0.0016995410024177812,
+      -0.024095816388742516,
+      0.7439280376491273,
+      0.016213621163064944,
+      0.00568297556338267,
+      0.4340879774090049
+    ],
+    "fit": [
+      {
+        "image": [
+          0.568359375,
+          0.591796875
+        ],
+        "world": [
+          7,
+          7.779999923706054
+        ]
+      },
+      {
+        "image": [
+          0.671875,
+          0.5673828125
+        ],
+        "world": [
+          7,
+          3.4840000152587884
+        ]
+      },
+      {
+        "image": [
+          0.5699773380343017,
+          0.6072322423472378
+        ],
+        "world": [
+          7.952,
+          7.779999923706054
+        ]
+      }
+    ],
+    "sourceCrossSectionHalfWidthPixels": 16,
+    "stagedCrossSectionHalfWidthUnits": 0.952,
+    "lateralScaleStatus": "artist-declared narrow local cartographic convention; not independently surveyed width",
+    "acceptedWorldBox": {
+      "min": [
+        6.95,
+        6.8
+      ],
+      "max": [
+        7.05,
+        7
+      ]
+    },
+    "independentCenterlineProbes": [
+      {
+        "pixel": [
+          902.00064,
+          606.000128
+        ],
+        "image": [
+          0.58724,
+          0.591797
+        ],
+        "world": [
+          7.268025779029607,
+          7.015340038289498
+        ],
+        "lateralResidualFromStagedAxis": 0.2680257790296068,
+        "insideMeasuredDeck": true,
+        "sourceMaskProtected": true
+      },
+      {
+        "pixel": [
+          928.0005120000001,
+          600.000512
+        ],
+        "image": [
+          0.604167,
+          0.585938
+        ],
+        "world": [
+          7.155666819784578,
+          6.304927974134515
+        ],
+        "lateralResidualFromStagedAxis": 0.15566681978457808,
+        "insideMeasuredDeck": true,
+        "sourceMaskProtected": false
+      },
+      {
+        "pixel": [
+          957.000192,
+          593.000448
+        ],
+        "image": [
+          0.623047,
+          0.579102
+        ],
+        "world": [
+          7.012227289320812,
+          5.511272301512221
+        ],
+        "lateralResidualFromStagedAxis": 0.012227289320811963,
+        "insideMeasuredDeck": true,
+        "sourceMaskProtected": true
+      },
+      {
+        "pixel": [
+          985.9998720000001,
+          588.000256
+        ],
+        "image": [
+          0.641927,
+          0.574219
+        ],
+        "world": [
+          6.986335993005106,
+          4.725907613535291
+        ],
+        "lateralResidualFromStagedAxis": 0.013664006994893896,
+        "insideMeasuredDeck": true,
+        "sourceMaskProtected": true
+      },
+      {
+        "pixel": [
+          1012.99968,
+          584.999936
+        ],
+        "image": [
+          0.659505,
+          0.571289
+        ],
+        "world": [
+          7.059510504084635,
+          4.001564572548194
+        ],
+        "lateralResidualFromStagedAxis": 0.059510504084634874,
+        "insideMeasuredDeck": true,
+        "sourceMaskProtected": false
+      }
+    ],
+    "domainSamples": [
+      {
+        "world": [
+          6.95,
+          6.8
+        ],
+        "image": [
+          0.5918882961724818,
+          0.5854168783233085
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.04999999999999982
+      },
+      {
+        "world": [
+          6.975,
+          6.8
+        ],
+        "image": [
+          0.5919307846975422,
+          0.5858222188523851
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.025000000000000355
+      },
+      {
+        "world": [
+          7,
+          6.8
+        ],
+        "image": [
+          0.5919732732226026,
+          0.5862275593814616
+        ],
+        "maskProtected": true,
+        "routeDistance": 0
+      },
+      {
+        "world": [
+          7.025,
+          6.8
+        ],
+        "image": [
+          0.5920157617476631,
+          0.5866328999105384
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.025000000000000355
+      },
+      {
+        "world": [
+          7.05,
+          6.8
+        ],
+        "image": [
+          0.5920582502727235,
+          0.587038240439615
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.04999999999999982
+      },
+      {
+        "world": [
+          6.95,
+          6.81
+        ],
+        "image": [
+          0.5916473380085944,
+          0.5854737080789423
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.04999999999999982
+      },
+      {
+        "world": [
+          6.975,
+          6.81
+        ],
+        "image": [
+          0.5916898265336548,
+          0.5858790486080189
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.025000000000000355
+      },
+      {
+        "world": [
+          7,
+          6.81
+        ],
+        "image": [
+          0.5917323150587153,
+          0.5862843891370955
+        ],
+        "maskProtected": true,
+        "routeDistance": 0
+      },
+      {
+        "world": [
+          7.025,
+          6.81
+        ],
+        "image": [
+          0.5917748035837757,
+          0.5866897296661722
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.025000000000000355
+      },
+      {
+        "world": [
+          7.05,
+          6.81
+        ],
+        "image": [
+          0.591817292108836,
+          0.5870950701952488
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.04999999999999982
+      },
+      {
+        "world": [
+          6.95,
+          6.82
+        ],
+        "image": [
+          0.5914063798447069,
+          0.5855305378345761
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.04999999999999982
+      },
+      {
+        "world": [
+          6.975,
+          6.82
+        ],
+        "image": [
+          0.5914488683697674,
+          0.5859358783636527
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.025000000000000355
+      },
+      {
+        "world": [
+          7,
+          6.82
+        ],
+        "image": [
+          0.5914913568948278,
+          0.5863412188927293
+        ],
+        "maskProtected": true,
+        "routeDistance": 0
+      },
+      {
+        "world": [
+          7.025,
+          6.82
+        ],
+        "image": [
+          0.5915338454198882,
+          0.586746559421806
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.025000000000000355
+      },
+      {
+        "world": [
+          7.05,
+          6.82
+        ],
+        "image": [
+          0.5915763339449487,
+          0.5871518999508826
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.04999999999999982
+      },
+      {
+        "world": [
+          6.95,
+          6.83
+        ],
+        "image": [
+          0.5911654216808195,
+          0.5855873675902099
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.04999999999999982
+      },
+      {
+        "world": [
+          6.975,
+          6.83
+        ],
+        "image": [
+          0.5912079102058799,
+          0.5859927081192865
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.025000000000000355
+      },
+      {
+        "world": [
+          7,
+          6.83
+        ],
+        "image": [
+          0.5912503987309403,
+          0.5863980486483631
+        ],
+        "maskProtected": true,
+        "routeDistance": 0
+      },
+      {
+        "world": [
+          7.025,
+          6.83
+        ],
+        "image": [
+          0.5912928872560008,
+          0.5868033891774398
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.025000000000000355
+      },
+      {
+        "world": [
+          7.05,
+          6.83
+        ],
+        "image": [
+          0.5913353757810612,
+          0.5872087297065164
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.04999999999999982
+      },
+      {
+        "world": [
+          6.95,
+          6.84
+        ],
+        "image": [
+          0.5909244635169321,
+          0.5856441973458437
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.04999999999999982
+      },
+      {
+        "world": [
+          6.975,
+          6.84
+        ],
+        "image": [
+          0.5909669520419925,
+          0.5860495378749204
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.025000000000000355
+      },
+      {
+        "world": [
+          7,
+          6.84
+        ],
+        "image": [
+          0.591009440567053,
+          0.5864548784039969
+        ],
+        "maskProtected": true,
+        "routeDistance": 0
+      },
+      {
+        "world": [
+          7.025,
+          6.84
+        ],
+        "image": [
+          0.5910519290921133,
+          0.5868602189330736
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.025000000000000355
+      },
+      {
+        "world": [
+          7.05,
+          6.84
+        ],
+        "image": [
+          0.5910944176171739,
+          0.5872655594621502
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.04999999999999982
+      },
+      {
+        "world": [
+          6.95,
+          6.85
+        ],
+        "image": [
+          0.5906835053530446,
+          0.5857010271014775
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.04999999999999982
+      },
+      {
+        "world": [
+          6.975,
+          6.85
+        ],
+        "image": [
+          0.5907259938781051,
+          0.5861063676305542
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.025000000000000355
+      },
+      {
+        "world": [
+          7,
+          6.85
+        ],
+        "image": [
+          0.5907684824031656,
+          0.5865117081596308
+        ],
+        "maskProtected": true,
+        "routeDistance": 0
+      },
+      {
+        "world": [
+          7.025,
+          6.85
+        ],
+        "image": [
+          0.590810970928226,
+          0.5869170486887074
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.025000000000000355
+      },
+      {
+        "world": [
+          7.05,
+          6.85
+        ],
+        "image": [
+          0.5908534594532864,
+          0.587322389217784
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.04999999999999982
+      },
+      {
+        "world": [
+          6.95,
+          6.859999999999999
+        ],
+        "image": [
+          0.5904425471891572,
+          0.5857578568571113
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.04999999999999982
+      },
+      {
+        "world": [
+          6.975,
+          6.859999999999999
+        ],
+        "image": [
+          0.5904850357142177,
+          0.586163197386188
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.025000000000000355
+      },
+      {
+        "world": [
+          7,
+          6.859999999999999
+        ],
+        "image": [
+          0.5905275242392781,
+          0.5865685379152646
+        ],
+        "maskProtected": true,
+        "routeDistance": 0
+      },
+      {
+        "world": [
+          7.025,
+          6.859999999999999
+        ],
+        "image": [
+          0.5905700127643385,
+          0.5869738784443412
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.025000000000000355
+      },
+      {
+        "world": [
+          7.05,
+          6.859999999999999
+        ],
+        "image": [
+          0.590612501289399,
+          0.5873792189734179
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.04999999999999982
+      },
+      {
+        "world": [
+          6.95,
+          6.87
+        ],
+        "image": [
+          0.5902015890252698,
+          0.5858146866127452
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.04999999999999982
+      },
+      {
+        "world": [
+          6.975,
+          6.87
+        ],
+        "image": [
+          0.5902440775503303,
+          0.5862200271418219
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.025000000000000355
+      },
+      {
+        "world": [
+          7,
+          6.87
+        ],
+        "image": [
+          0.5902865660753907,
+          0.5866253676708985
+        ],
+        "maskProtected": true,
+        "routeDistance": 0
+      },
+      {
+        "world": [
+          7.025,
+          6.87
+        ],
+        "image": [
+          0.5903290546004512,
+          0.587030708199975
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.025000000000000355
+      },
+      {
+        "world": [
+          7.05,
+          6.87
+        ],
+        "image": [
+          0.5903715431255115,
+          0.5874360487290518
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.04999999999999982
+      },
+      {
+        "world": [
+          6.95,
+          6.88
+        ],
+        "image": [
+          0.5899606308613824,
+          0.585871516368379
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.04999999999999982
+      },
+      {
+        "world": [
+          6.975,
+          6.88
+        ],
+        "image": [
+          0.5900031193864428,
+          0.5862768568974557
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.025000000000000355
+      },
+      {
+        "world": [
+          7,
+          6.88
+        ],
+        "image": [
+          0.5900456079115033,
+          0.5866821974265323
+        ],
+        "maskProtected": true,
+        "routeDistance": 0
+      },
+      {
+        "world": [
+          7.025,
+          6.88
+        ],
+        "image": [
+          0.5900880964365637,
+          0.5870875379556089
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.025000000000000355
+      },
+      {
+        "world": [
+          7.05,
+          6.88
+        ],
+        "image": [
+          0.5901305849616241,
+          0.5874928784846856
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.04999999999999982
+      },
+      {
+        "world": [
+          6.95,
+          6.89
+        ],
+        "image": [
+          0.5897196726974949,
+          0.5859283461240129
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.04999999999999982
+      },
+      {
+        "world": [
+          6.975,
+          6.89
+        ],
+        "image": [
+          0.5897621612225554,
+          0.5863336866530895
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.025000000000000355
+      },
+      {
+        "world": [
+          7,
+          6.89
+        ],
+        "image": [
+          0.5898046497476158,
+          0.5867390271821661
+        ],
+        "maskProtected": true,
+        "routeDistance": 0
+      },
+      {
+        "world": [
+          7.025,
+          6.89
+        ],
+        "image": [
+          0.5898471382726762,
+          0.5871443677112427
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.025000000000000355
+      },
+      {
+        "world": [
+          7.05,
+          6.89
+        ],
+        "image": [
+          0.5898896267977367,
+          0.5875497082403194
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.04999999999999982
+      },
+      {
+        "world": [
+          6.95,
+          6.9
+        ],
+        "image": [
+          0.5894787145336076,
+          0.5859851758796467
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.04999999999999982
+      },
+      {
+        "world": [
+          6.975,
+          6.9
+        ],
+        "image": [
+          0.589521203058668,
+          0.5863905164087233
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.025000000000000355
+      },
+      {
+        "world": [
+          7,
+          6.9
+        ],
+        "image": [
+          0.5895636915837283,
+          0.5867958569377999
+        ],
+        "maskProtected": true,
+        "routeDistance": 0
+      },
+      {
+        "world": [
+          7.025,
+          6.9
+        ],
+        "image": [
+          0.5896061801087888,
+          0.5872011974668766
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.025000000000000355
+      },
+      {
+        "world": [
+          7.05,
+          6.9
+        ],
+        "image": [
+          0.5896486686338492,
+          0.5876065379959532
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.04999999999999982
+      },
+      {
+        "world": [
+          6.95,
+          6.91
+        ],
+        "image": [
+          0.5892377563697201,
+          0.5860420056352805
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.04999999999999982
+      },
+      {
+        "world": [
+          6.975,
+          6.91
+        ],
+        "image": [
+          0.5892802448947805,
+          0.5864473461643571
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.025000000000000355
+      },
+      {
+        "world": [
+          7,
+          6.91
+        ],
+        "image": [
+          0.589322733419841,
+          0.5868526866934338
+        ],
+        "maskProtected": true,
+        "routeDistance": 0
+      },
+      {
+        "world": [
+          7.025,
+          6.91
+        ],
+        "image": [
+          0.5893652219449014,
+          0.5872580272225104
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.025000000000000355
+      },
+      {
+        "world": [
+          7.05,
+          6.91
+        ],
+        "image": [
+          0.5894077104699619,
+          0.587663367751587
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.04999999999999982
+      },
+      {
+        "world": [
+          6.95,
+          6.92
+        ],
+        "image": [
+          0.5889967982058326,
+          0.5860988353909143
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.04999999999999982
+      },
+      {
+        "world": [
+          6.975,
+          6.92
+        ],
+        "image": [
+          0.5890392867308931,
+          0.5865041759199909
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.025000000000000355
+      },
+      {
+        "world": [
+          7,
+          6.92
+        ],
+        "image": [
+          0.5890817752559536,
+          0.5869095164490676
+        ],
+        "maskProtected": true,
+        "routeDistance": 0
+      },
+      {
+        "world": [
+          7.025,
+          6.92
+        ],
+        "image": [
+          0.589124263781014,
+          0.5873148569781442
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.025000000000000355
+      },
+      {
+        "world": [
+          7.05,
+          6.92
+        ],
+        "image": [
+          0.5891667523060744,
+          0.5877201975072208
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.04999999999999982
+      },
+      {
+        "world": [
+          6.95,
+          6.93
+        ],
+        "image": [
+          0.5887558400419453,
+          0.5861556651465482
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.04999999999999982
+      },
+      {
+        "world": [
+          6.975,
+          6.93
+        ],
+        "image": [
+          0.5887983285670058,
+          0.5865610056756247
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.025000000000000355
+      },
+      {
+        "world": [
+          7,
+          6.93
+        ],
+        "image": [
+          0.5888408170920661,
+          0.5869663462047015
+        ],
+        "maskProtected": true,
+        "routeDistance": 0
+      },
+      {
+        "world": [
+          7.025,
+          6.93
+        ],
+        "image": [
+          0.5888833056171265,
+          0.587371686733778
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.025000000000000355
+      },
+      {
+        "world": [
+          7.05,
+          6.93
+        ],
+        "image": [
+          0.588925794142187,
+          0.5877770272628546
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.04999999999999982
+      },
+      {
+        "world": [
+          6.95,
+          6.9399999999999995
+        ],
+        "image": [
+          0.5885148818780579,
+          0.586212494902182
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.04999999999999982
+      },
+      {
+        "world": [
+          6.975,
+          6.9399999999999995
+        ],
+        "image": [
+          0.5885573704031183,
+          0.5866178354312586
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.025000000000000355
+      },
+      {
+        "world": [
+          7,
+          6.9399999999999995
+        ],
+        "image": [
+          0.5885998589281787,
+          0.5870231759603353
+        ],
+        "maskProtected": true,
+        "routeDistance": 0
+      },
+      {
+        "world": [
+          7.025,
+          6.9399999999999995
+        ],
+        "image": [
+          0.5886423474532392,
+          0.5874285164894119
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.025000000000000355
+      },
+      {
+        "world": [
+          7.05,
+          6.9399999999999995
+        ],
+        "image": [
+          0.5886848359782996,
+          0.5878338570184884
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.04999999999999982
+      },
+      {
+        "world": [
+          6.95,
+          6.95
+        ],
+        "image": [
+          0.5882739237141704,
+          0.5862693246578159
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.04999999999999982
+      },
+      {
+        "world": [
+          6.975,
+          6.95
+        ],
+        "image": [
+          0.5883164122392308,
+          0.5866746651868924
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.025000000000000355
+      },
+      {
+        "world": [
+          7,
+          6.95
+        ],
+        "image": [
+          0.5883589007642913,
+          0.5870800057159691
+        ],
+        "maskProtected": true,
+        "routeDistance": 0
+      },
+      {
+        "world": [
+          7.025,
+          6.95
+        ],
+        "image": [
+          0.5884013892893517,
+          0.5874853462450457
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.025000000000000355
+      },
+      {
+        "world": [
+          7.05,
+          6.95
+        ],
+        "image": [
+          0.5884438778144121,
+          0.5878906867741223
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.04999999999999982
+      },
+      {
+        "world": [
+          6.95,
+          6.96
+        ],
+        "image": [
+          0.588032965550283,
+          0.5863261544134497
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.04999999999999982
+      },
+      {
+        "world": [
+          6.975,
+          6.96
+        ],
+        "image": [
+          0.5880754540753435,
+          0.5867314949425263
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.025000000000000355
+      },
+      {
+        "world": [
+          7,
+          6.96
+        ],
+        "image": [
+          0.5881179426004038,
+          0.5871368354716029
+        ],
+        "maskProtected": true,
+        "routeDistance": 0
+      },
+      {
+        "world": [
+          7.025,
+          6.96
+        ],
+        "image": [
+          0.5881604311254642,
+          0.5875421760006796
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.025000000000000355
+      },
+      {
+        "world": [
+          7.05,
+          6.96
+        ],
+        "image": [
+          0.5882029196505247,
+          0.5879475165297561
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.04999999999999982
+      },
+      {
+        "world": [
+          6.95,
+          6.97
+        ],
+        "image": [
+          0.5877920073863956,
+          0.5863829841690835
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.04999999999999982
+      },
+      {
+        "world": [
+          6.975,
+          6.97
+        ],
+        "image": [
+          0.587834495911456,
+          0.5867883246981601
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.025000000000000355
+      },
+      {
+        "world": [
+          7,
+          6.97
+        ],
+        "image": [
+          0.5878769844365164,
+          0.5871936652272367
+        ],
+        "maskProtected": true,
+        "routeDistance": 0
+      },
+      {
+        "world": [
+          7.025,
+          6.97
+        ],
+        "image": [
+          0.5879194729615769,
+          0.5875990057563134
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.025000000000000355
+      },
+      {
+        "world": [
+          7.05,
+          6.97
+        ],
+        "image": [
+          0.5879619614866374,
+          0.58800434628539
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.04999999999999982
+      },
+      {
+        "world": [
+          6.95,
+          6.98
+        ],
+        "image": [
+          0.5875510492225081,
+          0.5864398139247173
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.04999999999999982
+      },
+      {
+        "world": [
+          6.975,
+          6.98
+        ],
+        "image": [
+          0.5875935377475685,
+          0.5868451544537939
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.025000000000000355
+      },
+      {
+        "world": [
+          7,
+          6.98
+        ],
+        "image": [
+          0.587636026272629,
+          0.5872504949828705
+        ],
+        "maskProtected": true,
+        "routeDistance": 0
+      },
+      {
+        "world": [
+          7.025,
+          6.98
+        ],
+        "image": [
+          0.5876785147976894,
+          0.5876558355119472
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.025000000000000355
+      },
+      {
+        "world": [
+          7.05,
+          6.98
+        ],
+        "image": [
+          0.5877210033227499,
+          0.5880611760410238
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.04999999999999982
+      },
+      {
+        "world": [
+          6.95,
+          6.99
+        ],
+        "image": [
+          0.5873100910586206,
+          0.5864966436803511
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.04999999999999982
+      },
+      {
+        "world": [
+          6.975,
+          6.99
+        ],
+        "image": [
+          0.5873525795836811,
+          0.5869019842094277
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.025000000000000355
+      },
+      {
+        "world": [
+          7,
+          6.99
+        ],
+        "image": [
+          0.5873950681087416,
+          0.5873073247385043
+        ],
+        "maskProtected": true,
+        "routeDistance": 0
+      },
+      {
+        "world": [
+          7.025,
+          6.99
+        ],
+        "image": [
+          0.587437556633802,
+          0.587712665267581
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.025000000000000355
+      },
+      {
+        "world": [
+          7.05,
+          6.99
+        ],
+        "image": [
+          0.5874800451588624,
+          0.5881180057966576
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.04999999999999982
+      },
+      {
+        "world": [
+          6.95,
+          7
+        ],
+        "image": [
+          0.5870691328947333,
+          0.586553473435985
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.04999999999999982
+      },
+      {
+        "world": [
+          6.975,
+          7
+        ],
+        "image": [
+          0.5871116214197938,
+          0.5869588139650616
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.025000000000000355
+      },
+      {
+        "world": [
+          7,
+          7
+        ],
+        "image": [
+          0.5871541099448542,
+          0.5873641544941381
+        ],
+        "maskProtected": true,
+        "routeDistance": 0
+      },
+      {
+        "world": [
+          7.025,
+          7
+        ],
+        "image": [
+          0.5871965984699146,
+          0.5877694950232148
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.025000000000000355
+      },
+      {
+        "world": [
+          7.05,
+          7
+        ],
+        "image": [
+          0.5872390869949751,
+          0.5881748355522914
+        ],
+        "maskProtected": true,
+        "routeDistance": 0.04999999999999982
+      }
+    ],
+    "exclusions": [
+      "outside acceptedWorldBox",
+      "all foliage and terrain placement",
+      "house/Elder geography",
+      "shoreline/stream outside bridge"
+    ],
+    "numericInverseTolerance": 1e-8
+  },
+  "foliageAudit": {
+    "inputCandidates": 263,
+    "accepted": 0,
+    "rejected": 263,
+    "plantRadiusUnits": 0.75,
+    "rejectionCounts": {
+      "outside-accepted-registration-domain": 261,
+      "actual-elder-geometry-envelope": 1,
+      "authored-walking-corridor": 1
+    },
+    "meaning": "Rejected global candidate was audited against actual staged geometry and route; diagnostics do not authorize these transformed candidates"
+  },
+  "migration": {
+    "proposal": {
+      "accepted": false,
+      "status": "explicit atlas-authoritative outdoor authoring proposal, not current-world registration",
+      "fit": [
+        {
+          "id": "home-door-approach",
+          "image": [
+            0.20117200000000002,
+            0.695313
+          ],
+          "world": [
+            -12.4,
+            3
+          ],
+          "uncertaintyPixels": 12,
+          "source": "canon home-to-lake first route point; staged outdoor route first point, not measured doorway center"
+        },
+        {
+          "id": "elder-outside-passage-approach",
+          "image": [
+            0.7890625,
+            0.2001953125
+          ],
+          "world": [
+            14,
+            -7
+          ],
+          "uncertaintyPixels": 12,
+          "source": "canon lake-to-elder final navigation point; staged outside-passage endpoint, not sanctuary origin or surveyed door"
+        },
+        {
+          "id": "bridge-trace-midpoint",
+          "image": [
+            0.6201171875,
+            0.57958984375
+          ],
+          "world": [
+            7,
+            5.6
+          ],
+          "uncertaintyPixels": 12,
+          "source": "midpoint of original-art traced west/east bridge route junctions; staged physical deck center authoring target"
+        }
+      ],
+      "forward": [
+        46.99027426984999,
+        2.4744335873463186,
+        -23.5736332963328,
+        17.53681315381283,
+        41.019996591015754,
+        -29.049652665467768
+      ],
+      "inverse": [
+        0.021771120830795,
+        -0.0013132910067011844,
+        0.47507377132196177,
+        -0.009307559968017054,
+        0.024939810434434967,
+        0.5050798250932834
+      ],
+      "centerStatus": "Ground-contact route landmarks with explicit pixel uncertainty, not silhouette region centers. These correspondences author a proposed outdoor migration; they are not independent validation of existing terrain.",
+      "tractor": {
+        "current": [
+          0.5,
+          9.3
+        ],
+        "proposed": [
+          16.58744395042909,
+          18.047041912155343
+        ],
+        "relocationDistance": 18.31165189356765
+      },
+      "bridge": {
+        "currentOrigin": [
+          7,
+          5.6
+        ],
+        "preservePhysicalDeckCenter": true,
+        "proposedDescriptorPositionXZ": [
+          7.035782585883125,
+          5.606062336348457
+        ],
+        "currentYawRadians": 0,
+        "currentScale": 1.6,
+        "proposedAxisYawRadians": -1.7386240971079048,
+        "proposedAxisYawDegrees": -99.61582292402633,
+        "proposedUniformScale": 1.8146266053544733,
+        "axisLengthWorldUnits": 4.872272331542994,
+        "sourceTraceEnds": [
+          [
+            873,
+            606
+          ],
+          [
+            1032,
+            581
+          ]
+        ],
+        "proposedEnds": [
+          [
+            4.598091683144311,
+            5.193065293198849
+          ],
+          [
+            9.401908316855682,
+            6.006934706801154
+          ]
+        ],
+        "traceMidpoint": [
+          6.9999999999999964,
+          5.600000000000001
+        ],
+        "traceMidpointOffsetFromPreservedOrigin": 3.972054645195637e-15,
+        "currentDeckLengthWorldUnits": 4.295999908447266,
+        "note": "A yaw/scale change also changes bridge width/height if uniform. Preserve grounded deck and re-author approaches; source trace endpoints are route junction estimates with about12px uncertainty, not surveyed deck corners. The source midpoint does not equal region.center; independent end residuals remain required."
+      },
+      "routeAction": "Re-author outdoor route around the migrated tractor and rotated bridge. Preserve measured house local geometry and validate door/passage approaches, clearance and deck height; do not transform the old path blindly.",
+      "acceptance": [
+        "Independent original-art deck/rail endpoint and width checks after migration, not the three center controls.",
+        "Independent doorway/tractor ground-contact holdouts within1scene unit including declared source uncertainty.",
+        "Bridge crossing axis within10degrees, no inverted triangles or inside-house/under-water path segments.",
+        "Sample full canopy radii against measured house, actual Elder envelope and authored walking corridor before any foliage enable.",
+        "Matched overview plus eye-level GPU visual review."
+      ]
+    },
+    "rejectedRegionCenterProposal": {
+      "accepted": false,
+      "reason": "Silhouette/interaction centers are not ground anchors; bridge center differs from traced crossing midpoint.",
+      "fit": [
+        {
+          "id": "home-region-authoring-center",
+          "image": [
+            0.197,
+            0.666
+          ],
+          "world": [
+            -12,
+            0
+          ]
+        },
+        {
+          "id": "elder-region-authoring-center",
+          "image": [
+            0.79,
+            0.18
+          ],
+          "world": [
+            14,
+            -16
+          ]
+        },
+        {
+          "id": "bridge-region-authoring-center",
+          "image": [
+            0.63,
+            0.589
+          ],
+          "world": [
+            7,
+            5.6
+          ]
+        }
+      ],
+      "forward": [
+        43.88962051742659,
+        0.0546192733209061,
+        -20.68263167796477,
+        23.993639889062198,
+        62.198000934596465,
+        -46.1506156805865
+      ],
+      "inverse": [
+        0.02279537366548042,
+        -0.000020017793594303694,
+        0.47054448398576526,
+        -0.008793594306049823,
+        0.016085409252669037,
+        0.5604768683274022
+      ],
+      "tractor": [
+        15.021423068753528,
+        23.151194115683637
+      ],
+      "bridgeEnds": [
+        [
+          4.294769123573065,
+          4.294977075077227
+        ],
+        [
+          8.836697144094742,
+          5.26018782202614
+        ]
+      ],
+      "traceMidpointOffsetFromPreservedOrigin": 0.9300313650517191
+    },
+    "needed": true,
+    "why": [
+      "Atlas tractor is east/southeast of bridge; staged tractor is west of bridge.",
+      "Atlas crossing is approximately image-horizontal; global fitted map rotates/shears it away from staged Z-axis.",
+      "Current house rooms and Elder interior staging have no ground-plane atlas survey."
+    ],
+    "next": [
+      "Retain current measured house/interior geometry and bounded walk route.",
+      "Choose an explicitly authored atlas-ground layout: trace ground-contact doorway, bridge deck corners, tractor contact and shoreline, each with uncertainty.",
+      "For a piecewise mesh, assign independent image/world controls along both sides of the bridge and all route bends, triangulate with common orientation, and reserve independent holdouts before fitting. Reject folds, canopy/roof anchors and outside-hull extrapolation.",
+      "Alternatively migrate outdoor stage origins/route to atlas-relative geography, preserving measured local house geometry; review route/bridge clearance and matched eye-level views before enabling fields."
+    ],
+    "height": "No metric or runtime height mapping is accepted."
+  }
+}

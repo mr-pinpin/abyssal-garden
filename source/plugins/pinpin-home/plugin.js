@@ -1,3 +1,5 @@
+// Authored atlas ground layout v2; original art is oblique, not a metric survey.
+function pinpinAtlasLayout(){return {"version":2,"forward":[46.99027426984999,2.4744335873463186,-23.5736332963328,17.53681315381283,41.019996591015754,-29.049652665467768],"inverse":[0.021771120830795,-0.0013132910067011844,0.47507377132196177,-0.009307559968017054,0.024939810434434967,0.5050798250932834],"bridge":{"position":[7.035782585883125,0.02,5.606062336348457],"yaw":-1.7386240971079048,"scale":1.8146266053544733,"west":[4.598091683144311,5.193065293198849],"east":[9.401908316855682,6.006934706801154],"outerWest":[3.3163567556044393,4.975911947554902],"outerEast":[10.683643244395554,6.224088052445101],"deckHeight":0.90916705392932},"tractor":[19.18375921824935,17.95876628333],"route":[[-12.4,3.8],[-12.4,6],[-5.0167433,4.9331384],[-2.8443323,5.151538],[-1.2001139,4.8686434],[0.6450347,4.8130227],[1.4666723,4.8944765],[3.505064,5.2782987],[3.3163568,4.9759119],[4.5980917,5.1930653],[9.4019083,6.0069347],[10.6836432,6.2240881],[11.1609343,4.4314788],[12.526896,3.0978187],[13.621446,1.2449012],[14.801108,0.2980927],[15.4865419,-0.0242547],[16.9715749,-0.5132306],[17.1373222,-1.3085573],[15.960443,-3.2532743],[14.6109359,-5.2774123],[14,-7]],"tractorNavigationApproach":[16.58744395042909,18.047041912155343],"groundControlNote":"Authored approach [-12.4,3] remains the affine control; walk starts outside the open doorway at z3.8."};}
 // Unreviewed procedural showcase interpretation; creative content is not blanket MIT.
 // No DOM/GPU/fetch/registration at definition time. See README.md and provenance.json.
 function pinpinHomePieces({foliageQuality = 'low'} = {}) {
@@ -177,18 +179,15 @@ function pinpinHomePieces({foliageQuality = 'low'} = {}) {
     box(m,-.94,1.44,3.04,.16,.22,.16);tube(m,[[-.94,1.67,3.04],[-.94,1.80,2.94]],.025);
   });
   // Forest is authored, with a continuous 1.8m path kept free of trunks.
-  const route=[[-12.4,3.0],[-12.4,6],[-8,8.8],[3.8,8.8],[7,8.8],[7,2.5],[9,-1],[11,-5],[14,-7]];
+  const route=pinpinAtlasLayout().route;
   // Irregular shoulders keep the full central 1.8m ribbon available. Low
   // polygon counts and grouped materials matter more here than dense meshes.
-  for(let i=0;i<route.length-1;i++)add('path-'+i,[.43,.33,.21],m=>{
-    if(i===4){
-      // Authored earth approaches meet the measured GLB deck at y=.804.
-      for(const [z0,z1] of [[8.8,7.75],[2.5,3.48]]) {
-        const ids=[[5.98,.035,z0],[8.02,.035,z0],[8.02,.804,z1],[5.98,.804,z1]].map(p=>m.v(...p));
-        m.quad(...(z1>z0?ids.slice().reverse():ids));
-      }
-      return;
-    }
+  for(let i=0;i<route.length-1;i++){const deck=pinpinAtlasLayout().bridge;if(Math.hypot(route[i][0]-deck.west[0],route[i][1]-deck.west[1])<1e-5&&Math.hypot(route[i+1][0]-deck.east[0],route[i+1][1]-deck.east[1])<1e-5)continue;add('path-'+i,[.43,.33,.21],m=>{
+    const layout=pinpinAtlasLayout(),bridge=layout.bridge;
+    const near=(a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1])<1e-5;
+    if(near(route[i],bridge.west)&&near(route[i+1],bridge.east))return; // actual GLB deck
+    const h=p=>near(p,bridge.west)||near(p,bridge.east)?bridge.deckHeight:.035;
+    if(h(route[i])>.1||h(route[i+1])>.1){m.sweep([[route[i][0],h(route[i]),route[i][1]],[route[i+1][0],h(route[i+1]),route[i+1][1]]],1.8,.035,()=>[0,1,0]);return;}
     const [a,b]=[route[i],route[i+1]],dx=b[0]-a[0],dz=b[1]-a[1],len=Math.hypot(dx,dz),n=[-dz/len,dx/len];
     const rows=[];
     for(let k=0;k<=8;k++) {
@@ -197,9 +196,9 @@ function pinpinHomePieces({foliageQuality = 'low'} = {}) {
       rows.push([-1,1].map((side,j)=>m.v(x+n[0]*widths[j]*side,.032+.006*Math.sin(k*1.3+i),z+n[1]*widths[j]*side)));
     }
     for(let k=0;k<8;k++)m.quad(rows[k][0],rows[k+1][0],rows[k+1][1],rows[k][1]);
-  },[0,0,0]);
+  },[0,0,0]);}
   // Rounded joints close the wedges left by adjoining path strips.
-  route.forEach(([x,z],i)=>add('path-joint-'+i,[.47,.37,.24],m=>{
+  route.filter(p=>Math.hypot(p[0]-7,p[1]-5.6)>3.4).forEach(([x,z],i)=>add('path-joint-'+i,[.47,.37,.24],m=>{
     const c=m.v(x,.052,z),top=[],bottom=[];
     for(let k=0;k<24;k++){const a=k*Math.PI/12;
       top.push(m.v(x+.9*Math.cos(a),.052,z+.9*Math.sin(a)));
@@ -274,8 +273,9 @@ function pinpinHomePieces({foliageQuality = 'low'} = {}) {
   const edgeSites=[];
   for(let i=1;i<route.length-1;i++) {
     const a=route[i],b=route[i+1],dx=b[0]-a[0],dz=b[1]-a[1],l=Math.hypot(dx,dz);
-    for(let k=0;k<7;k++)for(const side of [-1,1]) {
-      const seed=i*71+k*7+(side+1),t=(k+.25+noise(seed)*.5)/7;
+    const samples=Math.min(7,Math.max(1,Math.ceil(l*1.1)));
+    for(let k=0;k<samples;k++)for(const side of [-1,1]) {
+      const seed=i*71+k*7+(side+1),t=(k+.25+noise(seed)*.5)/samples;
       const setback=1.16+noise(seed+1)*.65;
       const x=a[0]+dx*t-dz/l*side*setback,z=a[1]+dz*t+dx/l*side*setback;
       // At bends a shoulder can face the neighboring segment: reject it too.

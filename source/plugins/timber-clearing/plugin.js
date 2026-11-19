@@ -6,10 +6,10 @@ function pinpinClearingPieces() {
     build:()=>icosphere(1,(x,y,z)=>[x*.65,(y+1)*.45,z*.40]).build()
   });
   const result=[
-    piece('young-lookout','pinpin',[4.3,.03,11.2],1,Math.PI),
-    piece('beaver-in-blue-vest','beaver',[2.2,.03,11.7],1,0),
-    piece('parked-red-tractor','timber-tractor',[.5,.03,9.3],1.4,-.10),
-    piece('small-paw-crossing','footbridge',[7,.02,5.6],1.6,0),
+    piece('young-lookout','pinpin',[2,.03,7.8],1,Math.PI),
+    piece('beaver-in-blue-vest','beaver',[1,.03,6.2],1,0),
+    piece('parked-red-tractor','timber-tractor',[19.18375921824935,0.03,17.95876628333],1.4,-.10),
+    piece('small-paw-crossing','footbridge',[7.035782585883125,0.02,5.606062336348457],1.8146266053544733,-1.7386240971079048),
     piece('windfallen-wood','windfallen-tree',[12.6,.02,5.6],1.2,0)
   ];
   const add=(name,color,draw)=>{
@@ -25,5 +25,11 @@ function pinpinClearingPieces() {
     const x=-2+i*2.7,z=i%2?3.65:7.6;
     for(let j=0;j<5;j++){const a=j*Math.PI*2/5;m.tube([[x,0,z],[x+Math.cos(a)*.17,.32+(j%2)*.10,z+Math.sin(a)*.17]],k=>k?.008:.035,4);}
   });
-  return result;
+  const yaw=-1.7386240971079048,co=Math.cos(yaw),si=Math.sin(yaw);
+  for(const p of result.filter(p=>!p.asset)){
+    if(p.name.endsWith('/clearing-path'))continue;
+    const build=p.build;p.build=()=>{const mesh=build(),f=new Float32Array(mesh.vb),n=new Int8Array(mesh.vb);for(let i=0;i<mesh.nv;i++){const o=i*4,x=f[o]-7,z=f[o+2]-5.6;f[o]=7+co*x+si*z;f[o+2]=5.6-si*x+co*z;const k=i*16+12,nx=n[k],nz=n[k+2];n[k]=Math.round(co*nx+si*nz);n[k+2]=Math.round(-si*nx+co*nz);}return mesh;};
+  }
+  return result.filter(p=>!p.name.endsWith('/clearing-path')); // one canonical route, no stale duplicate
+
 }

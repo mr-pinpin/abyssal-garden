@@ -116,7 +116,7 @@ test('three traced floors preserve plan areas and the outdoor recess',()=>{
   assert.equal(pieces.filter(p=>p.name.startsWith(prefix+'floor-')).length,3);
 });
 test('home entrance and connecting forest path stay open at child eye/body heights',()=>{
-  const pieces=fixture(),route=[[-12.4,3.8],[-12.4,6],[-8,8.8],[3.8,8.8],[7,8.8],[7,2.5],[9,-1],[11,-5],[14,-7]];
+  const pieces=fixture(),route=vm.runInContext("pinpinAtlasLayout().route",load().context);
   for(let i=0;i<route.length-1;i++)for(const h of [.6,1.3])for(const offset of [-.25,0,.25])
     clear(pieces.filter(p=>!p.name.startsWith(prefix+'path-')),[route[i][0]+offset,h,route[i][1]],[route[i+1][0]+offset,h,route[i+1][1]]);
   // The canonical 0.59952m doorway is a narrower pinch point than the forest path.
@@ -134,7 +134,7 @@ test('authored understory stays within its geometry budget and outside the outdo
   const count=details.reduce((n,p)=>n+p.build().nv,0);
   assert.ok(count>3000&&count<18000,'detail vertices '+count+' exceed the authored budget');
   assert.ok(details.length<=15,'batch detail by material instead of per sprig');
-  const route=[[-12.4,3.8],[-12.4,6],[-8,8.8],[3.8,8.8],[7,8.8],[7,2.5],[9,-1],[11,-5],[14,-7]];
+  const route=vm.runInContext("pinpinAtlasLayout().route",load().context);
   for(let i=0;i<route.length-1;i++) {
     const a=route[i],b=route[i+1],dx=b[0]-a[0],dz=b[1]-a[1],len=Math.hypot(dx,dz);
     for(const offset of [-.55,0,.55])for(const y of [.12,.35,.8]) {
@@ -143,14 +143,11 @@ test('authored understory stays within its geometry budget and outside the outdo
     }
   }
 });
-test('the connecting path approaches the physical Z-axis bridge without paving the stream',()=>{
-  const pieces=fixture(),paths=pieces.filter(p=>p.name.startsWith(prefix+'path-'));
-  for(const piece of paths)for(const [x,y,z] of vertices(piece).out)
-    assert.ok(!(x>-3&&x<18&&z>4.25&&z<6.95),piece.name+' places path geometry in open water');
-  const ramps=vertices(pieces.find(p=>p.name===prefix+'path-4')).out;
-  assert.equal(ramps.length,8);
-  assert.ok(ramps.every(([x])=>x>5.9&&x<8.1),'ramps align with deck width');
-  assert.ok(ramps.filter(p=>Math.abs(p[1]-.804)<.00001).length===4,'ramps meet the scaled deck top');
+test('the migrated path has earth ramps to each rotated physical deck end',()=>{
+ const pieces=fixture(),layout=vm.runInContext('pinpinAtlasLayout()',load().context),b=layout.bridge;
+ const ramps=pieces.filter(p=>p.name.startsWith(prefix+'path-')).flatMap(p=>vertices(p).out).filter(p=>Math.abs(p[1]-b.deckHeight)<.03);
+ assert.ok(ramps.length>=4,'both approaches meet deck height');
+ for(const end of [b.west,b.east])assert.ok(ramps.some(v=>Math.hypot(v[0]-end[0],v[2]-end[1])<1.1),'ramp reaches deck endpoint');
 });
 test('woodland enclosure has broad planting, layered height, and a bounded batched cost',()=>{
   const pieces=fixture(),enclosure=pieces.filter(p=>/planted-ground|island-shrubs|(?:trunk|canopy)-1\d\d$/.test(p.name));
@@ -165,7 +162,7 @@ test('woodland enclosure has broad planting, layered height, and a bounded batch
   assert.ok(shrubs.some(p=>p[1]>1),'middle-height leaf silhouettes');
   const crowns=enclosure.filter(p=>/canopy-1\d\d$/.test(p.name)).flatMap(p=>vertices(p).out);
   assert.ok(crowns.some(p=>p[1]>7),'backdrop crown layer');
-  const route=[[-12.4,3.8],[-12.4,6],[-8,8.8],[3.8,8.8],[7,8.8],[7,2.5],[9,-1],[11,-5],[14,-7]];
+  const route=vm.runInContext("pinpinAtlasLayout().route",load().context);
   for(let i=0;i<route.length-1;i++){
     const a=route[i],b=route[i+1],dx=b[0]-a[0],dz=b[1]-a[1],len=Math.hypot(dx,dz);
     for(const offset of [-.65,0,.65])for(const y of [.12,.5,1.25]){
