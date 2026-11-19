@@ -3,11 +3,11 @@
 A local, interactive forest showcase built on the
 [Noniv/abyssal-garden](https://github.com/Noniv/abyssal-garden) fork by
 Maksymilian Dendura. Three switchable scenes bring the house, Beaver's timber
-clearing, and the Elder's sanctuary together in one small world. Four new
+clearing, and the Elder's sanctuary together in one small world. Five storyworld
 plugins, five real Blender models, raw WebGPU rendering, and a software
-compatibility renderer. **This revision is committed locally, not pushed or
-deployed. Konev owns the push.** The existing Pages URL may still serve an older
-revision.
+compatibility renderer. [Open the live forest](https://mr-pinpin.github.io/abyssal-garden/).
+Commits on the shared main branch are published automatically; the site’s
+`version.json` records the deployed commit.
 
 - **A place called home:** the pinned three-room house plan, green entry,
   moss-roof cutaway, forest trees, ferns, and a path between the scene areas.
@@ -15,8 +15,17 @@ revision.
   tractor with empty trailer, repaired footbridge, and windfallen tree by water.
 - **Beneath the roots:** a root-screened passage, broad stone floor, four story
   mural themes, wall lamps, seed bowl, mat/stool and open book.
+- **Living meadow:** six butterflies and batched wildflowers, with bounded
+  animation on visible WebGPU pages and static software/reduced-motion poses.
 - **Forest ambience:** optional procedural wind and bird-like tones. Sound starts
   only after a user gesture and pauses when the page is hidden.
+
+Choose **Enter forest** to walk at eye level: WASD or arrow keys move, dragging
+looks around, and Escape or **Return to overview** leaves walking mode. Phone
+controls provide the same movement. The outdoor route connects the house, the
+actual raised footbridge, and the sanctuary approach; it keeps you within a
+marked-width corridor and follows the bridge ramps. This is bounded route
+exploration, not general terrain or house-interior collision.
 
 Drag to orbit, scroll to zoom, choose a chapter, or take a gentle tour. Chapter
 selection and zoom work in the compatibility renderer too. No navigation wall
@@ -61,6 +70,7 @@ groups are preserved by the existing `gltf-loader`, while retaining its original
 | `timber-clearing` | `pinpinClearingPieces()` |
 | `elder-sanctuary` | `pinpinElderPieces()` |
 | `forest-ambience` | `pinpinCreateAmbience()` |
+| `woodland-life` | `pinpinLifePieces()`, `pinpinUpdateLife(seconds)` |
 
 The descriptor contract is `{name, asset, build, position, rotation, scale,
 color}`. Positions are world XYZ, ground y=0, rotations radians, scales positive,
