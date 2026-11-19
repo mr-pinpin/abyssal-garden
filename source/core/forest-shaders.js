@@ -17,6 +17,15 @@ fn vnoise(p:vec2f)->f32 {
  let i=floor(p);let f=fract(p);let u=f*f*(3.-2.*f);
  return mix(mix(hash2(i),hash2(i+vec2f(1.,0.)),u.x),mix(hash2(i+vec2f(0.,1.)),hash2(i+vec2f(1.,1.)),u.x),u.y);
 }
+fn hash3(p:vec3f)->vec3f { return fract(sin(vec3f(dot(p,vec3f(127.1,311.7,74.7)),dot(p,vec3f(269.5,183.3,246.1)),dot(p,vec3f(113.5,271.9,124.6))))*43758.5453); }
+// Leaf cells: distance to the nearest of a jittered 3D lattice of points (F1) and that point's random id.
+fn leafCells(p:vec3f)->vec2f {
+ let c=floor(p);let f=fract(p);var d=8.;var id=0.;
+ for(var z=-1;z<=1;z++){for(var y=-1;y<=1;y++){for(var x=-1;x<=1;x++){
+  let o=vec3f(f32(x),f32(y),f32(z));let r=hash3(c+o);let v=o+r-f;let dd=dot(v,v);if(dd<d){d=dd;id=r.x;}
+ }}}
+ return vec2f(sqrt(d),id);
+}
 fn filmic(x:vec3f)->vec3f { return clamp((x*(2.51*x+.03))/(x*(2.43*x+.59)+.14),vec3f(0.),vec3f(1.)); }
 @fragment fn fs(i:Out)->@location(0) vec4f {
  if(g.color.a<1.){let v=52.9829189*fract(dot(floor(i.cp.xy),vec2f(.06711056,.00583715)));if(fract(v)>=g.color.a){discard;}}
@@ -24,6 +33,14 @@ fn filmic(x:vec3f)->vec3f { return clamp((x*(2.51*x+.03))/(x*(2.43*x+.59)+.14),v
  // Thin cards are drawn double-sided: light the side that faces the camera.
  let view=normalize(g.camera.xyz-i.wp);if(dot(n,view)<0.){n=-n;}
  var albedo=g.color.rgb;
+ // Foliage is cut into separate leaves: world-space cells (~14 cm) with gaps between them, each leaf tilted and
+ // toned on its own, darker toward its edge. The shadow pass cuts the same gaps, so light falls through in spots.
+ let leafBand=1.-smoothstep(.03,.05,abs(i.aux+.6535));
+ if(leafBand>.5){
+  let lc=leafCells(i.wp*7.);if(lc.x>.5){discard;}
+  albedo*=(.80+.40*lc.y)*mix(1.,.72,smoothstep(.22,.5,lc.x));
+  n=normalize(n+(hash3(vec3f(lc.y*97.3,lc.y*13.1,lc.y*51.7))-.5)*.9);
+ }
  // Breakup on ground-like surfaces: two octaves of value noise in world space.
  let flat=smoothstep(.55,.9,n.y);
  let br=vnoise(i.wp.xz*.35)*.6+vnoise(i.wp.xz*1.7)*.4;
@@ -81,7 +98,17 @@ const W_SHADOW=/*wgsl*/`
 struct Globals { vp:mat4x4f, model:mat4x4f, color:vec4f, sun:vec4f, camera:vec4f };
 @group(0) @binding(0) var<uniform> g:Globals;
 @group(1) @binding(0) var<uniform> light:mat4x4f;
-@vertex fn vs(@location(0) p:vec3f)->@builtin(position) vec4f { return light*(g.model*vec4f(p,1.)); }`;
+struct SOut { @builtin(position) p:vec4f, @location(0) wp:vec3f, @location(1) aux:f32 };
+@vertex fn vs(@location(0) p:vec3f,@location(1) n:vec4f)->SOut { var o:SOut;let wp=g.model*vec4f(p,1.);o.p=light*wp;o.wp=wp.xyz;o.aux=n.w;return o; }
+fn hash3(p:vec3f)->vec3f { return fract(sin(vec3f(dot(p,vec3f(127.1,311.7,74.7)),dot(p,vec3f(269.5,183.3,246.1)),dot(p,vec3f(113.5,271.9,124.6))))*43758.5453); }
+fn leafCells(p:vec3f)->vec2f {
+ let c=floor(p);let f=fract(p);var d=8.;var id=0.;
+ for(var z=-1;z<=1;z++){for(var y=-1;y<=1;y++){for(var x=-1;x<=1;x++){
+  let o=vec3f(f32(x),f32(y),f32(z));let r=hash3(c+o);let v=o+r-f;let dd=dot(v,v);if(dd<d){d=dd;id=r.x;}
+ }}}
+ return vec2f(sqrt(d),id);
+}
+@fragment fn fs(i:SOut) { if(abs(i.aux+.6535)<.04&&leafCells(i.wp*7.).x>.5){discard;} }`;
 const FOREST_SUN=[.52,.62,.34];
 // forestShadow(device, sceneLayout, objects) -> null | {layout, group, encode(encoder, draws, binding, stride)}
 // Hook contract for forest-main: scene pipeline uses W_FOREST_SHADOWED with bindGroupLayouts
@@ -108,7 +135,7 @@ async function forestShadow(device,sceneLayout,objects,size=2048){
  const castLayout=device.createBindGroupLayout({entries:[{binding:0,visibility:GPUShaderStage.VERTEX,buffer:{type:'uniform'}}]});
  const layout=device.createBindGroupLayout({entries:[{binding:0,visibility:GPUShaderStage.FRAGMENT,buffer:{type:'uniform'}},{binding:1,visibility:GPUShaderStage.FRAGMENT,texture:{sampleType:'depth'}},{binding:2,visibility:GPUShaderStage.FRAGMENT,sampler:{type:'comparison'}}]});
  const module=device.createShaderModule({code:W_SHADOW});
- const pipeline=await device.createRenderPipelineAsync({layout:device.createPipelineLayout({bindGroupLayouts:[sceneLayout,castLayout]}),vertex:{module,entryPoint:'vs',buffers:[{arrayStride:16,attributes:[{shaderLocation:0,offset:0,format:'float32x3'}]}]},primitive:{topology:'triangle-list',cullMode:'none'},depthStencil:{format:'depth32float',depthWriteEnabled:true,depthCompare:'less',depthBias:2,depthBiasSlopeScale:2.5}});
+ const pipeline=await device.createRenderPipelineAsync({layout:device.createPipelineLayout({bindGroupLayouts:[sceneLayout,castLayout]}),vertex:{module,entryPoint:'vs',buffers:[{arrayStride:16,attributes:[{shaderLocation:0,offset:0,format:'float32x3'},{shaderLocation:1,offset:12,format:'snorm8x4'}]}]},fragment:{module,entryPoint:'fs',targets:[]},primitive:{topology:'triangle-list',cullMode:'none'},depthStencil:{format:'depth32float',depthWriteEnabled:true,depthCompare:'less',depthBias:2,depthBiasSlopeScale:2.5}});
  const castGroup=device.createBindGroup({layout:castLayout,entries:[{binding:0,resource:{buffer:lightBuf}}]});
  const group=device.createBindGroup({layout,entries:[{binding:0,resource:{buffer:lightBuf}},{binding:1,resource:map.createView()},{binding:2,resource:device.createSampler({compare:'less',magFilter:'linear',minFilter:'linear'})}]});
  return {layout,group,light:L,encode(encoder,draws,binding,stride){
