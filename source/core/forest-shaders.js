@@ -187,7 +187,7 @@ async function forestGroundTexture(device){
    const [a,b,c,d,e,f]=entry.worldToUV;t=[a,b,c,1,d,e,f,0];
   }catch(error){console.warn('ground-types texture not used:',error);texture=null;}
  }
- if(!texture){texture=device.createTexture({size:[1,1],format:'rgba8unorm',usage:GPUTextureUsage.TEXTURE_BINDING|GPUTextureUsage.COPY_DST});device.queue.writeTexture({texture},new Uint8Array(4),{bytesPerRow:4},[1,1]);}
+ if(!texture){texture=device.createTexture({size:[1,1],format:'rgba8unorm',usage:GPUTextureUsage.TEXTURE_BINDING|GPUTextureUsage.COPY_DST});}  // WebGPU zero-initialises textures: all-zero means plain grass, and the shader ignores it anyway
  device.queue.writeBuffer(uniform,0,new Float32Array(t));
  if(typeof forestState==='object')forestState.groundTypes=t[3]===1;
  return {uniform,texture};
