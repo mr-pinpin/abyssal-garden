@@ -1,0 +1,35 @@
+{
+ "tool": "source/tools/landcover-derive.mjs",
+ "source": "assets/atlas-studies/landcover-seed-v2.png",
+ "sourceSHA256": "5136824b780aab5c7fffa0c39348f610da04b842a0774c81f829d80f1b4f8ceb",
+ "sourceProvenance": "assets/atlas-studies/generated-textures-v2.json",
+ "generator": "ChatGPT image generation (see sourceProvenance); this file is a deterministic derivation, no hand placement",
+ "frame": "atlas image plane, u=x/width, v=y/height, origin top-left",
+ "size": [
+  768,
+  512
+ ],
+ "groundTypes": {
+  "R": "path/track",
+  "G": "open ground (soil)",
+  "B": "water edge band (mud)",
+  "A": "props/buildings/rocks",
+  "grass": "1-R-G-B-A"
+ },
+ "vegetationDensity": {
+  "R": "dense woodland (trees)",
+  "G": "deciduous margins (shrubs, young trees)",
+  "B": "fern/grass",
+  "A": "flower meadow"
+ },
+ "classShare": {
+  "woodland": 0.3141,
+  "margin": 0.2093,
+  "fern": 0.1751,
+  "meadow": 0.0485,
+  "water": 0.1005,
+  "path": 0.0357,
+  "prop": 0.0928,
+  "open": 0.024
+ }
+}
