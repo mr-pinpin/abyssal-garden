@@ -6,7 +6,7 @@ test('built forest walk moves, bounds, releases and returns to idle overview',as
  const result=await exercise('dev.html',{width:240,height:180,instrument:code=>`const walkEvents={};const documentListen=document.addEventListener;document.addEventListener=(type,fn)=>{walkEvents["document-"+type]=fn;documentListen(type,fn);};const originalListen=addEventListener;addEventListener=(type,fn)=>{walkEvents[type]=fn;originalListen(type,fn);};\n`+code.replace("\n})().catch",`\n
  const check=(condition,message)=>{if(!condition)throw Error(message);};
  document.getElementById('walk').listeners.click();
- check(forestWalk.active,'enter walk');
+ check(forestWalk.active,'enter walk');check(forestWalk.position[0]===-12.4&&forestWalk.position[1]===6,'start outside house');check(Math.abs(forestWalk.yaw-Math.atan2(4.4,-2.8))<1e-8,'face next path bend');
  let prevented=0;
  const key={key:'w',target:{tagName:'CANVAS'},preventDefault(){prevented++;}};
  walkEvents.keydown(key);

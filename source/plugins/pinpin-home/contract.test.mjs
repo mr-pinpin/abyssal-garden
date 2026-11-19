@@ -131,3 +131,24 @@ test('the connecting path approaches the physical Z-axis bridge without paving t
   assert.ok(ramps.every(([x])=>x>5.9&&x<8.1),'ramps align with deck width');
   assert.ok(ramps.filter(p=>Math.abs(p[1]-.804)<.00001).length===4,'ramps meet the scaled deck top');
 });
+test('woodland enclosure has broad planting, layered height, and a bounded batched cost',()=>{
+  const pieces=load().make(),enclosure=pieces.filter(p=>/planted-ground|island-shrubs|woodland-sapling|woodland-layered/.test(p.name));
+  const cost=enclosure.reduce((n,p)=>n+p.build().nv,0);
+  assert.equal(enclosure.length,10);assert.ok(cost>15000&&cost<20000,'enclosure budget '+cost);
+  let area=0;
+  for(const piece of enclosure.filter(p=>p.name.includes('planted-ground'))){const {out,built}=vertices(piece);
+    for(let i=0;i<built.ib.length;i+=3){const [a,b,c]=[out[built.ib[i]],out[built.ib[i+1]],out[built.ib[i+2]]];area+=Math.abs((b[0]-a[0])*(c[2]-a[2])-(b[2]-a[2])*(c[0]-a[0]))/2;}
+  }
+  assert.ok(area>70,'ground planting must read as islands rather than tiny props');
+  const shrubs=enclosure.filter(p=>p.name.includes('island-shrubs')).flatMap(p=>vertices(p).out);
+  assert.ok(shrubs.some(p=>p[1]>1),'middle-height leaf silhouettes');
+  const crowns=enclosure.filter(p=>p.name.includes('woodland-layered')).flatMap(p=>vertices(p).out);
+  assert.ok(crowns.some(p=>p[1]>7),'backdrop crown layer');
+  const route=[[-12.4,3.8],[-12.4,6],[-8,8.8],[3.8,8.8],[7,8.8],[7,2.5],[9,-1],[11,-5],[14,-7]];
+  for(let i=0;i<route.length-1;i++){
+    const a=route[i],b=route[i+1],dx=b[0]-a[0],dz=b[1]-a[1],len=Math.hypot(dx,dz);
+    for(const offset of [-.65,0,.65])for(const y of [.12,.5,1.25]){
+      const n=[-dz/len*offset,dx/len*offset];clear(enclosure,[a[0]+n[0],y,a[1]+n[1]],[b[0]+n[0],y,b[1]+n[1]]);
+    }
+  }
+});

@@ -31,7 +31,7 @@ let forestCamera={...forestPresets.clearing},forestEye=[0,0,0],forestTour=false,
 // Grounded outdoor corridor, not general mesh collision. Radius stays inside the
 // authored 1.8m path; the northern endpoint stops before the sanctuary walls.
 const forestWalkRoute=[[-12.4,3],[-12.4,6],[-8,8.8],[3.8,8.8],[7,8.8],[7,2.5],[9,-1],[11,-5],[14,-7]];
-const forestWalk={active:false,position:[-12.4,3],yaw:Math.PI,pitch:0,keys:new Set()};
+const forestWalk={active:false,position:[-12.4,6],yaw:Math.atan2(4.4,-2.8),pitch:-.12,keys:new Set()};
 function forestWalkClamp(p){
  let best=null,distance=Infinity;
  for(let i=1;i<forestWalkRoute.length;i++){

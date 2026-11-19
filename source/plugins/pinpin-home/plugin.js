@@ -275,6 +275,51 @@ function pinpinHomePieces() {
       tube(m,[[x+Math.cos(a)*.20,.24,z+Math.sin(a)*.20],[x+Math.cos(a)*.57,.08,z+Math.sin(a)*.57],[x+Math.cos(a)*r,.015,z+Math.sin(a)*r]],t=>.09-t*.038,5);
     }});
   },[0,0,0]);
+  // Woodland enclosure: planted islands have a visible footprint, middle-height
+  // foliage and slender layered crowns, rather than isolated miniature props.
+  const islands=[[-21,-7,1.65],[-17.7,-7,1.45],[-14.3,-6.7,1.35],[-10.5,-6.3,1.3],
+    [-7,-5.4,1.35],[-20.3,-2.8,1.5],[-20.4,1.5,1.7],[-19.7,5.7,1.6],
+    [-17.2,7.6,1.35],[-8.7,3.8,1.25],[-5.3,-1,1.45],[-4,2,1.25],
+    [-3.8,11.7,1.35],[1.4,11.6,1.2],[10.6,9.5,1.5],[12.7,1.8,1.35],[16.5,-3.8,1.3]];
+  const crown=(m,x,y,z,r,h,seed)=>{
+    const top=m.v(x+.12*r,y+h,z-.08*r),bottom=m.v(x,y-h*.23,z),rim=[];
+    for(let k=0;k<9;k++){const a=k*Math.PI*2/9,q=r*(.8+.2*noise(seed+k));rim.push(m.v(x+Math.cos(a)*q,y+(.12*noise(seed+k+21)-.06)*h,z+Math.sin(a)*q));}
+    for(let k=0;k<9;k++){m.tri(top,rim[(k+1)%9],rim[k]);m.tri(bottom,rim[k],rim[(k+1)%9]);}
+  };
+  for(let shade=0;shade<3;shade++)add('planted-ground-'+shade,[[.24,.31,.13],[.30,.36,.17],[.36,.39,.19]][shade],m=>{
+    islands.forEach(([x,z,r],i)=>{if(i%3!==shade)return;const c=m.v(x,.017,z),rim=[];
+      for(let k=0;k<13;k++){const a=k*Math.PI*2/13,q=r*(.85+.15*noise(i*17+k));rim.push(m.v(x+Math.cos(a)*q,.016,z+Math.sin(a)*q));}
+      for(let k=0;k<13;k++)m.tri(c,rim[(k+1)%13],rim[k]);
+    });
+  },[0,0,0]);
+  for(let shade=0;shade<3;shade++)add('island-shrubs-'+shade,[[.17,.29,.105],[.25,.36,.13],[.34,.43,.19]][shade],m=>{
+    islands.forEach(([x,z,r],i)=>{
+      for(let j=0;j<9;j++){if(j%3!==shade)continue;const a=j*2.4+i,q=r*(.20+.60*noise(i*13+j)),px=x+Math.cos(a)*q,pz=z+Math.sin(a)*q;
+        if(routeDistance(px,pz)<1.7)continue;
+        const height=.55+noise(i*41+j)*.65;
+        for(let k=0;k<9;k++)leaf(m,px,.02,pz,k*2.4+j,height*(.7+.3*noise(k+j*4)));
+        crown(m,px,.30,pz,.40,height*.35,i*10+j);
+      }
+    });
+  },[0,0,0]);
+  const saplings=[[-22.3,-8.5,8.5],[-20,-9.1,7.8],[-16.8,-9,8.7],[-13.7,-8.8,7.7],[-10.4,-8.7,8.5],[-7,-8,7.5],
+    [-22.3,-4,7.6],[-22.3,.2,8.3],[-22.3,5,7.5],[-20.9,9.5,7.7],[-17.6,11,7.4],
+    [-5.1,-6.8,7.7],[-3.6,-4.9,7.3],[-3.4,-.6,6.5],[-1.8,11.3,7.5],[3.4,11.3,7.8],[13,10.5,7.4],[17.6,1.3,7.9]];
+  add('woodland-sapling-bark',[.28,.22,.13],m=>{
+    saplings.forEach(([x,z,h],i)=>{
+      tube(m,[[x,0,z],[x+.13,h*.48,z-.12],[x-.18,h*.92,z+.14]],k=>.19-k*.052,7);
+      for(let k=0;k<3;k++){const a=k*2.1+i;const bx=x+Math.cos(a)*.85,bz=z+Math.sin(a)*.85;
+        tube(m,[[x,h*.51,z],[bx,h*.68,bz],[bx*1+(Math.cos(a)*.25),h*.77,bz+Math.sin(a)*.25]],t=>.075-t*.026,5);
+      }
+    });
+  },[0,0,0]);
+  for(let shade=0;shade<3;shade++)add('woodland-layered-crowns-'+shade,[[.18,.28,.12],[.24,.34,.14],[.32,.39,.18]][shade],m=>{
+    saplings.forEach(([x,z,h],i)=>{
+      for(let k=0;k<6;k++){if(k%3!==shade)continue;const a=k*2.4+i,r=1.12+noise(i*11+k)*.52;
+        crown(m,x+Math.cos(a)*.78,h*(.64+k*.048),z+Math.sin(a)*.78,r,.65+noise(k+i)*.40,i*17+k);
+      }
+    });
+  },[0,0,0]);
   for(let i=0;i<6;i++)add('path-amber-marker-'+i,[.92,.68,.28],m=>{
     orb(m,0,.28,0,.055,.08,.055,0);
   },[route[i+1][0]+.95,0,route[i+1][1]+.72]);

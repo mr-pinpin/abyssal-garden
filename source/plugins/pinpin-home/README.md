@@ -1,7 +1,7 @@
 # PinPin home and connecting forest — unreviewed showcase study
 
 `pinpinHomePieces()` defines a standalone pre-phase scene plugin in the existing
-Mesh/math scope. Calling it returns 89 piece descriptors: a three-room home,
+Mesh/math scope. Calling it returns 99 piece descriptors: a three-room home,
 plan-based furniture, green open entry, round window frames, partial moss roof,
 13 woodland trees, ferns, amber markers, and a joined path toward the sanctuary.
 No DOM, GPU, fetch, random-stream mutation, or registration occurs at definition
@@ -102,9 +102,19 @@ height and silhouette; shared RNG and all measured plan records stay intact.
 Shoulder sites are rejected against every route segment and the stream bank,
 so bends cannot plant details across an adjoining walking segment.
 
-The complete plugin has 27,576 packed vertices and 27,616 triangles; added
+The complete plugin has 45,715 packed vertices and 40,023 triangles; added
 detail uses 14,040 vertices across 13 material batches. Contract checks cap that
 detail at 18,000 vertices and test real triangle clearance at low body heights
 across a 1.1m outdoor ribbon, plus bridge approach placement. This is geometry
 evidence; the browser render and integrated asset clearances require the parent
 integration review. No new visual approval or deployment is claimed.
+
+The enclosure pass adds 17 broad irregular planting islands and 18 slender
+saplings with six overlapping angular crown layers each. Waist-high radiating
+leaves create a separate middle layer above the colored ground footprints.
+These are 10 material batches, 18,139 vertices, with a 20,000-vertex contract
+limit; all ground islands together cover more than 70 square meters. Outdoor
+clearance is checked against the enclosure at offsets ±0.65m and heights
+0.12m, 0.5m and 1.25m. The earlier browser image `after-home.png` was inspected
+and showed insufficient enclosure; the new enclosure still requires a fresh
+browser visual review by the integration owner.
