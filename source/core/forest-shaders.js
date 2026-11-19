@@ -50,10 +50,10 @@ fn filmic(x:vec3f)->vec3f { return clamp((x*(2.51*x+.03))/(x*(2.43*x+.59)+.14),v
  let dk=clamp((-.6535-i.aux)/.0158,0.,1.);let lt=clamp((i.aux+.6535)/.0236,0.,1.);
  let tone=.94-.22*dk+.18*lt;
  albedo*=mix(1.,tone,1.-smoothstep(.03,.05,abs(i.aux+.6535)));
- let sun=normalize(vec3f(.52,.62,.34));
- let sunC=vec3f(1.,.90,.74)*1.12;
+ let sun=normalize(vec3f(.62,.36,-.70));
+ let sunC=vec3f(1.,.80,.56)*1.45;
  let wrap=max((dot(n,sun)+.25)/1.25,0.);
- let sky=mix(vec3f(.30,.27,.18),vec3f(.46,.56,.66),n.y*.5+.5);
+ let sky=mix(vec3f(.30,.25,.15),vec3f(.40,.52,.70),n.y*.5+.5);
  // Contact darkening: vertical faces close to the ground sit in the grass and get less sky.
  let ao=mix(.62,1.,smoothstep(-.2,1.1,i.wp.y))*mix(1.,.9,1.-flat);
  let sh=/*SHADOW_TERM*/1.;
@@ -65,7 +65,7 @@ fn filmic(x:vec3f)->vec3f { return clamp((x*(2.51*x+.03))/(x*(2.43*x+.59)+.14),v
  // Leaves let light through (backscatter) and show a soft waxy sheen; everything else is unchanged.
  let leaf=1.-smoothstep(.03,.05,abs(i.aux+.6535));
  let back=max(dot(-n,sun),0.)*.6+pow(max(dot(sun,-view),0.),4.)*.8;
- c+=leaf*albedo*vec3f(1.,1.05,.7)*sunC*back*.55*mix(.35,1.,sh);
+ c+=leaf*albedo*vec3f(1.,1.05,.6)*sunC*back*.85*mix(.35,1.,sh);
  let hv=normalize(sun+view);
  c+=leaf*sunC*vec3f(.9,1.,.8)*.07*sh*pow(max(dot(n,hv),0.),24.);
  c*=mix(1.,.86+.14*vnoise(i.wp.xz*3.1+i.wp.y),leaf);
@@ -78,11 +78,12 @@ fn filmic(x:vec3f)->vec3f { return clamp((x*(2.51*x+.03))/(x*(2.43*x+.59)+.14),v
  let water=step(.95,abs(rawN.y))*step(i.wp.y,.12)*step(g.color.r+.12,g.color.b)*step(g.color.r+.12,g.color.g);
  if(water>.5){
   let q=i.wp.xz;
-  let rn=normalize(vec3f((vnoise(q*3.1)-.5)*.35+(vnoise(q*9.7+vec2f(3.,1.))-.5)*.18,1.,(vnoise(q*3.1+vec2f(17.,5.))-.5)*.35+(vnoise(q*9.7+vec2f(8.,2.))-.5)*.18));
+  let rn=normalize(vec3f((vnoise(q*3.1)-.5)*.10+(vnoise(q*9.7+vec2f(3.,1.))-.5)*.06,1.,(vnoise(q*3.1+vec2f(17.,5.))-.5)*.10+(vnoise(q*9.7+vec2f(8.,2.))-.5)*.06));
   let r=reflect(-view,rn);
-  let skyR=mix(vec3f(.40,.49,.31),vec3f(.30,.50,.66),smoothstep(0.,.5,r.y));
+  // Low reflected rays meet the far treeline (dark green), higher ones the sky.
+  let skyR=mix(vec3f(.07,.11,.05),mix(vec3f(.55,.50,.34),vec3f(.30,.46,.66),smoothstep(.1,.5,r.y)),smoothstep(.04,.22,r.y));
   let fres=.04+.96*pow(1.-max(dot(rn,view),0.),5.);
-  let deep=g.color.rgb*vec3f(.35,.55,.6);
+  let deep=g.color.rgb*vec3f(.16,.28,.30);
   c=mix(deep*(.5+.5*sh),skyR,clamp(fres*1.4+.12,0.,1.));
   c+=sunC*sh*2.2*pow(max(dot(r,sun),0.),180.);
  }
@@ -124,7 +125,7 @@ fn leafCells(p:vec3f)->vec2f {
  return vec2f(sqrt(d),id);
 }
 @fragment fn fs(i:SOut) { if(abs(i.aux+.6535)<.04&&i.wp.y>1.6&&leafCells(i.wp*7.).x>.5){discard;} }`;
-const FOREST_SUN=[.52,.62,.34];
+const FOREST_SUN=[.62,.36,-.70];  // golden hour: low (about 21 deg) and warm; WGSL copies use the same numbers
 // forestShadow(device, sceneLayout, objects) -> null | {layout, group, encode(encoder, draws, binding, stride)}
 // Hook contract for forest-main: scene pipeline uses W_FOREST_SHADOWED with bindGroupLayouts
 // [sceneLayout, shadow.layout]; each frame call shadow.encode(...) after writing the uniforms and
@@ -172,6 +173,9 @@ struct SkyOut { @builtin(position) p:vec4f, @location(0) ndc:vec2f };
  var o:SkyOut; let x=f32((i<<1u)&2u)*2.-1.;let y=f32(i&2u)*2.-1.;
  o.p=vec4f(x,-y,1.,1.);o.ndc=vec2f(x,-y);return o;
 }
+fn ch(p:vec2f)->f32 { return fract(sin(dot(p,vec2f(127.1,311.7)))*43758.5453); }
+fn cnoise(p:vec2f)->f32 { let i=floor(p);let f=fract(p);let u=f*f*(3.-2.*f);
+ return mix(mix(ch(i),ch(i+vec2f(1.,0.)),u.x),mix(ch(i+vec2f(0.,1.)),ch(i+vec2f(1.,1.)),u.x),u.y); }
 fn inv4(m:mat4x4f)->mat4x4f {
  let a00=m[0][0];let a01=m[0][1];let a02=m[0][2];let a03=m[0][3];
  let a10=m[1][0];let a11=m[1][1];let a12=m[1][2];let a13=m[1][3];
@@ -190,9 +194,19 @@ fn inv4(m:mat4x4f)->mat4x4f {
 }
 @fragment fn fs(i:SkyOut)->@location(0) vec4f {
  let q=inv4(g.vp)*vec4f(i.ndc,.5,1.);let ray=normalize(q.xyz/q.w-g.camera.xyz);
- let haze=vec3f(.66,.73,.55);let zenith=vec3f(.58,.74,.86);let warm=vec3f(.98,.90,.70);
+ let haze=vec3f(.66,.73,.55);let zenith=vec3f(.46,.66,.88);let warm=vec3f(1.,.86,.58);
  var c=mix(haze,zenith,smoothstep(-.02,.45,ray.y));
- let sun=normalize(vec3f(.52,.62,.34));
- c=mix(c,warm,.45*pow(max(dot(ray,sun),0.),6.));
+ // Soft clouds: fbm on a plane above the camera, thinning toward the horizon; lit warm on the sun side.
+ if(ray.y>.01){
+  let pc=ray.xz/ray.y*.35;var a=0.;var w=.5;var q=pc;
+  for(var k=0;k<5;k++){a+=w*cnoise(q);q=q*2.03+vec2f(1.7,9.2);w*=.5;}
+  let cov=smoothstep(.48,.78,a)*smoothstep(.01,.18,ray.y);
+  let lit=mix(vec3f(.86,.86,.84),vec3f(1.,.90,.72),pow(max(dot(normalize(ray),normalize(vec3f(.62,.36,-.70))),0.),3.));
+  c=mix(c,lit,cov*.85);
+ }
+ let sun=normalize(vec3f(.62,.36,-.70));
+ let sd=max(dot(ray,sun),0.);
+ c=mix(c,warm,.55*pow(sd,6.));
+ c+=vec3f(1.,.92,.75)*(pow(sd,900.)*3.+pow(sd,60.)*.35);
  return vec4f(c,1.);
 }`;
