@@ -1,0 +1,6 @@
+import{test}from'node:test';import assert from'node:assert/strict';import{exercise}from'./built-scene.mjs';
+test('built texture scene removes old paths and retains canopy placement above each trunk',async()=>{const a=await exercise('dev.html',{width:180,height:120,instrument:code=>code.replace('\n})().catch',`\n
+ const pairs=new Map();for(const o of forestGeometry){const m=/pinpin-home\\/(trunk|canopy)-(\\d+)$/.exec(o.piece.name);if(!m)continue;const f=new Float32Array(o.mesh.vb);let top=-Infinity;for(let i=0;i<o.mesh.nv;i++)top=Math.max(top,f[i*4+1]+o.piece.position[1]);const row=pairs.get(m[2])||{};row[m[1]]=top;pairs.set(m[2],row);}
+ const canopyFailures=[...pairs.values()].filter(p=>p.trunk&&p.canopy&&p.canopy<p.trunk*.8).length;
+ forestState.textureChecks={canopyFailures,pairs:pairs.size,oldPaths:forestGeometry.filter(o=>o.piece.name.startsWith('pinpin-home/path-')||o.piece.name.includes('stream-continuation')).length,terrain:forestGeometry.filter(o=>o.piece.name.startsWith('atlas-terrain/')).length,foliageInput:forestAtlas.vegetationField.density.filter(v=>v>0).length};
+ \n})().catch`)});assert.equal(a.state.textureChecks.canopyFailures,0);assert.ok(a.state.textureChecks.pairs>20);assert.equal(a.state.textureChecks.oldPaths,0);assert.equal(a.state.textureChecks.terrain,9);assert.ok(a.state.textureChecks.foliageInput>0);});

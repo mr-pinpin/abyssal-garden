@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "status": "generated candidate; not yet wired into runtime",
+  "status": "consumed by runtime-v3.json",
   "generator": "built-in image_gen",
   "modelIdentity": "not exposed by tool; no exact-model claim",
   "sourceAtlasSHA256": "80af7f9eb7188f0a1f64969a22632d0ef9732284d027042222c1543879f03780",
@@ -29,14 +29,15 @@
     "prompt": "Generate a 1536x1024 flat semantic class raster aligned to supplied atlas image plane, eight-color palette listed, connected lake/inflow/outflow and paths with bridge sole water crossing, organic detailed woodland patch structure, actual cottage/Elder/bridge/tractor landmarks, no lighting/shadows/text/legend. Atlas is sole geographic reference; no invented reframing."
   },
   "runtimeAcceptance": {
-    "enabled": false,
-    "required": [
-      "Decode/validate grayscale dimensions and channels",
-      "Validate continuous registered water and shores",
-      "Full-radius placement exclusions from generated semantic texture",
-      "Preserve traversable route and level scene entry regions",
-      "Demonstrate generated texture input change changes GPU scene"
-    ]
+    "enabled": true,
+    "contract": "runtime-coordinate-contract-v3.json",
+    "limits": "1:1 visual/photo acceptance remains open; known legacy structure mismatch; generated textures are artist data, not survey."
   },
-  "policy": "All new world geometry/placement derives from ChatGPT-generated textures; manual geometry/coordinate lists are migration debt."
+  "policy": "All new world geometry/placement derives from ChatGPT-generated textures; manual geometry/coordinate lists are migration debt.",
+  "groundTypes": {
+    "file": "ground-types-v3.png",
+    "sha256": "4e8ad6bae4406fe2140c94e9fa6edee54b582cd10908ca19b1744f05e19cdec6",
+    "generator": "built-in image_gen",
+    "promptSummary": "Edit generated semantic map using original atlas reference; flat nine-class ground footprints for grass/path/water/rock/garden/home/Elder/bridge/tractor yard, preserve reference topology, no pictorial geometry."
+  }
 }

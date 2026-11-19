@@ -29,6 +29,11 @@ jobs:
           restore-keys: units-
       - run: npm ci
         working-directory: source
+      - name: generated atlas texture fields
+        run: |
+          node tools/atlas-runtime.mjs
+          node --test tests/atlas-runtime.test.mjs
+        working-directory: source
       - name: tier 1 build
         shell: bash
         run: |

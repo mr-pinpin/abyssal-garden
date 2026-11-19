@@ -1,6 +1,34 @@
 // Demand-driven forest renderer; original underwater main.js remains available.
 const forestState=window.__pinpin={ready:false,mode:'loading',models:[],frames:0,errors:[],chapter:'clearing'};
 const forestFail=error=>{forestState.errors.push(String(error));const el=document.getElementById('error');el.hidden=false;el.textContent='The forest could not open. '+error.message;};
+// BEGIN GENERATED TEXTURE RUNTIME — pure raster-driven geometry machinery.
+function forestTextureWorld(data,{software=false}={}){
+ const {width:w,height:h,forward:f,inverse:m}=data;
+ if(data.schema!=='generated-atlas-runtime'||!Number.isInteger(w)||!Number.isInteger(h)||w*h>65536||data.heightField.length!==w*h||data.groundClasses.length!==w*h||!f?.every(Number.isFinite)||!m?.every(Number.isFinite))throw Error('Invalid required atlas texture grid');
+ const project=(u,v)=>[f[0]*u+f[1]*v+f[2],f[3]*u+f[4]*v+f[5]],uv=(x,z)=>[m[0]*x+m[1]*z+m[2],m[3]*x+m[4]*z+m[5]],inside=p=>p[0]>=0&&p[0]<1&&p[1]>=0&&p[1]<1,index=(u,v)=>Math.max(0,Math.min(h-1,Math.floor(v*h)))*w+Math.max(0,Math.min(w-1,Math.floor(u*w))),ground=(x,z)=>{const p=uv(x,z);return inside(p)?data.groundClasses[index(...p)]:-1;};
+ const foundations=[];
+ const field=data.heightField.map((v,i)=>{if(!Number.isFinite(v)||v<0||v>1)throw Error('Invalid height texture sample');const kind=data.groundClasses[i];if(kind===2||kind>=5)return 0;const x=i%w,y=Math.floor(i/w);let distance=3;for(let dy=-3;dy<=3;dy++)for(let dx=-3;dx<=3;dx++){const xx=x+dx,yy=y+dy;if(xx<0||yy<0||xx>=w||yy>=h)continue;const k=data.groundClasses[yy*w+xx];if(k===2||k>=5)distance=Math.min(distance,Math.hypot(dx,dy));}return v*data.heightScale*Math.min(1,distance/3);});
+ // Bounded slope reconstruction of generated displacement; no manual sculpt sites.
+ const du=Math.hypot(f[0]/w,f[3]/w),dv=Math.hypot(f[1]/h,f[4]/h);
+ for(let pass=0;pass<10;pass++)for(const reverse of [false,true])for(let q=0;q<field.length;q++){const i=reverse?field.length-1-q:q,x=i%w,y=Math.floor(i/w);for(const [xx,yy,d]of [[x-1,y,du],[x+1,y,du],[x,y-1,dv],[x,y+1,dv]])if(xx>=0&&yy>=0&&xx<w&&yy<h)field[i]=Math.min(field[i],field[yy*w+xx]+d*.45);}
+ const baseHeight=(x,z)=>{const p=uv(x,z);if(!inside(p))return 0;const xx=p[0]*w-.5,yy=p[1]*h-.5,x0=Math.floor(xx),y0=Math.floor(yy),tx=xx-x0,ty=yy-y0;const at=(a,b)=>field[Math.max(0,Math.min(h-1,b))*w+Math.max(0,Math.min(w-1,a))];let value=(at(x0,y0)*(1-tx)+at(x0+1,y0)*tx)*(1-ty)+(at(x0,y0+1)*(1-tx)+at(x0+1,y0+1)*tx)*ty;for(const b of foundations){const d=Math.hypot(Math.max(0,b[0]-x,x-b[2]),Math.max(0,b[1]-z,z-b[3]));value=Math.min(value,d*.45);}return value;};
+ const b=data.landmarks.bridge,t=data.bridgeTemplate,scale=b&&t?b.length/(t.max[2]-t.min[2]):1,deckHeight=b&&t?t.max[1]*scale+.02:0;
+ const bridgeProfile=(x,z,base)=>{if(!b)return base;const dx=x-b.center[0],dz=z-b.center[1],along=dx*b.axis[0]+dz*b.axis[1],side=Math.abs(-dx*b.axis[1]+dz*b.axis[0]),half=b.length/2,kind=ground(x,z);if(side>.85||Math.abs(along)>half+1.5)return base;if(kind===7&&Math.abs(along)<=half)return deckHeight;if(kind!==1)return base;const blend=Math.max(0,1-Math.max(0,Math.abs(along)-half)/1.5);return base*(1-blend)+deckHeight*blend;};
+ const heightAt=(x,z)=>bridgeProfile(x,z,baseHeight(x,z));
+ const colors=[[.24,.36,.12],[.48,.34,.19],[.16,.43,.46],[.42,.42,.37],[.24,.29,.11],[.28,.33,.14],[.28,.33,.14],[.16,.43,.46],[.43,.34,.20]],step=software?2:1;let terrainCache=null;
+ const buildTerrain=()=>{if(terrainCache)return terrainCache;const meshes=colors.map(()=>new Mesh());for(let y=0;y<h;y+=step)for(let x=0;x<w;x+=step){const kind=data.groundClasses[y*w+x],water=kind===2||kind===7,mesh=meshes[kind],corners=[[x,y],[x,Math.min(h,y+step)],[Math.min(w,x+step),Math.min(h,y+step)],[Math.min(w,x+step),y]],ids=corners.map(([a,c])=>{const p=project(a/w,c/h);return mesh.v(p[0],water?data.waterLevel:heightAt(...p),p[1]);});mesh.quad(...ids);}return terrainCache=meshes.map((mesh,kind)=>mesh.p.length?mesh.build((x,y,z)=>{if(kind===2||kind===7)return [0,1,0];const e=.08;return [-(heightAt(x+e,z)-heightAt(x-e,z))/(2*e),1,-(heightAt(x,z+e)-heightAt(x,z-e))/(2*e)];}):null);};
+ const pieces=colors.flatMap((color,i)=>data.groundClasses.includes(i)?[{name:'atlas-terrain/'+data.groundNames[i],asset:null,position:[0,0,0],rotation:[0,0,0],scale:[1,1,1],color,build:()=>buildTerrain()[i]}]:[]);
+ const clear=(x,z,r,{garden=false}={})=>{if(foundations.some(b=>x>=b[0]-r&&x<=b[2]+r&&z>=b[1]-r&&z<=b[3]+r))return false;for(let j=0;j<24;j++){const a=j*Math.PI/12,p=uv(x+Math.cos(a)*r,z+Math.sin(a)*r);if(!inside(p))return false;const k=data.groundClasses[index(...p)];if(k!==0&&!(garden&&k===4))return false;}return true;};
+ const hash=i=>{let n=(i^data.seed)>>>0;n=Math.imul(n^(n>>>16),0x7feb352d);n=Math.imul(n^(n>>>15),0x846ca68b);return ((n^(n>>>16))>>>0)/4294967296;};
+ const treePoints=[];for(const {i,rank}of data.density.trees.map((d,i)=>({i,rank:hash(i),d})).filter(p=>p.rank<p.d).sort((a,b)=>hash(a.i+1048576)-hash(b.i+1048576))){const p=project((i%w+.5)/w,(Math.floor(i/w)+.5)/h),r=data.limits.treeRadius;if(!clear(...p,r)||treePoints.some(t=>Math.hypot(t.position[0]-p[0],t.position[2]-p[1])<r*2.1))continue;treePoints.push({position:[p[0],heightAt(...p),p[1]],height:4+data.density.trees[i]*3+data.heightField[i],cell:i});if(treePoints.length>=(software?32:64))break;}
+ const excluded=data.excluded.map((v,i)=>{const p=project((i%w+.5)/w,(Math.floor(i/w)+.5)/h);return !clear(...p,data.limits.understoryRadius,{garden:true});}),density=data.density.flowers.map((v,i)=>excluded[i]?0:Math.max(v,data.density.shrubs[i]*.45));
+ const vegetationField={width:w,height:h,density,excluded,worldFromUV:(u,v)=>{const p=project(u,v);return [p[0],heightAt(...p),p[1]];},seed:data.seed,limit:260,marginCells:1};
+ const addFoundation=box=>{if(box.length!==4||!box.every(Number.isFinite))throw Error('Invalid foundation bounds');foundations.push(box);terrainCache=null;for(let i=0;i<excluded.length;i++){const p=project((i%w+.5)/w,(Math.floor(i/w)+.5)/h);excluded[i]=!clear(...p,data.limits.understoryRadius,{garden:true});vegetationField.density[i]=excluded[i]?0:Math.max(data.density.flowers[i],data.density.shrubs[i]*.45);}};
+ const propSites=data.groundClasses.map((kind,i)=>({kind,i,p:project((i%w+.5)/w,(Math.floor(i/w)+.5)/h)})).filter(p=>p.kind===0).sort((a,c)=>Math.hypot(a.p[0]-b.center[0],a.p[1]-b.center[1])-Math.hypot(c.p[0]-b.center[0],c.p[1]-b.center[1])).map(p=>p.p);
+ return {data,propSites,addFoundation,foundations,pieces,project,uv,ground,heightAt,baseHeight,treePoints,vegetationField,clear,bridge:{...b,scale,deckHeight},route:data.route};
+}
+// END GENERATED TEXTURE RUNTIME
+
 // Choose geometry detail only after an actual device succeeds. Keep the adapter
 // and device alive for the renderer; software fallback builds the lower detail.
 const forestPreparedGPU=await(async()=>{
@@ -8,18 +36,42 @@ const forestPreparedGPU=await(async()=>{
  try{const adapter=await navigator.gpu.requestAdapter();return adapter?{adapter,device:await adapter.requestDevice()}:null;}catch{return null;}
 })();
 const forestFoliageQuality=forestPreparedGPU?'high':'low';forestState.foliageQuality=forestFoliageQuality;
-const forestSources={home:typeof pinpinHomePieces==='function'?()=>pinpinHomePieces({foliageQuality:forestFoliageQuality}):null,clearing:typeof pinpinClearingPieces==='function'?pinpinClearingPieces:null,elder:typeof pinpinElderPieces==='function'?pinpinElderPieces:null};
-const forestPieces=Object.values(forestSources).flatMap(make=>make?make():[]);
-if(typeof pinpinLifePieces==='function')forestPieces.push(...pinpinLifePieces());
-{
- const m=new Mesh();m.sweep([[-70,-.12,0],[70,-.12,0]],140,.12,()=>[0,1,0]);
- forestPieces.unshift({name:'forest/ground',asset:null,build:()=>m.build(),position:[0,0,0],rotation:[0,0,0],scale:[1,1,1],color:[.24,.34,.14]});
+const forestAtlasResponse=await fetch('assets/atlas-studies/runtime-v3.json');if(!forestAtlasResponse.ok)throw Error('Required generated atlas fields could not load');
+const forestAtlas=forestTextureWorld(await forestAtlasResponse.json(),{software:!forestPreparedGPU});forestState.atlasTextures={version:3,inputs:forestAtlas.data.provenance,trees:forestAtlas.treePoints.length,routeCells:forestAtlas.route.length};
+const forestSources={home:typeof pinpinHomePieces==='function'?()=>pinpinHomePieces({foliageQuality:forestFoliageQuality,textureField:forestAtlas}):null,clearing:typeof pinpinClearingPieces==='function'?()=>pinpinClearingPieces().filter(p=>p.asset&&p.asset!=='windfallen-tree'):null,elder:typeof pinpinElderPieces==='function'?pinpinElderPieces:null};
+const forestPieces=[...forestAtlas.pieces,...Object.values(forestSources).flatMap(make=>make?make():[])];
+
+// Align existing character/architecture templates to GENERATED class-map ports.
+for(const p of forestPieces){
+ let delta=null;
+ if(p.name.startsWith('pinpin-home/')&&!/\/(?:trunk|canopy)-/.test(p.name)){const port=forestAtlas.data.landmarks.home?.port,legacy=forestAtlas.data.templatePorts.home;if(port)delta=[port[0]-legacy[0],0,port[1]-legacy[1]];}
+ if(p.name.startsWith('elder-sanctuary/')){const port=forestAtlas.data.landmarks.elder?.port,legacy=forestAtlas.data.templatePorts.elder;if(port)delta=[port[0]-legacy[0],0,port[1]-legacy[1]];}
+ if(delta)p.position=p.position.map((v,i)=>v+delta[i]);
+ if(p.asset==='timber-tractor'&&forestAtlas.data.landmarks.tractor){p.textureAnchor=forestAtlas.data.landmarks.tractor.center;const t=forestAtlas.data.landmarks.tractor,a=t.axis,sign=(forestAtlas.bridge.center[0]-t.center[0])*a[0]+(forestAtlas.bridge.center[1]-t.center[1])*a[1]>=0?1:-1;p.rotation=[0,-Math.atan2(a[1]*sign,a[0]*sign),0];}
+ if(p.asset&&p.asset!=='footbridge'&&p.asset!=='timber-tractor')p.texturePlacement=true;
+ if(p.asset==='footbridge'&&forestAtlas.bridge.center){const b=forestAtlas.bridge,t=forestAtlas.data.bridgeTemplate,yaw=Math.atan2(b.axis[0],b.axis[1]),mid=[(t.min[0]+t.max[0])/2,(t.min[2]+t.max[2])/2];p.rotation=[0,yaw,0];p.scale=[b.scale,b.scale,b.scale];p.position=[b.center[0]-b.scale*(Math.cos(yaw)*mid[0]+Math.sin(yaw)*mid[1]),.02,b.center[1]-b.scale*(-Math.sin(yaw)*mid[0]+Math.cos(yaw)*mid[1])];}
 }
+// Physical constraints are derived from the existing asset geometry, never new
+// authored world coordinates. They keep floor/route physics valid during conversion.
+for(const p of forestPieces.filter(p=>/pinpin-home\/floor-|elder-sanctuary\/(?:broad-stone-floor|passage-earth-path)/.test(p.name))){const mesh=p.build(),f=new Float32Array(mesh.vb),bounds=[Infinity,Infinity,-Infinity,-Infinity];for(let i=0;i<mesh.nv;i++){const x=f[i*4]+p.position[0],z=f[i*4+2]+p.position[2];bounds[0]=Math.min(bounds[0],x);bounds[1]=Math.min(bounds[1],z);bounds[2]=Math.max(bounds[2],x);bounds[3]=Math.max(bounds[3],z);}forestAtlas.addFoundation(bounds);}
+for(let i=forestPieces.length-1;i>=0;i--){const p=forestPieces[i],match=/pinpin-home\/(?:trunk|canopy)-(\d+)$/.exec(p.name);if(!match)continue;const point=forestAtlas.treePoints[Number(match[1])];if(!point||!forestAtlas.clear(point.position[0],point.position[2],forestAtlas.data.limits.treeRadius)){forestPieces.splice(i,1);continue;}p.position[1]+=forestAtlas.heightAt(point.position[0],point.position[2])-point.position[1];}
+forestState.atlasTextures.trees=forestPieces.filter(p=>/pinpin-home\/trunk-/.test(p.name)).length;
+if(typeof pinpinLifePieces==='function')forestPieces.push(...pinpinLifePieces({vegetationField:forestAtlas.vegetationField}));
 const forestGeometry=await Promise.all(forestPieces.map(async piece=>{
  const mesh=piece.asset&&typeof setPiece==='function'?await setPiece(piece.asset,piece.build):piece.build();
+
  if(piece.asset)forestState.models.push(mesh.source||{name:piece.asset,url:null,loaded:false});
  return {piece,mesh};
 }));
+const forestPropPlacements=[];
+for(const object of forestGeometry){const {piece:p,mesh}=object;if(!p.textureAnchor&&!p.texturePlacement)continue;const f=new Float32Array(mesh.vb),lo=[Infinity,Infinity,Infinity],hi=[-Infinity,-Infinity,-Infinity];for(let i=0;i<mesh.nv;i++)for(let k=0;k<3;k++){lo[k]=Math.min(lo[k],f[i*4+k]);hi[k]=Math.max(hi[k],f[i*4+k]);}if(p.asset==='timber-tractor'){const scale=forestAtlas.data.landmarks.tractor.length/(hi[0]-lo[0]);p.scale=[scale,scale,scale];}
+ const r=Math.hypot((hi[0]-lo[0])*p.scale[0],(hi[2]-lo[2])*p.scale[2])/2;
+ if(p.texturePlacement){const target=forestAtlas.propSites.find(q=>forestAtlas.clear(...q,r+.15)&&forestPropPlacements.every(o=>Math.hypot(o.anchor[0]-q[0],o.anchor[1]-q[1])>o.radius+r+.25));if(!target)throw Error('Generated textures have no clear footprint for '+p.asset);p.textureAnchor=target;p.rotation=[0,Math.atan2(forestAtlas.bridge.center[0]-target[0],forestAtlas.bridge.center[1]-target[1]),0];}
+ const mid=[(lo[0]+hi[0])/2,(lo[2]+hi[2])/2],a=p.rotation[1];p.position=[p.textureAnchor[0]-p.scale[0]*(Math.cos(a)*mid[0]+Math.sin(a)*mid[1]),forestAtlas.heightAt(...p.textureAnchor)-lo[1]*p.scale[1],p.textureAnchor[1]-p.scale[2]*(-Math.sin(a)*mid[0]+Math.cos(a)*mid[1])];forestPropPlacements.push({asset:p.asset,anchor:p.textureAnchor.slice(),radius:r});
+}
+// Keep full generated tree footprints clear of the actual generated prop sites.
+for(let i=forestGeometry.length-1;i>=0;i--){const o=forestGeometry[i],match=/pinpin-home\/(?:trunk|canopy)-(\d+)$/.exec(o.piece.name);if(!match)continue;const point=forestAtlas.treePoints[Number(match[1])];if(forestPropPlacements.some(p=>Math.hypot(p.anchor[0]-point.position[0],p.anchor[1]-point.position[2])<p.radius+forestAtlas.data.limits.treeRadius)){forestGeometry.splice(i,1);}}
+forestState.atlasTextures.trees=forestGeometry.filter(o=>/pinpin-home\/trunk-/.test(o.piece.name)).length;forestState.atlasTextures.props=forestPropPlacements;
 const forestLoaded=forestState.models.filter(m=>m.loaded).length;
 document.getElementById('load-status').textContent=forestState.models.length?`${forestLoaded} / ${forestState.models.length} story studies ready${forestLoaded<forestState.models.length?' · fallback shapes in use':''}`:'Procedural forest · models plugin switched off';
 const forestVec={sub:(a,b)=>a.map((v,i)=>v-b[i]),dot:(a,b)=>a.reduce((s,v,i)=>s+v*b[i],0),cross:(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]],norm:a=>{const l=Math.hypot(...a)||1;return a.map(v=>v/l);}};
@@ -37,18 +89,18 @@ const forestPresets={
 let forestCamera={...forestPresets.clearing},forestEye=[0,0,0],forestTour=false,forestQueued=false,forestLast=0,forestDraw;
 // Grounded outdoor corridor, not general mesh collision. Radius stays inside the
 // authored 1.8m path; the northern endpoint stops before the sanctuary walls.
-const forestWalkRoute=typeof pinpinAtlasLayout==='function'?pinpinAtlasLayout().route:[[-12.4,3],[-12.4,6],[-8,8.8],[14,-7]];
-const forestWalk={active:false,position:[-12.4,6],yaw:Math.atan2(forestWalkRoute[2][0]-forestWalkRoute[1][0],forestWalkRoute[1][1]-forestWalkRoute[2][1]),pitch:-.12,keys:new Set()};
+const forestWalkRoute=forestAtlas.route;if(forestWalkRoute.length<2)throw Error('Generated class texture has no connected home-to-Elder walking route');
+const forestWalk={active:false,position:forestWalkRoute[0].slice(),yaw:Math.atan2(forestWalkRoute[1][0]-forestWalkRoute[0][0],forestWalkRoute[0][1]-forestWalkRoute[1][1]),pitch:-.12,keys:new Set()};
 function forestWalkClamp(p){
  let best=null,distance=Infinity;
  for(let i=1;i<forestWalkRoute.length;i++){
   const a=forestWalkRoute[i-1],b=forestWalkRoute[i],dx=b[0]-a[0],dz=b[1]-a[1],t=Math.max(0,Math.min(1,((p[0]-a[0])*dx+(p[1]-a[1])*dz)/(dx*dx+dz*dz))),q=[a[0]+dx*t,a[1]+dz*t],d=Math.hypot(p[0]-q[0],p[1]-q[1]);
   if(d<distance){distance=d;best=q;}
  }
- return distance<=.65?p:[best[0]+(p[0]-best[0])*.65/distance,best[1]+(p[1]-best[1])*.65/distance];
+ const candidate=distance<=.65?p:[best[0]+(p[0]-best[0])*.65/distance,best[1]+(p[1]-best[1])*.65/distance];if([1,7].includes(forestAtlas.ground(...candidate)))return candidate;return forestWalkRoute.reduce((a,q)=>Math.hypot(q[0]-candidate[0],q[1]-candidate[1])<Math.hypot(a[0]-candidate[0],a[1]-candidate[1])?q:a).slice();
 }
 // Bridge deck is .804m high; authored earth ramps meet its two ends.
-function forestWalkHeight(){if(typeof pinpinAtlasLayout!=='function')return 1.25;const b=pinpinAtlasLayout().bridge,a=b.outerWest,z=b.outerEast,dx=z[0]-a[0],dz=z[1]-a[1],len=Math.hypot(dx,dz),p=forestWalk.position,t=((p[0]-a[0])*dx+(p[1]-a[1])*dz)/len,lateral=Math.abs((p[0]-a[0])*dz-(p[1]-a[1])*dx)/len;if(lateral>.85||t<0||t>len)return 1.25;return 1.25+b.deckHeight*Math.max(0,Math.min(1,t/1.3,(len-t)/1.3));}
+function forestWalkHeight(){return 1.25+forestAtlas.heightAt(...forestWalk.position);}
 function forestWalkMoving(){return forestWalk.active&&forestWalk.keys.size>0;}
 function forestWalkRelease(){forestWalk.keys.clear();forestLast=0;}
 function forestWalkMode(active){
@@ -68,6 +120,8 @@ function forestWalkStep(dt){
  forestState.walkPosition=forestWalk.position.slice();
 }
 function forestVP(width,height){
+ if(window.location?.search?.includes('view=atlas')){const m=forestAtlas.data.inverse,range=32;forestEye=[0,range,0];return Float32Array.of(2*m[0],-2*m[3],0,0,0,0,-1/range,0,2*m[1],-2*m[4],0,0,2*m[2]-1,1-2*m[5],.8,1);}
+
  const c=forestCamera,t=c.target;forestEye=[t[0]+Math.sin(c.yaw)*Math.cos(c.elevation)*c.distance,t[1]+Math.sin(c.elevation)*c.distance,t[2]+Math.cos(c.yaw)*Math.cos(c.elevation)*c.distance];
  const look=forestWalk.active?[forestWalk.position[0]+Math.sin(forestWalk.yaw)*Math.cos(forestWalk.pitch),forestWalkHeight()+Math.sin(forestWalk.pitch),forestWalk.position[1]-Math.cos(forestWalk.yaw)*Math.cos(forestWalk.pitch)]:t;
  if(forestWalk.active)forestEye=[forestWalk.position[0],forestWalkHeight(),forestWalk.position[1]];
@@ -119,7 +173,7 @@ async function forestGPU(){
   for(let i=0;i<draws.length;i++){const d=draws[i],o=i*stride/4;data.set(vp,o);data.set(d.model,o+16);data.set([...d.group.color,1],o+32);data.set([.45,.86,.25,0],o+36);data.set([...forestEye,0],o+40);}
   device.queue.writeBuffer(uniform,0,data);
   const texture=context.getCurrentTexture(),encoder=device.createCommandEncoder();shadow?.encode(encoder,draws,binding,stride);const pass=encoder.beginRenderPass({colorAttachments:[{view:texture.createView(),clearValue:{r:.66,g:.73,b:.55,a:1},loadOp:'clear',storeOp:'store'}],depthStencilAttachment:{view:depth.createView(),depthClearValue:1,depthLoadOp:'clear',depthStoreOp:'store'}});
-  if(skyPipeline&&draws.length){pass.setPipeline(skyPipeline);pass.setBindGroup(0,binding,[0]);pass.draw(3);}
+  if(skyPipeline&&draws.length&&!window.location?.search?.includes('view=atlas')){pass.setPipeline(skyPipeline);pass.setBindGroup(0,binding,[0]);pass.draw(3);}
   pass.setPipeline(pipeline);if(shadow)pass.setBindGroup(1,shadow.group);
   for(let i=0;i<draws.length;i++){const d=draws[i];pass.setBindGroup(0,binding,[i*stride]);pass.setVertexBuffer(0,d.vertex);pass.setIndexBuffer(d.index,'uint32');pass.drawIndexed(d.group.indexCount,1,d.group.firstIndex);}
   pass.end();

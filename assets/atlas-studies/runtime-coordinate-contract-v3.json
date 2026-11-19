@@ -1,0 +1,87 @@
+{
+  "version": 3,
+  "status": "runtime-driven by generated raster data; 1:1 visual acceptance remains open",
+  "frame": {
+    "width": 1536,
+    "height": 1024,
+    "u": "x/1536",
+    "v": "y/1024",
+    "origin": "top-left"
+  },
+  "forwardXZ": [
+    46.99027426984999,
+    2.4744335873463186,
+    -23.5736332963328,
+    17.53681315381283,
+    41.019996591015754,
+    -29.049652665467768
+  ],
+  "inverseUV": [
+    0.021771120830795,
+    -0.0013132910067011844,
+    0.47507377132196177,
+    -0.009307559968017054,
+    0.024939810434434967,
+    0.5050798250932834
+  ],
+  "registrationAuthority": "Reused declared v2 affine projection as coordinate machinery; not a metric survey or proof that every generated landmark matches original art.",
+  "runtime": "runtime-v3.json",
+  "runtimeSHA256": "67702a689a86c0f3c795de8970b04a61d9f64608c743978397ea23df6728f855",
+  "inputs": [
+    {
+      "file": "height-guide-v2.png",
+      "sha256": "c0d42554048a151848705be68e00d3ceaf31cfa7dcf87d6f3c114ae5ee7400e3"
+    },
+    {
+      "file": "landcover-seed-v2.png",
+      "sha256": "5136824b780aab5c7fffa0c39348f610da04b842a0774c81f829d80f1b4f8ceb"
+    },
+    {
+      "file": "ground-types-v3.png",
+      "sha256": "4e8ad6bae4406fe2140c94e9fa6edee54b582cd10908ca19b1744f05e19cdec6"
+    }
+  ],
+  "height": {
+    "source": "height-guide-v2.png",
+    "channel": "R/255",
+    "verticalScale": 2.5,
+    "units": "artist scene units, not surveyed meters",
+    "reconstruction": "bounded slope .45; semantic water flat zero; generic physical floor-footprint constraints from existing asset templates; smooth derivative normals"
+  },
+  "groundTypes": [
+    "grass",
+    "path",
+    "water",
+    "rock",
+    "garden",
+    "home",
+    "elder",
+    "bridge",
+    "tractor-yard"
+  ],
+  "densityMaps": "runtime-v3.json density.trees/shrubs/flowers/rocks, decoded from generated categorical pixels",
+  "placement": {
+    "seed": 731,
+    "treeRadius": 1.4,
+    "understoryRadius": 0.65,
+    "exclusions": "Full-radius ground-class checks, actual floor/passage footprints and generated prop footprints. Outside texture domain rejected. No manual grove/path fallback."
+  },
+  "walk": "Connected 8-neighbor path/bridge cells, generated from ground-types-v3.png. No authored waypoint list is active.",
+  "consumerGate": {
+    "terrain": true,
+    "vegetation": true,
+    "limits": "Bounds and physical checks are mandatory. Never treat image-plane reference as surveyed ground truth."
+  },
+  "legacyDebt": [
+    "Architecture/character/prop mesh templates remain existing geometry; placements and terrain are driven by generated texture data. Template appearance/footprint conformance still needs texture-based replacement/qualification.",
+    "Legacy baseline authored-layout code remains for isolated plugin tests, not rendered as a second grove/path.",
+    "Unsupported windfallen scene study was removed from active runtime because it introduced an unseeded rectangular water/log patch."
+  ],
+  "acceptance": {
+    "exactProjectionFrame": true,
+    "oneToOneAtlasVisualMatch": false,
+    "bookPhotorealism": false,
+    "hardwarePerformanceMeasured": false
+  },
+  "compile": "node source/tools/atlas-runtime.mjs; CI executes this before tier1 and tests the bundled inputs. Texture changes regenerate only the data field, with renderer unit cache retained."
+}

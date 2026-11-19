@@ -33,6 +33,7 @@ export async function exercise(file='index.html',options={}){
   requestAnimationFrame:fn=>raf.push(fn),setTimeout:()=>{throw new Error('unexpected idle timer');},setInterval:()=>{throw new Error('unexpected idle interval');},clearInterval(){},performance:{now:()=>time},
   addEventListener(type,fn){listeners[type]=fn;},console:{info(){},warn(...args){warnings.push(args.join(' '));},error(...args){exceptions.push(args.join(' '));}},
   fetch:async url=>{
+   if(url==='assets/atlas-studies/runtime-v3.json'){const data=JSON.parse(fs.readFileSync(path.join(root,url),'utf8'));return {ok:true,status:200,json:async()=>data};}
    assert.ok(url.startsWith('assets/pinpin/')&&!url.includes('..'),'only local model fetches');
    const fail=options.failAsset&&url.endsWith('/'+options.failAsset+'.glb');
    const bytes=fail?null:fs.readFileSync(path.join(root,url));
@@ -52,8 +53,8 @@ export async function exercise(file='index.html',options={}){
   if(options.output)fs.writeFileSync(options.output+'-'+name+'.png',png(image));
  }
  const frameCount=state.frames;assert.equal(raf.length,0,'idle scene should not churn');
- if(!options.failAsset&&requests.length){assert.equal(requests.length,5);assert.ok(state.models.every(m=>m.loaded));}
- if(options.failAsset){assert.equal(state.models.filter(m=>m.loaded).length,4);assert.ok(element('load-status').textContent.includes('fallback'));assert.ok(warnings.length);}
+ if(!options.failAsset&&requests.length){assert.equal(requests.length,state.atlasTextures?4:5);assert.ok(state.models.every(m=>m.loaded));}
+ if(options.failAsset){assert.equal(state.models.filter(m=>m.loaded).length,state.atlasTextures?3:4);assert.ok(element('load-status').textContent.includes('fallback'));assert.ok(warnings.length);}
  return {state:JSON.parse(JSON.stringify(state)),requests,warnings,status:element('load-status').textContent,frameCount,trianglesDrawn:state.drawnTriangles,disabled:buttons.filter(b=>b.disabled).map(b=>b.dataset.chapter)};
 }
 if(process.argv[1]===fileURLToPath(import.meta.url)){

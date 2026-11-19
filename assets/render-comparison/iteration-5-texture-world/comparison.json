@@ -1,0 +1,137 @@
+{
+  "checkedAt": "2026-11-19T18:17:02.409Z",
+  "browser": "157.0.8103.50",
+  "gpu": [
+    {
+      "vendorId": 65535,
+      "deviceId": 65535,
+      "vendorString": "Google Inc. (Google)",
+      "deviceString": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver-5.0.0)",
+      "driverVendor": "SwANGLE",
+      "driverVersion": "5.0.0"
+    }
+  ],
+  "results": [
+    {
+      "label": "before",
+      "camera": "unchanged clearing preset",
+      "viewport": [
+        960,
+        640
+      ],
+      "dpr": 1,
+      "reducedMotion": true,
+      "mode": "webgpu",
+      "inputs": null,
+      "pixelSHA256": "d38320f2639e2328c471fa9c54b13554af8baeb572c8e30e04add2a10aba36d2",
+      "errors": []
+    },
+    {
+      "label": "after",
+      "camera": "unchanged clearing preset",
+      "viewport": [
+        960,
+        640
+      ],
+      "dpr": 1,
+      "reducedMotion": true,
+      "mode": "webgpu",
+      "inputs": [
+        {
+          "file": "height-guide-v2.png",
+          "sha256": "c0d42554048a151848705be68e00d3ceaf31cfa7dcf87d6f3c114ae5ee7400e3"
+        },
+        {
+          "file": "landcover-seed-v2.png",
+          "sha256": "5136824b780aab5c7fffa0c39348f610da04b842a0774c81f829d80f1b4f8ceb"
+        },
+        {
+          "file": "ground-types-v3.png",
+          "sha256": "4e8ad6bae4406fe2140c94e9fa6edee54b582cd10908ca19b1744f05e19cdec6"
+        }
+      ],
+      "trees": 48,
+      "routeCells": 97,
+      "pixelSHA256": "4e6299725272162a70e7f4462b72de5881304f9622b6b4152933bdaa8b23d636",
+      "errors": []
+    },
+    {
+      "label": "alternate-height",
+      "camera": "unchanged clearing preset",
+      "viewport": [
+        960,
+        640
+      ],
+      "dpr": 1,
+      "reducedMotion": true,
+      "mode": "webgpu",
+      "inputs": [
+        {
+          "file": "height-guide-v1.png",
+          "sha256": "16d8b71353b469123a293dd5489c4ac96288168b1288de69428e03f6b0330120"
+        },
+        {
+          "file": "landcover-seed-v2.png",
+          "sha256": "5136824b780aab5c7fffa0c39348f610da04b842a0774c81f829d80f1b4f8ceb"
+        },
+        {
+          "file": "ground-types-v3.png",
+          "sha256": "4e8ad6bae4406fe2140c94e9fa6edee54b582cd10908ca19b1744f05e19cdec6"
+        }
+      ],
+      "trees": 48,
+      "routeCells": 97,
+      "pixelSHA256": "54e8cdf82572253aa6c98d23aa0430b5751ed36c9d3d92d9af35ef51761649b5",
+      "errors": []
+    },
+    {
+      "label": "atlas-plan",
+      "camera": "atlas image-plane top-down projection",
+      "viewport": [
+        960,
+        640
+      ],
+      "dpr": 1,
+      "reducedMotion": true,
+      "mode": "webgpu",
+      "inputs": [
+        {
+          "file": "height-guide-v2.png",
+          "sha256": "c0d42554048a151848705be68e00d3ceaf31cfa7dcf87d6f3c114ae5ee7400e3"
+        },
+        {
+          "file": "landcover-seed-v2.png",
+          "sha256": "5136824b780aab5c7fffa0c39348f610da04b842a0774c81f829d80f1b4f8ceb"
+        },
+        {
+          "file": "ground-types-v3.png",
+          "sha256": "4e8ad6bae4406fe2140c94e9fa6edee54b582cd10908ca19b1744f05e19cdec6"
+        }
+      ],
+      "trees": 48,
+      "routeCells": 97,
+      "pixelSHA256": "9d69585fad6463c4e8924e0370933d34910651981a911cc5291ea3a2086aafec",
+      "errors": []
+    }
+  ],
+  "textureChangeProven": true,
+  "originalHeightSHA": "c0d42554048a151848705be68e00d3ceaf31cfa7dcf87d6f3c114ae5ee7400e3",
+  "alternateGeneratedHeightSHA": "16d8b71353b469123a293dd5489c4ac96288168b1288de69428e03f6b0330120",
+  "performanceMeasured": false,
+  "sourceIdentity": "Local dirty source artifact; public release checked separately. Same generated class map, camera, lighting and backend for source-height substitution.",
+  "qualityAcceptance": {
+    "oneToOneAtlas": false,
+    "photorealBookStyle": false,
+    "knownGaps": [
+      "Elder root/trunk/door appearance",
+      "Home integrated moss roof and exterior footprint",
+      "Garden/picnic/dock readability",
+      "Shore/path aliasing and photoreal materials"
+    ]
+  },
+  "afterSourceFilesSHA256": {
+    "source/core/forest-main.js": "12784cb14b2832f081ceb55b34a44be84ba898f28c80b7081bf65efe514b7864",
+    "source/plugins/pinpin-home/plugin.js": "5230657a765f7e046a80d4c8928e47b66fb78a975d20f2e9589d51f75c82d9fc",
+    "source/tools/atlas-runtime.mjs": "aef5e9198127d0a9e5a2aa0750a8184b6d5e046974855b7e99bfcc8167ca1b65"
+  }
+}

@@ -1,6 +1,6 @@
 {
-  "version": 2,
-  "status": "Atlas-authored bridge/tractor/route layout migrated; consumer grid and terrain height still gated",
+  "version": 3,
+  "status": "Generated texture runtime v3 is active; exact atlas/book visual acceptance remains open",
   "source_frame": {
     "width": 1536,
     "height": 1024,
@@ -24,7 +24,14 @@
     "excluded": "white/unknown/meadow; no tree candidates"
   },
   "candidate_semantics": "candidate centers only; consuming system must check full plant footprints and metric spacing after registration",
-  "world_transform": null,
+  "world_transform": [
+    46.99027426984999,
+    2.4744335873463186,
+    -23.5736332963328,
+    17.53681315381283,
+    41.019996591015754,
+    -29.049652665467768
+  ],
   "preserve_in_current_game": [
     "measured house room dimensions",
     "actual bridge/deck axis and grounded walking route",
@@ -50,5 +57,7 @@
     41.019996591015754,
     -29.049652665467768
   ],
-  "consumer_warning": "Do not use diagnostic affine directly for vegetation or terrain. Await full-footprint and shoreline exclusions plus explicit accepted field adapter."
+  "consumer_warning": "Use registered runtime adapter, class exclusions and physical footprint checks; raw forward affine alone does not authorize placement.",
+  "runtime_contract": "runtime-coordinate-contract-v3.json",
+  "runtime_fields": "runtime-v3.json"
 }

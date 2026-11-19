@@ -2,7 +2,7 @@
 function pinpinAtlasLayout(){return {"version":2,"forward":[46.99027426984999,2.4744335873463186,-23.5736332963328,17.53681315381283,41.019996591015754,-29.049652665467768],"inverse":[0.021771120830795,-0.0013132910067011844,0.47507377132196177,-0.009307559968017054,0.024939810434434967,0.5050798250932834],"bridge":{"position":[7.035782585883125,0.02,5.606062336348457],"yaw":-1.7386240971079048,"scale":1.8146266053544733,"west":[4.598091683144311,5.193065293198849],"east":[9.401908316855682,6.006934706801154],"outerWest":[3.3163567556044393,4.975911947554902],"outerEast":[10.683643244395554,6.224088052445101],"deckHeight":0.90916705392932},"tractor":[19.18375921824935,17.95876628333],"route":[[-12.4,3.8],[-12.4,6],[-5.0167433,4.9331384],[-2.8443323,5.151538],[-1.2001139,4.8686434],[0.6450347,4.8130227],[1.4666723,4.8944765],[3.505064,5.2782987],[3.3163568,4.9759119],[4.5980917,5.1930653],[9.4019083,6.0069347],[10.6836432,6.2240881],[11.1609343,4.4314788],[12.526896,3.0978187],[13.621446,1.2449012],[14.801108,0.2980927],[15.4865419,-0.0242547],[16.9715749,-0.5132306],[17.1373222,-1.3085573],[15.960443,-3.2532743],[14.6109359,-5.2774123],[14,-7]],"tractorNavigationApproach":[16.58744395042909,18.047041912155343],"groundControlNote":"Authored approach [-12.4,3] remains the affine control; walk starts outside the open doorway at z3.8."};}
 // Unreviewed procedural showcase interpretation; creative content is not blanket MIT.
 // No DOM/GPU/fetch/registration at definition time. See README.md and provenance.json.
-function pinpinHomePieces({foliageQuality = 'low'} = {}) {
+function pinpinHomePieces({foliageQuality = 'low', textureField = null} = {}) {
   if(foliageQuality !== 'low' && foliageQuality !== 'high')throw new RangeError('pinpin-home: foliageQuality must be low or high');
   const highFoliage=foliageQuality === 'high';
   const anchor = [-12, 0, 0], prefix = 'pinpin-home/';
@@ -178,6 +178,7 @@ function pinpinHomePieces({foliageQuality = 'low'} = {}) {
   add('amber-entry-lantern',[.96,.66,.23],m=>{
     box(m,-.94,1.44,3.04,.16,.22,.16);tube(m,[[-.94,1.67,3.04],[-.94,1.80,2.94]],.025);
   });
+  const textureArchitectureCount=pieces.length;
   // Forest is authored, with a continuous 1.8m path kept free of trunks.
   const route=pinpinAtlasLayout().route;
   // Irregular shoulders keep the full central 1.8m ribbon available. Low
@@ -254,17 +255,18 @@ function pinpinHomePieces({foliageQuality = 'low'} = {}) {
       }
     }
   };
-  const trees=[[-22,-5,7],[-21,3,6],[-20,8,7.5],[-16,10,6],[-9,-7,7],[-6,-4,6],[-5,11,7],[-1,-2,6.5],[2,7,7],[6,3,6],[7,-9,7],[11,1,6.5],[16,-2,7]];
-  trees.forEach(([x,z,h],i)=>{
+  const trees=textureField?textureField.treePoints.map(p=>[p.position[0],p.position[2],p.height]):[[-22,-5,7],[-21,3,6],[-20,8,7.5],[-16,10,6],[-9,-7,7],[-6,-4,6],[-5,11,7],[-1,-2,6.5],[2,7,7],[6,3,6],[7,-9,7],[11,1,6.5],[16,-2,7]];
+  trees.forEach(([x,z,h],i)=>{const treeBase=textureField?.treePoints[i]?.position[1]||0;
     add('trunk-'+i,[.25,.17,.105],m=>{
       tube(m,[[x,0,z],[x+.12,h*.45,z-.10],[x-.12,h*.85,z+.12],[x-.18,h+.25,z+.12]],k=>[.36,.20,.075,.008][k],9);
       for(let j=0;j<4;j++){const a=j*Math.PI/2+i;tube(m,[[x,0,z],[x+Math.cos(a)*.8,.03,z+Math.sin(a)*.8]],k=>.20-k*.16,7);}
       branchWood(m,x,z,h,i);
-    },[0,0,0]);
+    },[0,treeBase,0]);
     add('canopy-'+i,[.115+(i%3)*.018,.225+(i%4)*.018,.075],m=>{
       leafyCrown(m,x,z,h,i);
-    },[0,0,0]);
+    },[0,treeBase,0]);
   });
+  if(textureField)return pieces.filter((p,i)=>i<textureArchitectureCount||/\/(?:trunk|canopy)-/.test(p.name));
   // A local integer hash provides repeatable variation without advancing rseed.
   const routeDistance=(x,z)=>Math.min(...route.slice(1).map((b,i)=>{
     const a=route[i],dx=b[0]-a[0],dz=b[1]-a[1],t=Math.max(0,Math.min(1,((x-a[0])*dx+(z-a[1])*dz)/(dx*dx+dz*dz)));
