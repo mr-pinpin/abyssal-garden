@@ -64,7 +64,7 @@
     {
       "name": "woodland-life",
       "phase": "pre",
-      "enabled": false
+      "enabled": true
     }
   ],
   "assets": {
