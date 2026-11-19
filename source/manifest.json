@@ -8,63 +8,75 @@
   "plugins": [
     {
       "name": "gltf-loader",
-      "phase": "pre"
+      "phase": "pre",
+      "geometry": "story-prop"
     },
     {
       "name": "fluke",
       "phase": "pre",
-      "enabled": false
+      "enabled": false,
+      "geometry": "legacy"
     },
     {
       "name": "ship",
       "phase": "pre",
-      "enabled": false
+      "enabled": false,
+      "geometry": "legacy"
     },
     {
       "name": "manta",
       "phase": "pre",
-      "enabled": false
+      "enabled": false,
+      "geometry": "legacy"
     },
     {
       "name": "fish",
       "phase": "pre",
-      "enabled": false
+      "enabled": false,
+      "geometry": "legacy"
     },
     {
       "name": "audio",
       "phase": "post",
-      "enabled": false
+      "enabled": false,
+      "geometry": "effect"
     },
     {
       "name": "dev-tools",
       "phase": "post",
       "dev": true,
-      "enabled": false
+      "enabled": false,
+      "geometry": "effect"
     },
     {
       "name": "pinpin-home",
       "phase": "pre",
-      "enabled": true
+      "enabled": true,
+      "geometry": "legacy"
     },
     {
       "name": "elder-sanctuary",
       "phase": "pre",
-      "enabled": true
+      "enabled": true,
+      "geometry": "legacy"
     },
     {
       "name": "timber-clearing",
       "phase": "pre",
-      "enabled": true
+      "enabled": true,
+      "geometry": "legacy"
     },
     {
       "name": "forest-ambience",
       "phase": "pre",
-      "enabled": true
+      "enabled": true,
+      "geometry": "effect"
     },
     {
       "name": "woodland-life",
       "phase": "pre",
-      "enabled": true
+      "enabled": true,
+      "geometry": "legacy"
     }
   ],
   "assets": {
@@ -89,5 +101,6 @@
       "scale": 1
     }
   },
-  "template": "core/forest-template.html"
+  "template": "core/forest-template.html",
+  "geometry_rule": "Miguel 19 Nov 17:4x: no hardcoded geometry except story props. Each plugin declares geometry: story-prop (authored models: tractor, characters, home, bridge), texture (everything it builds comes from generated textures listed in its inputs, each a manifest asset with provenance), effect (no scene geometry), or legacy (hand-made, being migrated). tests/no-hand-geometry.test.mjs fails the build if legacy grows or an enabled plugin is undeclared."
 }
