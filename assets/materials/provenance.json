@@ -1,0 +1,173 @@
+{
+  "schema": 1,
+  "author": "shukhov",
+  "createdAt": "2026-11-19T18:05:32.389183+00:00",
+  "purpose": "Generated photographic base-color material layers; no normal/roughness/height maps claimed",
+  "generation": "Built-in image_gen.imagegen; exact provider model identifier not exposed by returned tool result",
+  "assetPreparation": "Original generated PNG preserved unchanged. Browser Canvas high-quality resampling to requested 1024 square, WebP quality0.92. Runtime loader separately resizes to512 square. No painted/synthetic replacement textures.",
+  "review": "All six visually inspected in a 2x2 repeat grid. Intended tileable, not claimed pixel-identical opposite edges. Edge differences are diagnostics, not a photorealism score.",
+  "layers": [
+    {
+      "name": "grass",
+      "prompt": "Generate a single production-ready seamless tileable photographic PBR base-color/albedo material texture, exactly 1024x1024 square. Orthographic straight-on surface scan, fills every pixel edge to edge. Natural detailed woodland materials in the warm restrained palette of a richly realistic golden-hour children's-book forest, but photographed under flat diffuse neutral light: NO baked directional lighting, no cast shadows, no ambient vignette, no sunbeams, no specular hotspots, no depth-of-field blur, no perspective, no text or labels, no borders or watermark. Fine natural variation rather than graphic patterns. Opposite edges must meet seamlessly for infinite repeat. Not a scene or illustration. Material: Meadow ground with dense fine green grass blades and tiny clover leaves, irregular fine botanical detail, subtle warm olive and fresh green variation. Evenly distributed coverage, no large flowers or isolated focal objects.",
+      "started": "2026-11-19T18:01:04.436Z",
+      "completed": "2026-11-19T18:03:20.805Z",
+      "tool": "image_gen.imagegen",
+      "model": null,
+      "modelStatus": "not returned by built-in tool",
+      "originalSize": [
+        1254,
+        1254
+      ],
+      "size": [
+        1024,
+        1024
+      ],
+      "originalSha256": "60e519f9a3607f6c0a07570d63b209bdeebc181ea9546b62d0db40e25d80ec09",
+      "sha256": "56871e47824594880d669a0e898a711daddee06661564b0980c8a38b1139c515",
+      "bytes": 600362,
+      "edgeMeanDifference": {
+        "leftRight": 19.581705729166668,
+        "topBottom": 19.485677083333332,
+        "interiorNeighbor": 15.288187662760416
+      },
+      "layer": 0,
+      "url": "assets/materials/grass.webp"
+    },
+    {
+      "name": "path",
+      "prompt": "Generate a single production-ready seamless tileable photographic PBR base-color/albedo material texture, exactly 1024x1024 square. Orthographic straight-on surface scan, fills every pixel edge to edge. Natural detailed woodland materials in the warm restrained palette of a richly realistic golden-hour children's-book forest, but photographed under flat diffuse neutral light: NO baked directional lighting, no cast shadows, no ambient vignette, no sunbeams, no specular hotspots, no depth-of-field blur, no perspective, no text or labels, no borders or watermark. Fine natural variation rather than graphic patterns. Opposite edges must meet seamlessly for infinite repeat. Not a scene or illustration. Material: Well-worn packed woodland dirt footpath material, warm brown compacted fine earth with scattered tiny rounded grey and ochre pebbles, subtle granular texture. No path borders: the entire image is the path surface.",
+      "started": "2026-11-19T18:01:05.105Z",
+      "completed": "2026-11-19T18:02:54.164Z",
+      "tool": "image_gen.imagegen",
+      "model": null,
+      "modelStatus": "not returned by built-in tool",
+      "originalSize": [
+        1254,
+        1254
+      ],
+      "size": [
+        1024,
+        1024
+      ],
+      "originalSha256": "5fe2191426a41ca1670171aac8288ba01208bcba4a1dbe05e4463fd80436d242",
+      "sha256": "a5779e05edc1e759def09cdec4c53fba9b0f988f345f3624245d5ef473512ecc",
+      "bytes": 506464,
+      "edgeMeanDifference": {
+        "leftRight": 14.718098958333334,
+        "topBottom": 15.367838541666666,
+        "interiorNeighbor": 10.37603759765625
+      },
+      "layer": 1,
+      "url": "assets/materials/path.webp"
+    },
+    {
+      "name": "mud",
+      "prompt": "Generate a single production-ready seamless tileable photographic PBR base-color/albedo material texture, exactly 1024x1024 square. Orthographic straight-on surface scan, fills every pixel edge to edge. Natural detailed woodland materials in the warm restrained palette of a richly realistic golden-hour children's-book forest, but photographed under flat diffuse neutral light: NO baked directional lighting, no cast shadows, no ambient vignette, no sunbeams, no specular hotspots, no depth-of-field blur, no perspective, no text or labels, no borders or watermark. Fine natural variation rather than graphic patterns. Opposite edges must meet seamlessly for infinite repeat. Not a scene or illustration. Material: Wet dark brown mud at a woodland pond edge, fine damp silt and subtle irregular shallow surface texture, tiny embedded organic fragments. Dark natural umber, restrained broad diffuse wetness, no puddles reflecting sky, no shore boundary.",
+      "started": "2026-11-19T18:01:05.105Z",
+      "completed": "2026-11-19T18:01:28.792Z",
+      "tool": "image_gen.imagegen",
+      "model": null,
+      "modelStatus": "not returned by built-in tool",
+      "originalSize": [
+        1254,
+        1254
+      ],
+      "size": [
+        1024,
+        1024
+      ],
+      "originalSha256": "a6ea2bce65e442e7876ba0064611d2562a30b10438395128d42a1fc873dc0e1e",
+      "sha256": "f86aa59d9677755c9e1ef40fac2e2d716dd60349b2999324b096328d6c2cca1b",
+      "bytes": 389796,
+      "edgeMeanDifference": {
+        "leftRight": 10.670572916666666,
+        "topBottom": 10.782552083333334,
+        "interiorNeighbor": 6.704508463541667
+      },
+      "layer": 2,
+      "url": "assets/materials/mud.webp"
+    },
+    {
+      "name": "rock",
+      "prompt": "Generate a single production-ready seamless tileable photographic PBR base-color/albedo material texture, exactly 1024x1024 square. Orthographic straight-on surface scan, fills every pixel edge to edge. Natural detailed woodland materials in the warm restrained palette of a richly realistic golden-hour children's-book forest, but photographed under flat diffuse neutral light: NO baked directional lighting, no cast shadows, no ambient vignette, no sunbeams, no specular hotspots, no depth-of-field blur, no perspective, no text or labels, no borders or watermark. Fine natural variation rather than graphic patterns. Opposite edges must meet seamlessly for infinite repeat. Not a scene or illustration. Material: Weathered grey woodland stone surface with small scattered patches of muted olive moss and fine mineral grain, natural grey and warm grey variation, subtle irregular fissures. Entire image is one continuous stone material, no isolated boulders or edges.",
+      "started": "2026-11-19T18:01:05.105Z",
+      "completed": "2026-11-19T18:02:04.513Z",
+      "tool": "image_gen.imagegen",
+      "model": null,
+      "modelStatus": "not returned by built-in tool",
+      "originalSize": [
+        1254,
+        1254
+      ],
+      "size": [
+        1024,
+        1024
+      ],
+      "originalSha256": "4b9a13627d96d5cd90b7cccbcf7025732e1f0cb0a3815594eb26145a9628a4de",
+      "sha256": "a45aecc96e4978a9e67efab1816196081fcbc67c56ba7c84bcaffae7c4803001",
+      "bytes": 484520,
+      "edgeMeanDifference": {
+        "leftRight": 16.871419270833332,
+        "topBottom": 16.8037109375,
+        "interiorNeighbor": 11.431599934895834
+      },
+      "layer": 3,
+      "url": "assets/materials/rock.webp"
+    },
+    {
+      "name": "bark",
+      "prompt": "Generate a single production-ready seamless tileable photographic PBR base-color/albedo material texture, exactly 1024x1024 square. Orthographic straight-on surface scan, fills every pixel edge to edge. Natural detailed woodland materials in the warm restrained palette of a richly realistic golden-hour children's-book forest, but photographed under flat diffuse neutral light: NO baked directional lighting, no cast shadows, no ambient vignette, no sunbeams, no specular hotspots, no depth-of-field blur, no perspective, no text or labels, no borders or watermark. Fine natural variation rather than graphic patterns. Opposite edges must meet seamlessly for infinite repeat. Not a scene or illustration. Material: Mature oak bark surface with deep irregular vertical furrows and fine fibrous ridges, warm grey-brown bark, subtle lichen flecks. Vertically oriented grain. Unwrapped flat bark surface, not a cylindrical trunk, no branches. Seamless both horizontally and vertically.",
+      "started": "2026-11-19T18:01:05.105Z",
+      "completed": "2026-11-19T18:02:23.148Z",
+      "tool": "image_gen.imagegen",
+      "model": null,
+      "modelStatus": "not returned by built-in tool",
+      "originalSize": [
+        1254,
+        1254
+      ],
+      "size": [
+        1024,
+        1024
+      ],
+      "originalSha256": "74b6f74f4e434db8edde40925a24fd9fa068d7f2d9ba0211c0f0ec350bf3f159",
+      "sha256": "04b8551f4258a247d9c7e1f3b36164aca54145e1ec5beff362683523e162b971",
+      "bytes": 535198,
+      "edgeMeanDifference": {
+        "leftRight": 28.663411458333332,
+        "topBottom": 22.352213541666668,
+        "interiorNeighbor": 16.852701822916668
+      },
+      "layer": 4,
+      "url": "assets/materials/bark.webp"
+    },
+    {
+      "name": "moss",
+      "prompt": "Generate a single production-ready seamless tileable photographic PBR base-color/albedo material texture, exactly 1024x1024 square. Orthographic straight-on surface scan, fills every pixel edge to edge. Natural detailed woodland materials in the warm restrained palette of a richly realistic golden-hour children's-book forest, but photographed under flat diffuse neutral light: NO baked directional lighting, no cast shadows, no ambient vignette, no sunbeams, no specular hotspots, no depth-of-field blur, no perspective, no text or labels, no borders or watermark. Fine natural variation rather than graphic patterns. Opposite edges must meet seamlessly for infinite repeat. Not a scene or illustration. Material: Dense cushion moss surface, finely resolved miniature branching moss shoots and velvety rounded clusters, subtle olive and fresh green variation with warm yellow-green tips. Entire image continuously covered, no bare margins, no stones, no isolated focal objects.",
+      "started": "2026-11-19T18:01:05.105Z",
+      "completed": "2026-11-19T18:03:50.023Z",
+      "tool": "image_gen.imagegen",
+      "model": null,
+      "modelStatus": "not returned by built-in tool",
+      "originalSize": [
+        1254,
+        1254
+      ],
+      "size": [
+        1024,
+        1024
+      ],
+      "originalSha256": "0af749a53d2b5e6420f753b9ff9418b94acdbb391a60cb910a2feb6d64672ac3",
+      "sha256": "328a4bcf872aa00d125fdce1e5e0b00140f4798cc633fbb981544994e3013ed7",
+      "bytes": 548224,
+      "edgeMeanDifference": {
+        "leftRight": 17.914713541666668,
+        "topBottom": 16.942057291666668,
+        "interiorNeighbor": 11.781778971354166
+      },
+      "layer": 5,
+      "url": "assets/materials/moss.webp"
+    }
+  ]
+}

@@ -99,6 +99,17 @@
     "windfallen-tree": {
       "url": "assets/pinpin/windfallen-tree.glb",
       "scale": 1
+    },
+    "materials": {
+      "layers": [
+        "assets/materials/grass.webp",
+        "assets/materials/path.webp",
+        "assets/materials/mud.webp",
+        "assets/materials/rock.webp",
+        "assets/materials/bark.webp",
+        "assets/materials/moss.webp"
+      ],
+      "provenance": "assets/materials/provenance.json"
     }
   },
   "template": "core/forest-template.html",
