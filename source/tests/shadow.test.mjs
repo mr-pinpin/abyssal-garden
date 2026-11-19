@@ -1,0 +1,9 @@
+import {test} from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import vm from 'node:vm';
+const source=fs.readFileSync(new URL('../core/forest-shaders.js',import.meta.url),'utf8');
+function helper(){const code=source.slice(source.indexOf('const FOREST_SUN='),source.indexOf('// Sky ('));return vm.runInNewContext(code+';forestShadow',{GPUBufferUsage:{UNIFORM:1,COPY_DST:2},GPUTextureUsage:{RENDER_ATTACHMENT:1,TEXTURE_BINDING:2},GPUShaderStage:{VERTEX:1,FRAGMENT:2},W_SHADOW:''});}
+function device(){const calls=[];return{calls,queue:{writeBuffer(){}},createBuffer:c=>({c}),createTexture(c){calls.push(c);return{createView:()=>({})};},createBindGroupLayout:c=>({c}),createShaderModule:c=>({c}),createRenderPipelineAsync:async c=>({c}),createPipelineLayout:c=>({c}),createBindGroup:c=>({c}),createSampler:c=>({c})};}
+const model=(x,y,z)=>new Float32Array([1,0,0,0,0,1,0,0,0,0,1,0,x,y,z,1]);
+function object(points,translation=[0,0,0]){return{mesh:{vb:new Float32Array(points.flatMap(p=>[...p,0])).buffer},model:model(...translation)};}
+function clip(m,p){return [0,1,2].map(r=>m[r]*p[0]+m[4+r]*p[1]+m[8+r]*p[2]+m[12+r]);}
+test('sun fit contains translated casters and ignores oversized ground in resolution fit',async()=>{const points=[[-2,0,-3],[4,1,2],[1,9,3]],move=[12,2,-14],shape=object(points,move),ground=object([[-70,0,-70],[70,0,70]]),d=device(),make=helper();const a=await make(d,{},[shape]),b=await make(device(),{},[ground,shape]);assert.deepEqual([...a.light],[...b.light]);for(const p of points){const q=clip(a.light,p.map((v,i)=>v+move[i]));assert.ok(q[0]>-1&&q[0]<1&&q[1]>-1&&q[1]<1,'caster outside shadow XY');assert.ok(q[2]>0&&q[2]<1,'caster outside depth range');}assert.deepEqual(Array.from(d.calls[0].size),[2048,2048]);assert.equal(d.calls[0].format,'depth32float');});
+test('empty caster set has no shadow resources',async()=>{const d=device();assert.equal(await helper()(d,{},[]),null);assert.deepEqual(d.calls,[]);});

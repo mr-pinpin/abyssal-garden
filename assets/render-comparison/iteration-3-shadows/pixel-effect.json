@@ -1,0 +1,29 @@
+{
+  "kind": "pixel-effect sanity check, not artistic or performance score",
+  "views": {
+    "home": {
+      "width": 960,
+      "height": 640,
+      "darkerPixels": 112535,
+      "brighterPixels": 0,
+      "meanBefore": 137.58352701819473,
+      "meanAfter": 129.21228841140243
+    },
+    "clearing": {
+      "width": 960,
+      "height": 640,
+      "darkerPixels": 78733,
+      "brighterPixels": 0,
+      "meanBefore": 135.06981662331802,
+      "meanAfter": 130.14395507815667
+    },
+    "walk": {
+      "width": 960,
+      "height": 640,
+      "darkerPixels": 30176,
+      "brighterPixels": 0,
+      "meanBefore": 141.18047905838733,
+      "meanAfter": 138.80955512173904
+    }
+  }
+}

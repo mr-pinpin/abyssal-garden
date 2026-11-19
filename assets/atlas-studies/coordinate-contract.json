@@ -36,5 +36,9 @@
     "validate house/door footprint, shoreline, water continuity and routes in resulting geometry",
     "project exclusion margins to world canopy radii",
     "review same-camera GPU results before accepting geography changes"
-  ]
+  ],
+  "registration_study": "registration.json",
+  "registration_diagnostic": "registration.html",
+  "current_global_registration": "rejected: independent tractor position and bridge-axis residuals exceed tolerance",
+  "migration_next_node": "garden_atlas_layout_v2_zhukov_20261119"
 }

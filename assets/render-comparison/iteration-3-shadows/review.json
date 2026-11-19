@@ -1,0 +1,8 @@
+{
+  "observed_review_started_utc": "2026-11-19T17:05:14Z",
+  "reviewed_at_utc": "2026-11-19T17:06:02Z",
+  "verdict": "ACCEPT_INCREMENTAL_CAST_SHADOW_RESULT",
+  "scope": "Visible cast-shadow increment only; not full scene/reference equivalence, performance approval or goal completion.",
+  "evidence_kind": "Six supplied actual GPU texture readbacks; no browser launched and no source code edited.",
+  "author": "Independent render evaluator"
+}
